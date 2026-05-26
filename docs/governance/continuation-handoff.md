@@ -12,8 +12,9 @@ layer, operational runbooks, and a full public surface (`/`, `/discover`,
 `/plan`, `/saved`, `/about`, `/destinations/[id]`, plus JSON/health/metrics/
 affiliate/admin APIs, OG images, manifest, security headers). ~14 product-vision
 intelligence engines are scaffolded on one explainable, versioned scoring core.
-Every increment passes `typecheck`, `lint`, `test` (**101**), and `build`; key
-routes verified via `npm start` + curl.
+Every increment passes `typecheck`, `lint`, `test` (**112**), and `build`; key
+routes verified via `npm start` + curl, and a 19+ check e2e smoke
+(`scripts/smoke.mjs`) runs in CI (now also asserting the security headers).
 
 ### Branches & PR
 
@@ -90,21 +91,35 @@ No operational claims are made for unbuilt systems — keep it that way.
 
 ## Next autonomous execution queue (non-blocked first)
 
-Done: self-hosted fonts; Travel DNA + Pathfinder + dynamic itinerary; postmortem
-template; safety/visa/culture + conditions/city-energy/memory engines; analytics
-pagination; trip planner UI; **per-visitor A/B** (jid cookie + client CTA +
-`/api/affiliate/link`, without forcing pages dynamic); reusable provider
-contract harness; engine-roster doc parity.
+Done (session 1): self-hosted fonts; Travel DNA + Pathfinder + dynamic itinerary;
+postmortem template; safety/visa/culture + conditions/city-energy/memory engines;
+analytics pagination; trip planner UI; **per-visitor A/B** (jid cookie + client
+CTA + `/api/affiliate/link`, without forcing pages dynamic); reusable provider
+contract harness; engine-roster doc parity; Report-Only CSP + report endpoint;
+e2e smoke + CI step.
 
-**No meaningful non-blocked work remains.** What's left is genuinely blocked:
+Done (session 2 — this branch): Travel Readiness aggregate extended to 5
+sub-engines (added safety + conditions; weights `travel-confidence-v2`);
+`/discover` now exposes the Pathfinder **avoid** arm + a live light badge per
+result; **CSP phase 2** — structural directives (`base-uri`, `object-src`,
+`frame-ancestors`, `form-action`) promoted to **enforcing** while script/style/
+content stay Report-Only; smoke asserts the CSP headers; `/plan` shows the
+fatigue budget + a per-day load meter; `/saved` gained inline remove + a count;
+`/api/csp-report` unit-tested.
+
+**Remaining non-blocked work is genuinely thin** — what's left is blocked:
 - **Hosted Supabase** (staging/prod) — real secrets.
-- **Live weather feed** — Open-Meteo egress blocked; `WeatherProvider` +
-  `comfortScore` ready.
+- **Live weather feed** — Open-Meteo egress still 403 from the allowlist
+  (re-verified); `WeatherProvider` + `comfortScore` ready to receive it.
 - **AI planning engine** — needs an LLM/provider (network).
 - **Branch protection** — repo-admin access.
+- **Full nonce-based CSP enforcement** — needs a real-browser hydration check
+  (Next.js injects inline bootstrap scripts/styles) and would force dynamic
+  rendering; flip the script/style/default directives from Report-Only to
+  enforcing once `/api/metrics` shows `csp_violation` at zero after browsing.
 
-Optional marginal polish if desired later: a ranked Pathfinder discovery view in
-the UI (overlaps the existing mood filter); DB-side group-by analytics at scale.
+Optional marginal polish: DB-side group-by analytics at scale; extracting the
+home search/filter into a pure tested helper.
 
 ## Blocked queue (resume when access is granted)
 
