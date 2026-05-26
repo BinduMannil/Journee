@@ -16,8 +16,9 @@ patterns the rest of the platform will build on.
 | App scaffold (Next.js 15 App Router, TS strict, Tailwind v4) | ✅ Built & building |
 | Cinematic design system (Playfair Display + Montserrat, gold/warm palette) | ✅ Built |
 | Config-driven content (no hardcoding in components) | ✅ Pattern in place |
-| Provider adapter + registry + fallback | ✅ Pattern in place (local seed provider) |
-| Supabase / Postgres / RLS data platform | 🔜 Roadmap (see ADR-002) |
+| Config validation (zod env boundary) + feature flags | ✅ Built |
+| Provider adapter + registry + fallback | ✅ Built (seed + Supabase adapters) |
+| Supabase destinations adapter + RLS migration | ✅ Adapter + migration scaffold (flag-gated) |
 | Intelligence engines (destination, events, weather, safety, etc.) | 🔜 Roadmap (see `/docs`) |
 
 Everything marked 🔜 is **roadmap, not implemented**. The docs are written to

@@ -31,21 +31,28 @@ circuit-breaking, and structured logging/metrics belong here.
 
 | Provider | Capability | Priority | Availability |
 | --- | --- | --- | --- |
+| `supabase-destinations` (`destinations.supabase.ts`) | destinations | 10 | flag `supabase-destinations` ON **and** Supabase configured |
 | `local-seed` (`destinations.local.ts`) | destinations | 100 (lowest) | always |
 
-The seed provider is an always-available fallback so the product renders even
-with nothing else configured.
+Adapters self-register via `src/lib/providers/register.ts`. The seed provider is
+an always-available fallback so the product renders even with nothing else
+configured. The Supabase provider is preferred (lower priority number) but only
+becomes available when both its feature flag is on and connection config is
+present — otherwise routing falls through to the seed with no caller changes.
 
-## Adding a provider (e.g. Supabase destinations)
+## Adding a provider (worked example: the Supabase adapter)
 
-1. Implement `DestinationProvider` in `destinations.supabase.ts`.
-2. Make `isAvailable()` return false when env/config is missing (so it cleanly
-   yields to the seed fallback).
-3. Register with a lower `priority` number than the seed (e.g. `10`).
-4. Import it where the registry is initialized.
+This is exactly how `destinations.supabase.ts` was built:
+
+1. Implement `DestinationProvider`.
+2. Gate `isAvailable()` on configuration (and, here, a feature flag) so it
+   cleanly yields to the fallback when not ready.
+3. Use a lower `priority` number than the fallback (`10` vs `100`).
+4. Add the import to `register.ts`.
 
 No caller changes — `resolve("destinations")` now prefers Supabase and falls
-back to seed automatically.
+back to seed automatically. The backing schema + RLS live in
+`supabase/migrations/0001_destinations.sql`.
 
 ## Failure behavior
 

@@ -3,8 +3,8 @@ import { DestinationCard } from "@/components/DestinationCard";
 import { site } from "@/lib/config/site";
 import { heroQuotes, type Destination } from "@/content/destinations";
 import { resolve } from "@/lib/providers/registry";
-// Importing the local provider registers it with the registry as a fallback.
-import "@/lib/providers/destinations.local";
+// Importing the registration module wires up all provider adapters.
+import "@/lib/providers/register";
 
 export default async function Home() {
   // Resolved via the provider registry, not imported directly — this is the
