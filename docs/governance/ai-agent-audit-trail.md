@@ -258,3 +258,21 @@ validation evidence so changes are reviewable without tribal knowledge._
 - **Assumptions / safety:** no secrets, no network; safety/conditions inputs are
   deterministic sample contexts and remain explicitly labeled "sample" in the UI
   until live feeds are wired. Weight change is versioned (v1→v2) for traceability.
+
+---
+
+## 2026-05-26 — Discovery UX: surface the Pathfinder `avoid` arm
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Continue the non-blocked discovery-UX queue. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1.
+- **Changes:** `/discover` now surfaces both arms of the pure `pathfind` query —
+  a single "Chasing" vibe plus multi-select "Not feeling" moods to downrank
+  (mutually exclusive per mood). Reuses the existing tested engine; no new
+  engine logic. Updated page copy to match.
+- **Validation:** typecheck, lint, `npm test` (108 passing), build all green;
+  `/discover` runtime-verified via `npm start` + curl — 200, both selector
+  groups present, all destinations ranked with explainable reasons in the
+  server-rendered markup (ranking computed in render, not post-hydration).
+- **Assumptions / safety:** no secrets, no network; the `avoid` branch is already
+  covered by `test/intelligence.discovery.test.ts`.

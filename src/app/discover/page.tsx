@@ -26,8 +26,9 @@ export default async function DiscoverPage() {
         Discover by vibe
       </h1>
       <p className="mb-12 max-w-2xl text-sand/70">
-        Pick the mood you&rsquo;re chasing. Pathfinder ranks destinations toward
-        it and tells you why.
+        Pick the mood you&rsquo;re chasing and any you&rsquo;d rather avoid.
+        Pathfinder ranks destinations toward the vibe, away from the rest, and
+        tells you why.
       </p>
       <DiscoverClient destinations={destinations} />
     </main>
