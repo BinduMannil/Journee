@@ -188,3 +188,19 @@ validation evidence so changes are reviewable without tribal knowledge._
   pathfinder + fonts runtime-verified via `npm start` + curl.
 - **Blocked (marked, not faked):** hosted Supabase (secrets), live weather feed
   (egress allowlist), branch protection (repo-admin).
+
+---
+
+## 2026-05-26 — Completing the non-blocked queue
+
+- **Agent / session:** Claude Code (web), session `01Y1CrecRRnhezjW717nDEXS`.
+- **Scope:** Finish all remaining non-blocked queue items autonomously.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1.
+- **Changes:** per-visitor A/B (jid cookie middleware + `/api/affiliate/link` +
+  client `AffiliateCta`, host pages stay static); completed the engine roster
+  (conditions, city-energy, memory) — ~14 engines on the shared core; reusable
+  provider contract harness; intelligence-doc roster parity.
+- **Validation:** typecheck, lint, `npm test` (98 passing), build all green;
+  A/B cookie + link endpoint runtime-verified.
+- **Result:** no meaningful non-blocked work remains; the rest is blocked
+  (hosted Supabase / weather egress / AI LLM / branch protection).

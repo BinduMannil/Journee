@@ -8,8 +8,10 @@ without context loss._
 Greenfield repo bootstrapped into a **runnable, runtime-verified** platform with
 a complete affiliate vertical, live (network-free) intelligence signals, a
 working browsable UI (incl. a trip planner), an observability + control-plane
-layer, and operational runbooks. Every increment passes `typecheck`, `lint`,
-`test` (**94**), and `build`; key routes verified via `npm start` + curl.
+layer, and operational runbooks. ~14 of the product-vision intelligence engines
+are scaffolded on one explainable, versioned scoring core. Every increment
+passes `typecheck`, `lint`, `test` (**98**), and `build`; key routes verified
+via `npm start` + curl.
 
 ### Branches & PR
 
@@ -86,22 +88,21 @@ No operational claims are made for unbuilt systems — keep it that way.
 
 ## Next autonomous execution queue (non-blocked first)
 
-Done since last handoff: self-hosted fonts; Travel DNA + Pathfinder + dynamic
-itinerary; postmortem template; safety/visa/culture engines; analytics
-pagination; trip planner UI.
+Done: self-hosted fonts; Travel DNA + Pathfinder + dynamic itinerary; postmortem
+template; safety/visa/culture + conditions/city-energy/memory engines; analytics
+pagination; trip planner UI; **per-visitor A/B** (jid cookie + client CTA +
+`/api/affiliate/link`, without forcing pages dynamic); reusable provider
+contract harness; engine-roster doc parity.
 
-Remaining non-blocked work is now either **formulaic** (more identical engine
-scaffolds: real-time conditions, city-energy, memory/reflection) or **marginal/
-tradeoff-laden**:
-1. **Wire a stable visitor key** (middleware cookie) into `AffiliateCta` for
-   per-visitor A/B — deferred: it forces affected routes to dynamic rendering;
-   weigh against the static cinematic landing before doing it.
-2. **AI planning engine** — needs an LLM/provider (network) → effectively
-   blocked in this environment.
-3. **Generalize the provider contract harness** into a reusable helper (low
-   value).
-4. **Surface Pathfinder/Travel-DNA** as a ranked discovery view (overlaps the
-   existing mood filter).
+**No meaningful non-blocked work remains.** What's left is genuinely blocked:
+- **Hosted Supabase** (staging/prod) — real secrets.
+- **Live weather feed** — Open-Meteo egress blocked; `WeatherProvider` +
+  `comfortScore` ready.
+- **AI planning engine** — needs an LLM/provider (network).
+- **Branch protection** — repo-admin access.
+
+Optional marginal polish if desired later: a ranked Pathfinder discovery view in
+the UI (overlaps the existing mood filter); DB-side group-by analytics at scale.
 
 ## Blocked queue (resume when access is granted)
 
