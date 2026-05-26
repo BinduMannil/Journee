@@ -5,6 +5,7 @@ import "@fontsource-variable/playfair-display";
 import "@fontsource-variable/montserrat";
 import { site } from "@/lib/config/site";
 import { getSiteUrl } from "@/lib/config/env";
+import { Nav } from "@/components/Nav";
 import "./globals.css";
 
 const title = `${site.name} — ${site.tagline}`;
@@ -32,7 +33,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Nav />
+        {children}
+      </body>
     </html>
   );
 }
