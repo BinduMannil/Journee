@@ -73,26 +73,48 @@ export function TripBuilder({ destinations }: { destinations: readonly Plannable
       </div>
 
       <div>
-        <p className="mb-4 text-sm uppercase tracking-[0.3em] text-gold">Your plan</p>
+        <div className="mb-4 flex items-baseline justify-between">
+          <p className="text-sm uppercase tracking-[0.3em] text-gold">Your plan</p>
+          {itinerary.days.length > 0 && (
+            <p className="text-xs uppercase tracking-[0.2em] text-stone">
+              {itinerary.days.length}{" "}
+              {itinerary.days.length === 1 ? "day" : "days"} · {itinerary.pacing} ·
+              budget {itinerary.budget}/day
+            </p>
+          )}
+        </div>
         {itinerary.days.length === 0 ? (
           <p className="text-sand/60">Select destinations to build a paced itinerary.</p>
         ) : (
           <ol className="space-y-4">
-            {itinerary.days.map((day, i) => (
-              <li key={i} className="rounded-2xl border border-sand/10 p-5">
-                <div className="mb-2 flex items-baseline justify-between">
-                  <span className="font-display text-2xl text-sand">Day {i + 1}</span>
-                  <span className="text-xs uppercase tracking-[0.2em] text-stone">
-                    load {day.load}
-                  </span>
-                </div>
-                <ul className="text-sand/80">
-                  {day.items.map((it) => (
-                    <li key={it.id}>{it.title}</li>
-                  ))}
-                </ul>
-              </li>
-            ))}
+            {itinerary.days.map((day, i) => {
+              const fill = Math.min(100, Math.round((day.load / itinerary.budget) * 100));
+              return (
+                <li key={i} className="rounded-2xl border border-sand/10 p-5">
+                  <div className="mb-2 flex items-baseline justify-between">
+                    <span className="font-display text-2xl text-sand">Day {i + 1}</span>
+                    <span className="text-xs uppercase tracking-[0.2em] text-stone">
+                      load {day.load} / {itinerary.budget}
+                    </span>
+                  </div>
+                  <div
+                    className="mb-3 h-1 overflow-hidden rounded-full bg-sand/10"
+                    role="meter"
+                    aria-valuenow={day.load}
+                    aria-valuemin={0}
+                    aria-valuemax={itinerary.budget}
+                    aria-label={`Day ${i + 1} intensity load`}
+                  >
+                    <div className="h-full bg-gold" style={{ width: `${fill}%` }} />
+                  </div>
+                  <ul className="text-sand/80">
+                    {day.items.map((it) => (
+                      <li key={it.id}>{it.title}</li>
+                    ))}
+                  </ul>
+                </li>
+              );
+            })}
           </ol>
         )}
       </div>

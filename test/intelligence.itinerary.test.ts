@@ -39,6 +39,18 @@ test("an oversized single item gets its own day", () => {
   assert.equal(it.days[0]?.items.length, 1);
 });
 
+test("reports the per-day budget; denser pacing has a larger budget", () => {
+  const relaxed = buildItinerary(items, "relaxed");
+  const balanced = buildItinerary(items, "balanced");
+  const packed = buildItinerary(items, "packed");
+  assert.equal(relaxed.budget, 1.0);
+  assert.ok(packed.budget > balanced.budget && balanced.budget > relaxed.budget);
+  // every multi-item day stays within the reported budget
+  for (const day of packed.days) {
+    if (day.items.length > 1) assert.ok(day.load <= packed.budget + 1e-9);
+  }
+});
+
 test("empty input yields no days; output is deterministic", () => {
   assert.deepEqual(buildItinerary([], "balanced").days, []);
   assert.deepEqual(buildItinerary(items, "packed"), buildItinerary(items, "packed"));

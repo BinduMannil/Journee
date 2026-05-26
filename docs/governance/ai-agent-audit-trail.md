@@ -315,3 +315,25 @@ validation evidence so changes are reviewable without tribal knowledge._
   passes. (The smoke runner self-manages its server via a process-group kill,
   which is correct in CI's isolated session but kills a shared shell locally —
   so it's exercised in CI rather than the dev shell.)
+
+---
+
+## 2026-05-26 — Trip planner: surface the fatigue budget + per-day load meter
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Deepen the `/plan` UX so the fatigue-aware pacing is legible.
+  Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green).
+- **Changes:** `buildItinerary` now returns its per-day `budget` (so the UI reads
+  the config instead of duplicating thresholds). `TripBuilder` shows a trip
+  summary (days · pacing · budget/day) and a per-day intensity load meter
+  (`role="meter"` with aria bounds) so users see *why* days split. +1 test
+  asserting the budget is reported and increases with denser pacing.
+- **Validation:** typecheck, lint, `npm test` (**109** passing), build all green;
+  `/plan` runtime-verified via `npm start` + curl (200; controls + empty-state
+  render server-side; enforced CSP header confirmed still present). The load
+  meter is client-rendered after selection, so its math is covered by the
+  itinerary unit tests.
+- **Note (process):** earlier local server checks were flaky because a
+  `pkill -f next-server` pattern matched the dev shell's own command line; fixed
+  by starting on a dedicated port without the self-matching pkill.

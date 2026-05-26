@@ -98,7 +98,9 @@ same `TravelDNA` shape without changing consumers.
 
 **Dynamic itinerary (scaffolded):** `itinerary.ts` packs experiences into days
 under a pacing-based intensity budget (relaxed/balanced/packed) for fatigue-aware
-experience pacing — pure + unit-tested.
+experience pacing — pure + unit-tested. The result reports its per-day `budget`
+so consumers (e.g. the `/plan` load meter) can show how full each day is without
+duplicating the config.
 
 **Environmental (scaffolded):** `comfort.ts` maps temperature/humidity/wind/AQI
 to a 0..1 comfort signal (weather-feed ready).

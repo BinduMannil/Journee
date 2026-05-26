@@ -24,6 +24,9 @@ export interface ItineraryDay {
 
 export interface Itinerary {
   readonly pacing: Pacing;
+  /** Per-day intensity budget for the chosen pacing (so consumers can show how
+   * full each day is without duplicating the config). */
+  readonly budget: number;
   readonly days: readonly ItineraryDay[];
 }
 
@@ -60,6 +63,7 @@ export function buildItinerary(
 
   return {
     pacing,
+    budget,
     days: days.map((d) => ({ items: d.items, load: Math.round(d.load * 100) / 100 })),
   };
 }
