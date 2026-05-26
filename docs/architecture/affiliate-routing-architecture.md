@@ -97,7 +97,8 @@ per-campaign metrics (clicks, conversions, conversion rate, revenue in minor
 units by currency) via the pure `aggregateCampaignMetrics`
 (`src/lib/affiliate/analytics.ts`). Optional `?since=&until=` (ISO) bounds the
 window — validated by the pure `parseTimeWindow` (400 on bad input). 503 when
-unconfigured. Reads all rows in the window; row pagination remains roadmap.
+unconfigured. Supports `?limit=&offset=` (top campaigns by clicks, clamped).
+Aggregation is in-process today; DB-side group-by at scale remains roadmap.
 
 ## Roadmap
 
@@ -108,4 +109,6 @@ unconfigured. Reads all rows in the window; row pagination remains roadmap.
 5. ✅ A/B routing: `AffiliateRequest.experimentKey` splits traffic across
    candidates by inverse-priority weight (deterministic per key) while still
    favoring higher-priority campaigns.
-6. Wire a real session key into `AffiliateCta`; analytics row pagination.
+6. ✅ Analytics pagination (`?limit=&offset=`, top campaigns by clicks).
+7. Wire a real session key into `AffiliateCta`; DB-side group-by aggregation at
+   scale (current endpoint reads rows then aggregates in-process).

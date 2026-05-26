@@ -1,6 +1,8 @@
 import {
   aggregateCampaignMetrics,
   parseTimeWindow,
+  parsePage,
+  paginateMetrics,
   type ClickRowLike,
   type ConversionRowLike,
   type TimeWindow,
@@ -61,5 +63,6 @@ export async function GET(request: Request): Promise<Response> {
     (clicks.data ?? []) as ClickRowLike[],
     (conversions.data ?? []) as ConversionRowLike[],
   );
-  return Response.json({ metrics });
+  const paged = paginateMetrics(metrics, parsePage(new URL(request.url).searchParams));
+  return Response.json(paged);
 }

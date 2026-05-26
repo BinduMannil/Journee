@@ -30,6 +30,22 @@ export function parseTimeWindow(params: URLSearchParams): TimeWindowResult {
   return { ok: true, window: { since, until } };
 }
 
+export interface Page {
+  /** Max rows to return; clamped to [1, 100]. Default 50. */
+  readonly limit: number;
+  /** Rows to skip; clamped to >= 0. Default 0. */
+  readonly offset: number;
+}
+
+/** Parse `limit`/`offset` query params into a clamped page (never throws). */
+export function parsePage(params: URLSearchParams): Page {
+  const rawLimit = Number(params.get("limit"));
+  const rawOffset = Number(params.get("offset"));
+  const limit = Number.isFinite(rawLimit) && rawLimit > 0 ? Math.min(100, Math.floor(rawLimit)) : 50;
+  const offset = Number.isFinite(rawOffset) && rawOffset > 0 ? Math.floor(rawOffset) : 0;
+  return { limit, offset };
+}
+
 export interface ClickRowLike {
   readonly campaign_id: string;
 }
@@ -90,4 +106,27 @@ export function aggregateCampaignMetrics(
         ),
       };
     });
+}
+
+export interface PagedMetrics {
+  readonly total: number;
+  readonly limit: number;
+  readonly offset: number;
+  readonly metrics: readonly CampaignMetrics[];
+}
+
+/** Top campaigns by clicks (tiebreak: campaignId), then a page slice. */
+export function paginateMetrics(
+  metrics: readonly CampaignMetrics[],
+  page: Page,
+): PagedMetrics {
+  const sorted = [...metrics].sort(
+    (a, b) => b.clicks - a.clicks || a.campaignId.localeCompare(b.campaignId),
+  );
+  return {
+    total: sorted.length,
+    limit: page.limit,
+    offset: page.offset,
+    metrics: sorted.slice(page.offset, page.offset + page.limit),
+  };
 }
