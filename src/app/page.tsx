@@ -1,5 +1,5 @@
 import { QuoteRotator } from "@/components/QuoteRotator";
-import { DestinationCard } from "@/components/DestinationCard";
+import { DestinationExplorer } from "@/components/DestinationExplorer";
 import { AffiliateCta } from "@/components/AffiliateCta";
 import { site } from "@/lib/config/site";
 import { heroQuotes, type Destination } from "@/content/destinations";
@@ -54,11 +54,7 @@ export default async function Home() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          {destinations.map((destination) => (
-            <DestinationCard key={destination.id} destination={destination} />
-          ))}
-        </div>
+        <DestinationExplorer destinations={destinations} />
 
         {/* Renders only when an affiliate catalog is configured and a link
             resolves; otherwise nothing is shown (no fabricated links). */}
