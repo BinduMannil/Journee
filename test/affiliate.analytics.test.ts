@@ -1,7 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { aggregateCampaignMetrics } from "../src/lib/affiliate/analytics";
+import {
+  aggregateCampaignMetrics,
+  parseTimeWindow,
+} from "../src/lib/affiliate/analytics";
 import { GET } from "../src/app/api/affiliate/analytics/route";
+
+function analyticsReq(query = ""): Request {
+  return new Request(`http://localhost/api/affiliate/analytics${query}`);
+}
 
 test("aggregates clicks, conversions, rate, and revenue by currency", () => {
   const metrics = aggregateCampaignMetrics(
@@ -45,7 +52,19 @@ test("results are sorted by campaignId for determinism", () => {
   assert.deepEqual(metrics.map((m) => m.campaignId), ["a", "m", "z"]);
 });
 
+test("parseTimeWindow validates ISO bounds", () => {
+  const ok = parseTimeWindow(new URLSearchParams("since=2026-01-01&until=2026-02-01"));
+  assert.equal(ok.ok, true);
+  assert.equal(parseTimeWindow(new URLSearchParams("since=not-a-date")).ok, false);
+  assert.equal(parseTimeWindow(new URLSearchParams()).ok, true);
+});
+
+test("route returns 400 on an invalid time window (before config check)", async () => {
+  const res = await GET(analyticsReq("?since=garbage"));
+  assert.equal(res.status, 400);
+});
+
 test("route returns 503 when analytics is unconfigured", async () => {
-  const res = await GET();
+  const res = await GET(analyticsReq());
   assert.equal(res.status, 503);
 });

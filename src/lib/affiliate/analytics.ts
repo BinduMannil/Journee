@@ -6,6 +6,30 @@
  * this. Revenue stays in minor units, bucketed by currency, to remain
  * currency-agnostic. See docs/architecture/affiliate-routing-architecture.md.
  */
+export interface TimeWindow {
+  /** ISO timestamp lower bound (inclusive). */
+  readonly since?: string;
+  /** ISO timestamp upper bound (inclusive). */
+  readonly until?: string;
+}
+
+export type TimeWindowResult =
+  | { readonly ok: true; readonly window: TimeWindow }
+  | { readonly ok: false; readonly error: string };
+
+/** Validate optional `since`/`until` query params into a time window. */
+export function parseTimeWindow(params: URLSearchParams): TimeWindowResult {
+  const since = params.get("since") ?? undefined;
+  const until = params.get("until") ?? undefined;
+  if (since !== undefined && Number.isNaN(Date.parse(since))) {
+    return { ok: false, error: "invalid_since" };
+  }
+  if (until !== undefined && Number.isNaN(Date.parse(until))) {
+    return { ok: false, error: "invalid_until" };
+  }
+  return { ok: true, window: { since, until } };
+}
+
 export interface ClickRowLike {
   readonly campaign_id: string;
 }

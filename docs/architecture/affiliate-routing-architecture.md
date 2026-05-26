@@ -94,13 +94,15 @@ shells.
 `GET /api/affiliate/analytics` aggregates click/conversion events into
 per-campaign metrics (clicks, conversions, conversion rate, revenue in minor
 units by currency) via the pure `aggregateCampaignMetrics`
-(`src/lib/affiliate/analytics.ts`). 503 when unconfigured. Reads all rows today;
-pagination/time-windowing is a roadmap concern as volume grows.
+(`src/lib/affiliate/analytics.ts`). Optional `?since=&until=` (ISO) bounds the
+window — validated by the pure `parseTimeWindow` (400 on bad input). 503 when
+unconfigured. Reads all rows in the window; row pagination remains roadmap.
 
 ## Roadmap
 
 1. ✅ Catalog provider that loads `AffiliateCatalog` from Supabase.
 2. ✅ Click + conversion ingestion endpoints (server-only writes).
 3. ✅ UI surfacing of resolved links (gated `AffiliateCta`, safe rendering).
-4. ✅ Revenue analytics (per-campaign aggregation endpoint).
-5. A/B assignment (via priority/region rules) + time-windowed analytics.
+4. ✅ Revenue analytics (per-campaign aggregation) + time-windowed queries.
+5. A/B assignment seam exists (`src/lib/experiments`); wiring it into priority
+   rules + row pagination for analytics remain.
