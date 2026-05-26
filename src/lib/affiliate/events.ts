@@ -36,3 +36,37 @@ export function buildClickRow(
     occurred_at: now.toISOString(),
   };
 }
+
+export const conversionEventSchema = z.object({
+  campaignId: z.string().min(1),
+  clickId: z.string().min(1).optional(),
+  /** Money in minor units (e.g. cents) to stay currency/provider agnostic. */
+  amountMinor: z.number().int().nonnegative().optional(),
+  /** ISO 4217 currency code. */
+  currency: z.string().length(3).optional(),
+});
+
+export type ConversionEventInput = z.infer<typeof conversionEventSchema>;
+
+export interface ConversionEventRow {
+  readonly id: string;
+  readonly click_id: string | null;
+  readonly campaign_id: string;
+  readonly amount_minor: number | null;
+  readonly currency: string | null;
+  readonly occurred_at: string;
+}
+
+export function buildConversionRow(
+  input: ConversionEventInput,
+  now: Date = new Date(),
+): ConversionEventRow {
+  return {
+    id: crypto.randomUUID(),
+    click_id: input.clickId ?? null,
+    campaign_id: input.campaignId,
+    amount_minor: input.amountMinor ?? null,
+    currency: input.currency ?? null,
+    occurred_at: now.toISOString(),
+  };
+}

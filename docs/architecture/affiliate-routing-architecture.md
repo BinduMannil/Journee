@@ -82,15 +82,16 @@ gated on the `affiliate-catalog` flag + Supabase config. Callers obtain it via
 
 ## Event ingestion
 
-`POST /api/affiliate/click` validates the body (`src/lib/affiliate/events.ts`)
-and inserts via the privileged **service-role** client
-(`getSupabaseServiceClient`, server-only). When ingestion is unconfigured it
-returns **503** rather than silently dropping data. Validation + row building
-are pure and unit-tested; the route is a thin shell.
+`POST /api/affiliate/click` and `POST /api/affiliate/conversion` validate the
+body (`src/lib/affiliate/events.ts`) and insert via the privileged
+**service-role** client (`getSupabaseServiceClient`, server-only). When
+ingestion is unconfigured they return **503** rather than silently dropping
+data. Validation + row building are pure and unit-tested; the routes are thin
+shells.
 
 ## Roadmap
 
 1. ✅ Catalog provider that loads `AffiliateCatalog` from Supabase.
-2. ✅ Click ingestion endpoint (server-only write). Conversion endpoint next.
+2. ✅ Click + conversion ingestion endpoints (server-only writes).
 3. ✅ UI surfacing of resolved links (gated `AffiliateCta`, safe rendering).
-4. Conversion ingestion + revenue analytics + A/B assignment.
+4. Revenue analytics (aggregations over event tables) + A/B assignment.
