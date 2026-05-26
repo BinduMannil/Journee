@@ -308,3 +308,10 @@ validation evidence so changes are reviewable without tribal knowledge._
   (Next.js injects inline bootstrap scripts/styles) — left as the next
   deliberate step; the `csp_violation` counter on `/api/metrics` gives the
   zero-violation signal an operator needs to flip it.
+- **Follow-up:** added header assertions to `scripts/smoke.mjs` (e2e) so the
+  enforced `Content-Security-Policy` (`frame-ancestors 'none'`) and the
+  `Content-Security-Policy-Report-Only` (`script-src 'self'`) can't silently
+  regress in CI. Verified substrings against a live server; `node --check`
+  passes. (The smoke runner self-manages its server via a process-group kill,
+  which is correct in CI's isolated session but kills a shared shell locally —
+  so it's exercised in CI rather than the dev shell.)

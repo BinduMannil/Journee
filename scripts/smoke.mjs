@@ -30,6 +30,13 @@ const checks = [
   ["/opengraph-image", 200],
 ];
 
+// [path, header, substring] — assert a response header contains an expected
+// token. Guards the enforced security headers against silent regression.
+const headerChecks = [
+  ["/", "content-security-policy", "frame-ancestors 'none'"],
+  ["/", "content-security-policy-report-only", "script-src 'self'"],
+];
+
 // detached so we can kill the whole process group (npm -> next-server child).
 const server = spawn("npm", ["start"], {
   stdio: "ignore",
@@ -79,7 +86,22 @@ try {
     if (!ok) failed++;
     console.log(`${ok ? "ok  " : "FAIL"} ${path} -> ${status} (expected ${expected})`);
   }
-  console.log(`\n${checks.length - failed}/${checks.length} checks passed`);
+  for (const [path, header, substring] of headerChecks) {
+    let value = "";
+    try {
+      const res = await fetch(`${base}${path}`, { redirect: "manual" });
+      value = res.headers.get(header) ?? "";
+    } catch {
+      value = "";
+    }
+    const ok = value.includes(substring);
+    if (!ok) failed++;
+    console.log(
+      `${ok ? "ok  " : "FAIL"} ${path} [${header}] contains "${substring}" (got "${value}")`,
+    );
+  }
+  const total = checks.length + headerChecks.length;
+  console.log(`\n${total - failed}/${total} checks passed`);
   cleanup(failed === 0 ? 0 : 1);
 } catch (e) {
   console.error(String(e));
