@@ -353,3 +353,18 @@ validation evidence so changes are reviewable without tribal knowledge._
   `/saved` runtime-verified via `npm start` + curl (200; empty-state renders
   server-side). Remove affordance is client-side over the tested set logic
   (`test/saved.collection.test.ts`).
+
+---
+
+## 2026-05-26 — Test coverage: CSP report endpoint
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Cover the previously-untested `/api/csp-report` handler on the
+  security observability path. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green).
+- **Changes:** `test/csp.report.test.ts` asserts the endpoint extracts both the
+  legacy `{"csp-report": …}` wrapper and the modern `effectiveDirective`/
+  `blockedURL` report body (incrementing `csp_violation` and returning 204), and
+  fails safe on a malformed body (no count, still 204). No source change.
+- **Validation:** typecheck, lint, `npm test` (**112** passing, +3), build all
+  green.
