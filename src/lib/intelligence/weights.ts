@@ -80,13 +80,19 @@ export const memoryWeights: ScoringWeights = {
   weights: { emotional_peak: 2, novelty: 1.5, connection: 1.5, sensory: 1 },
 };
 
-/** Weights for the Travel Confidence aggregate; keys are sub-engine ids. */
+/**
+ * Weights for the Travel Confidence aggregate; keys are sub-engine ids.
+ * v2 brings in safety (weighted as heavily as disruption — both gate whether a
+ * trip is advisable) and real-time conditions (operational smoothness).
+ */
 export const travelConfidenceWeights: ScoringWeights = {
-  version: "travel-confidence-v1",
+  version: "travel-confidence-v2",
   defaultWeight: 1,
   weights: {
     disruption: 3,
+    safety: 3,
     destination: 2,
+    conditions: 2,
     events: 1,
   },
 };

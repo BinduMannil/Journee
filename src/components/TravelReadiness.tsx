@@ -11,10 +11,21 @@ import {
   eventWeights,
   disruptionEngine,
   disruptionWeights,
+  safetyEngine,
+  safetyWeights,
+  SAFETY_SIGNAL_KEYS,
+  conditionsEngine,
+  conditionsWeights,
+  CONDITIONS_SIGNAL_KEYS,
   travelConfidenceWeights,
   type IntelligenceScore,
 } from "@/lib/intelligence";
-import { mockEventContext, mockDisruptionContext } from "@/lib/intelligence/mock";
+import {
+  mockEventContext,
+  mockDisruptionContext,
+  mockSafetyContext,
+  mockConditionsContext,
+} from "@/lib/intelligence/mock";
 import { solarAltitudeDeg, goldenHourProximity } from "@/lib/intelligence/solar";
 
 interface Computed {
@@ -25,8 +36,9 @@ interface Computed {
 /**
  * Gated preview (flag `mock-intelligence`) that runs the engines through the
  * Travel Confidence aggregate. The destination/light signal is REAL (solar);
- * events + disruption use clearly-labeled SAMPLE data, so this is honestly
- * marked "preview" — it demonstrates the explainable aggregate, not live intel.
+ * events, disruption, safety + conditions use clearly-labeled SAMPLE data, so
+ * this is honestly marked "preview" — it demonstrates the explainable aggregate
+ * across the engine roster, not live intel.
  */
 export function TravelReadiness({
   destinationId,
@@ -47,15 +59,30 @@ export function TravelReadiness({
         destinationWeights,
         [...DESTINATION_SIGNAL_KEYS],
       );
-      const events = score(eventEngine.toSignals(mockEventContext(destinationId)), eventWeights);
+      const events = score(
+        eventEngine.toSignals(mockEventContext(destinationId)),
+        eventWeights,
+      );
       const disruption = score(
         disruptionEngine.toSignals(mockDisruptionContext(destinationId)),
         disruptionWeights,
+      );
+      const safety = score(
+        safetyEngine.toSignals(mockSafetyContext(destinationId)),
+        safetyWeights,
+        [...SAFETY_SIGNAL_KEYS],
+      );
+      const conditions = score(
+        conditionsEngine.toSignals(mockConditionsContext(destinationId)),
+        conditionsWeights,
+        [...CONDITIONS_SIGNAL_KEYS],
       );
       const parts = [
         { key: "destination", result: destination },
         { key: "events", result: events },
         { key: "disruption", result: disruption },
+        { key: "safety", result: safety },
+        { key: "conditions", result: conditions },
       ];
       setComputed({ overall: aggregateTravelConfidence(parts, travelConfidenceWeights), parts });
     };
@@ -91,8 +118,8 @@ export function TravelReadiness({
         ))}
       </ul>
       <p className="mt-4 text-xs text-sand/50">
-        Light is real (solar position); events &amp; disruption are sample data
-        until live feeds are wired.
+        Light is real (solar position); events, disruption, safety &amp;
+        conditions are sample data until live feeds are wired.
       </p>
     </div>
   );

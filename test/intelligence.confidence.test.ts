@@ -43,5 +43,18 @@ test("reports the aggregate weights version", () => {
     [{ key: "disruption", result: s(50, 1) }],
     travelConfidenceWeights,
   );
-  assert.equal(agg.weightsVersion, "travel-confidence-v1");
+  assert.equal(agg.weightsVersion, "travel-confidence-v2");
+});
+
+test("safety is weighted as heavily as disruption in the aggregate", () => {
+  // safety low (0), destination high (100); safety weight 3 vs destination 2.
+  const agg = aggregateTravelConfidence(
+    [
+      { key: "safety", result: s(0, 1) },
+      { key: "destination", result: s(100, 1) },
+    ],
+    travelConfidenceWeights,
+  );
+  // (0*3 + 1*2) / (3+2) = 0.4 -> 40
+  assert.equal(agg.score, 40);
 });

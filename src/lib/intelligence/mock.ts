@@ -8,6 +8,8 @@
  */
 import type { EventContext } from "./engines/events";
 import type { DisruptionContext } from "./engines/disruption";
+import type { SafetyContext } from "./engines/safety";
+import type { ConditionsContext } from "./engines/conditions";
 
 /** Stable 0..1 pseudo-value from a seed + salt (FNV-1a based). */
 function unit(seed: string, salt: number): number {
@@ -35,5 +37,23 @@ export function mockDisruptionContext(seed: string): DisruptionContext {
     transportReliability: unit(seed, 7),
     hazardSafety: unit(seed, 8),
     weatherSeverityInverse: unit(seed, 9),
+  };
+}
+
+export function mockSafetyContext(seed: string): SafetyContext {
+  return {
+    scamSafety: unit(seed, 10),
+    crowdSafety: unit(seed, 11),
+    emergencyReadiness: unit(seed, 12),
+    healthSafety: unit(seed, 13),
+  };
+}
+
+export function mockConditionsContext(seed: string): ConditionsContext {
+  return {
+    airportFlow: unit(seed, 14),
+    transitFlow: unit(seed, 15),
+    accessOpen: unit(seed, 16),
+    surgeComfort: unit(seed, 17),
   };
 }

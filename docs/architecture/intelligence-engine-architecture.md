@@ -57,6 +57,12 @@ versioned weights; live data feeds remain roadmap (mock providers stand in).
 weights)` combines sub-engine scores via the same core (each sub-score is a
 signal), and sets overall `confidence` to the mean of the inputs' confidences —
 so a confident aggregate requires confident inputs, not just their presence.
+The current weighting (`travel-confidence-v2`) spans five sub-engines —
+disruption and safety weighted most heavily (both gate whether travel is
+advisable), then destination and real-time conditions, then events. The gated
+`TravelReadiness` preview surfaces this aggregate; its light signal is real
+(solar), while events/disruption/safety/conditions use clearly-labeled sample
+contexts (`mock.ts`) until live feeds are wired.
 
 Each maps its domain input to signals. The data that *populates* those inputs
 (live weather APIs, event/holiday calendars, government advisories) is roadmap.

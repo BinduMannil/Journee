@@ -234,3 +234,27 @@ validation evidence so changes are reviewable without tribal knowledge._
   status page.
 - **Validation:** typecheck, lint, `npm test` (101 passing), build all green;
   headers/OG/robots runtime-verified; readiness panel verified off-by-default.
+
+---
+
+## 2026-05-26 — Deepen Travel Readiness aggregate (safety + conditions)
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Continue the non-blocked queue — add safety/conditions to the
+  Travel Readiness preview. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green at start).
+- **Changes:** extended the Travel Confidence aggregate from 3 to 5 sub-engines
+  by surfacing Safety & Risk and Real-Time Conditions in the gated
+  `TravelReadiness` preview; bumped `travelConfidenceWeights` to
+  `travel-confidence-v2` (safety weighted with disruption; conditions with
+  destination); added deterministic `mockSafetyContext`/`mockConditionsContext`
+  (clearly-labeled sample data, no network); updated honesty labels in the
+  component; refreshed the intelligence-engine architecture doc.
+- **Validation:** typecheck, lint, `npm test` (**108** passing, +3), and
+  `npm run build` all green; key routes (home/detail/unknown-404/health)
+  runtime-verified via `npm start` + curl (200/200/404/200). The readiness
+  panel is client-computed (renders after hydration), so its aggregate output
+  is covered by unit tests rather than curl.
+- **Assumptions / safety:** no secrets, no network; safety/conditions inputs are
+  deterministic sample contexts and remain explicitly labeled "sample" in the UI
+  until live feeds are wired. Weight change is versioned (v1→v2) for traceability.
