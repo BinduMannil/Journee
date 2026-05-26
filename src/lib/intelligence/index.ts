@@ -51,8 +51,14 @@ export {
 export { safetyEngine, SAFETY_SIGNAL_KEYS, type SafetyContext } from "./engines/safety";
 export { visaEngine, VISA_SIGNAL_KEYS, type VisaContext } from "./engines/visa";
 export { cultureEngine, CULTURE_SIGNAL_KEYS, type CultureContext } from "./engines/culture";
+export { conditionsEngine, CONDITIONS_SIGNAL_KEYS, type ConditionsContext } from "./engines/conditions";
+export { cityEnergyEngine, CITY_ENERGY_SIGNAL_KEYS, type CityEnergyContext } from "./engines/city-energy";
+export { memoryEngine, MEMORY_SIGNAL_KEYS, type MemoryContext } from "./engines/memory";
 export {
   safetyWeights,
   visaWeights,
   cultureWeights,
+  conditionsWeights,
+  cityEnergyWeights,
+  memoryWeights,
 } from "./weights";

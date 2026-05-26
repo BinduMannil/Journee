@@ -62,6 +62,24 @@ export const cultureWeights: ScoringWeights = {
   weights: { etiquette: 1.5, dress: 1, language: 1.5, photography: 1 },
 };
 
+export const conditionsWeights: ScoringWeights = {
+  version: "conditions-v1",
+  defaultWeight: 1,
+  weights: { airport: 2, transit: 1.5, access: 2, surge: 1.5 },
+};
+
+export const cityEnergyWeights: ScoringWeights = {
+  version: "city-energy-v1",
+  defaultWeight: 1,
+  weights: { calmness: 1, festivity: 1, nightlife: 1, local_density: 1 },
+};
+
+export const memoryWeights: ScoringWeights = {
+  version: "memory-v1",
+  defaultWeight: 1,
+  weights: { emotional_peak: 2, novelty: 1.5, connection: 1.5, sensory: 1 },
+};
+
 /** Weights for the Travel Confidence aggregate; keys are sub-engine ids. */
 export const travelConfidenceWeights: ScoringWeights = {
   version: "travel-confidence-v1",
