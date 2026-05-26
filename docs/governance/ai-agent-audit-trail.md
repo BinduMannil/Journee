@@ -129,3 +129,20 @@ validation evidence so changes are reviewable without tribal knowledge._
 - **Validation:** typecheck, lint, `npm test` (33 passing), build all green.
 - **Assumptions:** unconfigured ingestion returns 503 (honest about data loss)
   rather than accept-and-drop; conversion endpoint deferred as next step.
+
+---
+
+## 2026-05-26 — Affiliate conversion ingestion + revenue analytics
+
+- **Agent / session:** Claude Code (web), session `01Y1CrecRRnhezjW717nDEXS`.
+- **Scope:** Complete the affiliate vertical slice; secret-free.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1.
+- **Changes:** `POST /api/affiliate/conversion` (mirrors click); pure
+  `aggregateCampaignMetrics` + `GET /api/affiliate/analytics` (per-campaign
+  clicks/conversions/rate/revenue-by-currency, 503 when unconfigured). Unit
+  tests for all pure logic + route 503 behavior; doc roadmap updated.
+- **Validation:** typecheck, lint, `npm test` (41 passing), build all green;
+  all affiliate routes present in build output.
+- **Result:** affiliate flow now end-to-end — catalog → resolve → render → CTA
+  → click/conversion ingestion → analytics. Remaining: A/B assignment +
+  time-windowed/paginated analytics.
