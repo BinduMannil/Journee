@@ -8,10 +8,12 @@ without context loss._
 Greenfield repo bootstrapped into a **runnable, runtime-verified** platform with
 a complete affiliate vertical, live (network-free) intelligence signals, a
 working browsable UI (incl. a trip planner), an observability + control-plane
-layer, and operational runbooks. ~14 of the product-vision intelligence engines
-are scaffolded on one explainable, versioned scoring core. Every increment
-passes `typecheck`, `lint`, `test` (**98**), and `build`; key routes verified
-via `npm start` + curl.
+layer, operational runbooks, and a full public surface (`/`, `/discover`,
+`/plan`, `/saved`, `/about`, `/destinations/[id]`, plus JSON/health/metrics/
+affiliate/admin APIs, OG images, manifest, security headers). ~14 product-vision
+intelligence engines are scaffolded on one explainable, versioned scoring core.
+Every increment passes `typecheck`, `lint`, `test` (**101**), and `build`; key
+routes verified via `npm start` + curl.
 
 ### Branches & PR
 

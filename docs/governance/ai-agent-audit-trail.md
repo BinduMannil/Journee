@@ -219,3 +219,18 @@ validation evidence so changes are reviewable without tribal knowledge._
   routes + OG/manifest/security.txt runtime-verified via `npm start` + curl.
 - **Note:** corrects an earlier premature "nothing left" call — substantial
   non-blocked product work remained and was delivered.
+
+---
+
+## 2026-05-26 — Hardening + editorial + readiness batch
+
+- **Agent / session:** Claude Code (web), session `01Y1CrecRRnhezjW717nDEXS`.
+- **Scope:** Continue non-blocked hardening, content, and a11y.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1.
+- **Changes:** baseline security headers (nosniff/frame/referrer/permissions/HSTS)
+  + robots `/api/` disallow; per-destination + brand OG images; editorial
+  description/best-time on detail pages; gated Travel Readiness aggregate
+  preview; accessibility skip link + focus-visible; `/about` honest systems
+  status page.
+- **Validation:** typecheck, lint, `npm test` (101 passing), build all green;
+  headers/OG/robots runtime-verified; readiness panel verified off-by-default.
