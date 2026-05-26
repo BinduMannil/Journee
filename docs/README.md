@@ -12,6 +12,11 @@ This is the entry point for engineering documentation. It is deliberately
   - [`configuration-architecture.md`](architecture/configuration-architecture.md) — config-driven / no-hardcoding approach.
   - [`affiliate-routing-architecture.md`](architecture/affiliate-routing-architecture.md) — data-driven monetization & link routing.
   - [`intelligence-engine-architecture.md`](architecture/intelligence-engine-architecture.md) — shared explainable scoring + engine scaffolds.
+  - [`monitoring-observability-architecture.md`](architecture/monitoring-observability-architecture.md) — logging, metrics, health.
+  - [`service-dependency-map.md`](architecture/service-dependency-map.md) — real dependency register.
+  - [`failure-and-recovery.md`](architecture/failure-and-recovery.md) — failure domains, propagation, recovery (diagrams).
+- **runbooks/** — operational procedures.
+  - [`supabase-local-setup.md`](runbooks/supabase-local-setup.md) · [`incident-response.md`](runbooks/incident-response.md) · [`recovery.md`](runbooks/recovery.md)
 - **decisions/** — Architecture Decision Records (ADRs). One file per significant choice.
 - **governance/** — how we develop: branching, PRs, change management.
 - **security/** — security posture and the path toward SOC 2 readiness.

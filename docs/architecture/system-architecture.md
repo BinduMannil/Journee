@@ -26,8 +26,28 @@ Journee is a cinematic travel-intelligence platform. This document describes the
                 └─────────────────────────────────────────────┘
 ```
 
-Rendering is server-first. Interactive pieces (e.g. `QuoteRotator`) are small,
-explicitly-marked Client Components.
+Rendering is server-first. Interactive pieces (e.g. `QuoteRotator`,
+`LightBadge`, `AtmosphericScore`) are small, explicitly-marked Client Components.
+
+## Request lifecycle
+
+```mermaid
+sequenceDiagram
+  participant B as Browser
+  participant RSC as RSC page (server)
+  participant Reg as Provider registry
+  participant Prov as Adapter (Supabase/seed)
+  B->>RSC: GET /
+  RSC->>Reg: resolve("destinations")
+  Reg->>Prov: isAvailable()? fetch()
+  Prov-->>Reg: data (or throw -> failover -> seed)
+  Reg-->>RSC: data (+ success/failover metric)
+  RSC-->>B: streamed HTML (cinematic shell)
+  B->>B: hydrate client bits (light phase, score, filters)
+```
+
+See [`failure-and-recovery.md`](failure-and-recovery.md) for failover/recovery
+diagrams.
 
 ## Layers
 
