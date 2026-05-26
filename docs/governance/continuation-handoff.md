@@ -45,9 +45,11 @@ No operational claims are made for unbuilt systems — keep it that way.
 
 ## Recommended next priorities (in order)
 
-1. **Connect a Supabase project**: apply `supabase/migrations/0001` & `0002`,
-   set `.env.local`, enable flags `supabase-destinations` / `affiliate-catalog`,
-   verify provider failover end-to-end.
+1. ✅ **Local Supabase enablement + failover verification** — done. Local CLI
+   config + seed + runbook (`docs/runbooks/supabase-local-setup.md`) and an
+   automated end-to-end failover test (`test/providers.failover.test.ts`).
+   Remaining: connect a *hosted* Supabase project for staging/prod (needs real
+   secrets — out of scope for the agent).
 2. **Self-host brand fonts** to remove the build-time Google Fonts dependency
    (see dependency map mitigation).
 3. **Affiliate event ingestion**: server-only write endpoints for click/

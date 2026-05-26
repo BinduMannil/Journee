@@ -46,3 +46,25 @@ validation evidence so changes are reviewable without tribal knowledge._
 - **Human review readiness:** All work is on the feature branch with passing
   checks; ready for PR review against `main`. No secrets committed; no
   destructive or production actions taken.
+
+---
+
+## 2026-05-26 — Resume path: local Supabase enablement + failover verification
+
+- **Agent / session:** Claude Code (web), session `01Y1CrecRRnhezjW717nDEXS`.
+- **Scope:** Make the Supabase-backed providers connectable locally without real
+  secrets, and verify provider failover end-to-end. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green at start; no
+  open review comments).
+- **Changes:** Supabase local CLI config (`supabase/config.toml`), seed data
+  mirroring the in-repo catalog + a sample affiliate catalog (`supabase/seed.sql`),
+  a local-setup + failover-verification runbook (`docs/runbooks/`), and an
+  end-to-end failover test (`test/providers.failover.test.ts`).
+- **Validation:** typecheck, lint, and `npm test` (now 16 passing, incl. 3 new
+  failover/registry tests) green.
+- **Assumptions / safety:** No `.env.local` or secrets committed — only
+  documented placeholders. Migrations are NOT applied to any live DB (no access);
+  the runbook covers applying them locally via `supabase db reset`. Feature flags
+  are documented for local enablement, not enabled in committed config (enabling
+  without config is a no-op due to `isAvailable()` gating — safe either way).
+- **Human review readiness:** Folded into PR #1; ready for review/merge.
