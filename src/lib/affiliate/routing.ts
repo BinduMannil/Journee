@@ -14,6 +14,7 @@ import type {
   AffiliateRequest,
   AffiliateResolution,
 } from "./types";
+import { assignVariant } from "@/lib/experiments/assignment";
 
 function isWindowActive(campaign: AffiliateCampaign, now: Date): boolean {
   if (campaign.startsAt && new Date(campaign.startsAt) > now) return false;
@@ -81,18 +82,30 @@ export function resolveAffiliateLink(
   const linkFor = (campaignId: string) =>
     catalog.links.find((l) => l.campaignId === campaignId && l.enabled) ?? null;
 
-  // Rank eligible campaigns that have a priority rule and an enabled link.
-  let best: { resolution: AffiliateResolution; priority: number } | null = null;
-  for (const campaign of eligible) {
+  // Candidates: eligible campaigns with a priority rule and an enabled link.
+  const candidates = eligible.flatMap((campaign) => {
     const priority = priorityFor(catalog, campaign, request.region);
-    if (priority === null) continue;
     const link = linkFor(campaign.id);
-    if (!link) continue;
-    if (best === null || priority < best.priority) {
-      best = { resolution: { link, campaign, reason: "priority" }, priority };
+    if (priority === null || !link) return [];
+    return [{ campaign, link, priority }];
+  });
+
+  if (candidates.length > 0) {
+    let chosen = candidates.reduce((a, b) => (b.priority < a.priority ? b : a));
+
+    // A/B routing: split traffic across candidates by inverse-priority weight.
+    if (request.experimentKey && candidates.length > 1) {
+      const variants = candidates.map((c) => ({
+        id: c.campaign.id,
+        weight: 1 / Math.max(c.priority, 0.001),
+      }));
+      const winnerId = assignVariant(request.experimentKey, variants);
+      const winner = candidates.find((c) => c.campaign.id === winnerId);
+      if (winner) chosen = winner;
     }
+
+    return { link: chosen.link, campaign: chosen.campaign, reason: "priority" };
   }
-  if (best) return best.resolution;
 
   // Fallback: first fallback rule for the category whose campaign has a link.
   for (const rule of catalog.fallbackRules.filter((r) => r.category === request.category)) {

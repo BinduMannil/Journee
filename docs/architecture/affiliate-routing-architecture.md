@@ -45,6 +45,7 @@ eligible = campaigns where category matches, enabled,
    │
    ├─ has priority rule + enabled link? → pick lowest priority   (reason: "priority")
    │      (region-specific priority preferred over global)
+   │      (if experimentKey set: weighted A/B split by inverse priority)
    │
    └─ else → first category fallback rule with an enabled link    (reason: "fallback")
    │
@@ -104,5 +105,7 @@ unconfigured. Reads all rows in the window; row pagination remains roadmap.
 2. ✅ Click + conversion ingestion endpoints (server-only writes).
 3. ✅ UI surfacing of resolved links (gated `AffiliateCta`, safe rendering).
 4. ✅ Revenue analytics (per-campaign aggregation) + time-windowed queries.
-5. A/B assignment seam exists (`src/lib/experiments`); wiring it into priority
-   rules + row pagination for analytics remain.
+5. ✅ A/B routing: `AffiliateRequest.experimentKey` splits traffic across
+   candidates by inverse-priority weight (deterministic per key) while still
+   favoring higher-priority campaigns.
+6. Wire a real session key into `AffiliateCta`; analytics row pagination.

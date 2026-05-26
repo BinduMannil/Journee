@@ -109,6 +109,14 @@ export interface AffiliateRequest {
   readonly region?: string;
   /** Injectable clock for deterministic testing. */
   readonly now?: Date;
+  /**
+   * Stable key (e.g. session id) for A/B routing. When set and >1 candidate
+   * qualifies, the winner is chosen deterministically with selection
+   * probability weighted by inverse priority, so traffic splits across variants
+   * while still favoring higher-priority campaigns. Omit for strict
+   * lowest-priority selection.
+   */
+  readonly experimentKey?: string;
 }
 
 export interface AffiliateResolution {

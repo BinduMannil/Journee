@@ -82,6 +82,44 @@ test("expired campaign is excluded by time window", () => {
   assert.equal(r?.campaign.id, "c1");
 });
 
+test("experimentKey splits equal-weight candidates but is stable per key", () => {
+  const c = catalog({
+    priorityRules: [
+      { campaignId: "c1", category: "hotels", priority: 10 },
+      { campaignId: "c2", category: "hotels", priority: 10 },
+    ],
+  });
+  const seen = new Set<string>();
+  for (let i = 0; i < 200; i++) {
+    const r = resolveAffiliateLink(c, { category: "hotels", experimentKey: `s-${i}` });
+    if (r) seen.add(r.campaign.id);
+  }
+  // Both variants should receive traffic.
+  assert.deepEqual([...seen].sort(), ["c1", "c2"]);
+  // Same key is stable.
+  const a = resolveAffiliateLink(c, { category: "hotels", experimentKey: "fixed" });
+  const b = resolveAffiliateLink(c, { category: "hotels", experimentKey: "fixed" });
+  assert.equal(a?.campaign.id, b?.campaign.id);
+});
+
+test("experimentKey still favors much higher priority (lower number)", () => {
+  const c = catalog({
+    priorityRules: [
+      { campaignId: "c1", category: "hotels", priority: 1 },
+      { campaignId: "c2", category: "hotels", priority: 1000 },
+    ],
+  });
+  let c1 = 0;
+  const n = 300;
+  for (let i = 0; i < n; i++) {
+    if (resolveAffiliateLink(c, { category: "hotels", experimentKey: `k-${i}` })?.campaign.id === "c1") {
+      c1++;
+    }
+  }
+  // Inverse-weight makes c1 (priority 1) win the vast majority.
+  assert.ok(c1 / n > 0.9, `c1 share was ${c1 / n}`);
+});
+
 test("falls back when no priority match, else null", () => {
   const fallback = resolveAffiliateLink(
     catalog({
