@@ -15,6 +15,7 @@ This is the entry point for engineering documentation. It is deliberately
   - [`monitoring-observability-architecture.md`](architecture/monitoring-observability-architecture.md) — logging, metrics, health.
   - [`service-dependency-map.md`](architecture/service-dependency-map.md) — real dependency register.
   - [`failure-and-recovery.md`](architecture/failure-and-recovery.md) — failure domains, propagation, recovery (diagrams).
+  - [`control-plane-architecture.md`](architecture/control-plane-architecture.md) — admin status endpoint, secure-by-default.
 - **runbooks/** — operational procedures.
   - [`supabase-local-setup.md`](runbooks/supabase-local-setup.md) · [`incident-response.md`](runbooks/incident-response.md) · [`recovery.md`](runbooks/recovery.md)
 - **decisions/** — Architecture Decision Records (ADRs). One file per significant choice.

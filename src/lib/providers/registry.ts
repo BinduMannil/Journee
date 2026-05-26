@@ -25,6 +25,11 @@ export function listProviders(capability: ProviderCapability): readonly AnyProvi
   return registry.get(capability) ?? [];
 }
 
+/** All registered providers across capabilities (for the control plane). */
+export function allProviders(): readonly AnyProvider[] {
+  return [...registry.values()].flat();
+}
+
 /**
  * Resolve a capability by trying providers in priority order until one is
  * available and succeeds. Returns null if every provider is exhausted.

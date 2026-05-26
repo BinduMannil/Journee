@@ -15,6 +15,7 @@ const envSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
   NEXT_PUBLIC_SITE_URL: z.string().url().optional(),
   JOURNEE_ENABLED_FEATURES: z.string().optional(),
+  JOURNEE_ADMIN_TOKEN: z.string().min(1).optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -30,6 +31,7 @@ export function getEnv(): Env {
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
     JOURNEE_ENABLED_FEATURES: process.env.JOURNEE_ENABLED_FEATURES,
+    JOURNEE_ADMIN_TOKEN: process.env.JOURNEE_ADMIN_TOKEN,
   });
   if (!parsed.success) {
     throw new Error(
@@ -48,6 +50,14 @@ export interface SupabaseClientConfig {
 /** Canonical site URL for SEO/metadata; defaults to localhost in dev. */
 export function getSiteUrl(): string {
   return getEnv().NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+}
+
+/**
+ * Admin control-plane token, or null when unset. When null the admin endpoints
+ * are disabled (secure by default) rather than open.
+ */
+export function getAdminToken(): string | null {
+  return getEnv().JOURNEE_ADMIN_TOKEN ?? null;
 }
 
 /** Returns Supabase connection config, or null when not configured. */
