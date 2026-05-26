@@ -15,6 +15,8 @@ export interface Destination {
   /** The dominant mood this place evokes — drives mood-first discovery later. */
   readonly mood: string;
   readonly imageUrl: string;
+  /** Real coordinates, used for the live light-phase signal (solar math). */
+  readonly coordinates?: { readonly lat: number; readonly lon: number };
 }
 
 export const featuredDestinations: readonly Destination[] = [
@@ -26,6 +28,7 @@ export const featuredDestinations: readonly Destination[] = [
     mood: "Contemplative",
     imageUrl:
       "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1600&q=80",
+    coordinates: { lat: 35.0116, lon: 135.7681 },
   },
   {
     id: "santorini",
@@ -35,6 +38,7 @@ export const featuredDestinations: readonly Destination[] = [
     mood: "Luminous",
     imageUrl:
       "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=1600&q=80",
+    coordinates: { lat: 36.3932, lon: 25.4615 },
   },
   {
     id: "marrakech",
@@ -44,6 +48,7 @@ export const featuredDestinations: readonly Destination[] = [
     mood: "Electric",
     imageUrl:
       "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1600&q=80",
+    coordinates: { lat: 31.6295, lon: -7.9811 },
   },
   {
     id: "patagonia",
@@ -53,6 +58,7 @@ export const featuredDestinations: readonly Destination[] = [
     mood: "Untamed",
     imageUrl:
       "https://images.unsplash.com/photo-1531794343993-cd2ef0e94c5b?auto=format&fit=crop&w=1600&q=80",
+    coordinates: { lat: -51.0, lon: -73.0 },
   },
 ];
 

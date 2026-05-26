@@ -51,6 +51,14 @@ so a confident aggregate requires confident inputs, not just their presence.
 Each maps its domain input to signals. The data that *populates* those inputs
 (live weather APIs, event/holiday calendars, government advisories) is roadmap.
 
+**First real signal (no network):** `src/lib/intelligence/solar.ts` computes the
+sun's altitude for a destination's coordinates at the current instant (standard
+solar approximation) and derives the live **light phase** (golden / daylight /
+night) and a `goldenHourProximity` value for the destination engine. Surfaced on
+cards via `LightBadge` (client-computed, updates over time). This is genuine,
+deterministic data — unit-tested in `test/intelligence.solar.test.ts` — proving
+the engine can run on real inputs, not just injected fixtures.
+
 ## Explainability (why a score is what it is)
 
 `score()` returns `contributions[]` — for each signal: its value, the weight

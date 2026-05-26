@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Destination } from "@/content/destinations";
+import { LightBadge } from "./LightBadge";
 
 /**
  * Editorial destination card: full-bleed cinematic image, gold mood tag, and a
@@ -16,6 +17,15 @@ export function DestinationCard({ destination }: { destination: Destination }) {
         className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" />
+
+      {destination.coordinates && (
+        <div className="absolute left-5 top-5">
+          <LightBadge
+            lat={destination.coordinates.lat}
+            lon={destination.coordinates.lon}
+          />
+        </div>
+      )}
 
       <div className="absolute inset-x-0 bottom-0 p-7">
         <span className="mb-3 inline-block rounded-full border border-gold/40 px-3 py-1 text-xs uppercase tracking-[0.2em] text-gold-bright">
