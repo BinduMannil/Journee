@@ -35,6 +35,11 @@ html {
   scroll-behavior: smooth;
 }
 
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
 body {
   background-color: var(--color-ink);
   color: var(--color-sand);

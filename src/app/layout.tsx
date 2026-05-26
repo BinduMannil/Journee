@@ -34,8 +34,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <a
+          href="#content"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded focus:bg-ink focus:px-4 focus:py-2 focus:text-gold-bright"
+        >
+          Skip to content
+        </a>
         <Nav />
-        {children}
+        <div id="content">{children}</div>
       </body>
     </html>
   );
