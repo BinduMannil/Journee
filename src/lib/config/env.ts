@@ -13,6 +13,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1).optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
+  NEXT_PUBLIC_SITE_URL: z.string().url().optional(),
   JOURNEE_ENABLED_FEATURES: z.string().optional(),
 });
 
@@ -27,6 +28,7 @@ export function getEnv(): Env {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
     JOURNEE_ENABLED_FEATURES: process.env.JOURNEE_ENABLED_FEATURES,
   });
   if (!parsed.success) {
@@ -41,6 +43,11 @@ export function getEnv(): Env {
 export interface SupabaseClientConfig {
   readonly url: string;
   readonly anonKey: string;
+}
+
+/** Canonical site URL for SEO/metadata; defaults to localhost in dev. */
+export function getSiteUrl(): string {
+  return getEnv().NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 }
 
 /** Returns Supabase connection config, or null when not configured. */

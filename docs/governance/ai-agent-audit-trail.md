@@ -100,3 +100,17 @@ validation evidence so changes are reviewable without tribal knowledge._
 - **Validation:** typecheck, lint, `npm test` (28 passing), build all green.
 - **Assumptions:** aggregate uses linear weighting consistent with ADR-006;
   no new external dependencies.
+
+---
+
+## 2026-05-26 — App resilience states + SEO
+
+- **Agent / session:** Claude Code (web), session `01Y1CrecRRnhezjW717nDEXS`.
+- **Scope:** Real product polish on the running app; secret-free.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1.
+- **Changes:** branded `loading.tsx` / `error.tsx` / `not-found.tsx`;
+  Open Graph + Twitter metadata; `robots.ts` + `sitemap.ts`; `getSiteUrl()`
+  config getter (env `NEXT_PUBLIC_SITE_URL`, localhost default).
+- **Validation:** typecheck, lint, tests (28), build (now emits /robots.txt,
+  /sitemap.xml) all green.
+- **Assumptions:** canonical URL defaults to localhost until configured.
