@@ -16,6 +16,9 @@ This is the entry point for engineering documentation. It is deliberately
   - [`service-dependency-map.md`](architecture/service-dependency-map.md) — real dependency register.
   - [`failure-and-recovery.md`](architecture/failure-and-recovery.md) — failure domains, propagation, recovery (diagrams).
   - [`control-plane-architecture.md`](architecture/control-plane-architecture.md) — admin status endpoint, secure-by-default.
+  - [`data-flow-architecture.md`](architecture/data-flow-architecture.md) — read/write/analytics flows + trust boundaries.
+  - [`authentication-architecture.md`](architecture/authentication-architecture.md) — key separation now; Supabase Auth + RLS roadmap.
+  - [`deployment-and-environment-architecture.md`](architecture/deployment-and-environment-architecture.md) — build, env separation, rollback.
 - **runbooks/** — operational procedures.
   - [`supabase-local-setup.md`](runbooks/supabase-local-setup.md) · [`incident-response.md`](runbooks/incident-response.md) · [`recovery.md`](runbooks/recovery.md)
 - **decisions/** — Architecture Decision Records (ADRs). One file per significant choice.
