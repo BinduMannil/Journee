@@ -39,7 +39,20 @@ npm run dev      # http://localhost:3000
 npm run build    # production build
 npm run typecheck
 npm run lint
+npm test         # 53 unit tests (node:test)
 ```
+
+## Live surface (runtime-verified)
+
+| Route | What |
+| --- | --- |
+| `/` | Cinematic landing; mood filter + search over destinations |
+| `/destinations/[id]` | Editorial detail page; live light phase + explainable atmosphere score (unknown id → 404) |
+| `/api/destinations` | Registry-resolved catalog (JSON) |
+| `/api/health` | Liveness + config presence (booleans only) |
+| `/api/affiliate/click`, `/conversion` | Server-only ingestion (400/503/202) |
+| `/api/affiliate/analytics` | Per-campaign metrics (`?since=&until=`) |
+| `/robots.txt`, `/sitemap.xml` | SEO (sitemap includes destinations) |
 
 ## Stack
 
