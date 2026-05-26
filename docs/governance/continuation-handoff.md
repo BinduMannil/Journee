@@ -5,9 +5,11 @@ without context loss._
 
 ## Where things stand
 
-Greenfield repo bootstrapped into a **runnable, building** platform foundation
-with a complete affiliate vertical and the core architectural seams in place.
-Every increment passes `typecheck`, `lint`, `test` (48), and `build`.
+Greenfield repo bootstrapped into a **runnable, runtime-verified** platform with
+a complete affiliate vertical, a live (network-free) intelligence signal, a
+working browsable UI, and the core architectural seams in place. Every increment
+passes `typecheck`, `lint`, `test` (58), and `build`; key routes verified via
+`npm start` + curl.
 
 ### Branches & PR
 
@@ -35,6 +37,10 @@ Every increment passes `typecheck`, `lint`, `test` (48), and `build`.
 8. Local Supabase stack (config + seed + runbook) + end-to-end failover test.
 9. Governance — dependency map, AI audit trail, Dependabot, CODEOWNERS,
    CONTRIBUTING, SECURITY, issue templates.
+10. Live product UI — landing with mood filter + search; detail pages
+    (`/destinations/[id]`, true 404 on unknown); live light-phase badge
+    (real solar math); explainable atmosphere score (honest confidence);
+    JSON `/api/destinations`; environmental comfort scorer (weather-feed ready).
 
 ## What is real vs. roadmap (read before extending)
 

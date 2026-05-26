@@ -146,3 +146,23 @@ validation evidence so changes are reviewable without tribal knowledge._
 - **Result:** affiliate flow now end-to-end — catalog → resolve → render → CTA
   → click/conversion ingestion → analytics. Remaining: A/B assignment +
   time-windowed/paginated analytics.
+
+---
+
+## 2026-05-26 — Live product surface + runtime verification
+
+- **Agent / session:** Claude Code (web), session `01Y1CrecRRnhezjW717nDEXS`.
+- **Scope:** Real, network-free product features + first runtime verification.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1.
+- **Changes:** live light-phase signal from real solar math (`solar.ts`,
+  `LightBadge`); destination detail pages with per-destination SEO; mood-first
+  filtering + text search; explainable atmosphere score in UI (honest ~20%
+  confidence); A/B assignment helper; JSON `/api/destinations`; time-windowed
+  analytics; environmental `comfortScore` (weather-feed ready — Open-Meteo egress
+  blocked by network policy).
+- **Runtime verification (`npm start` + curl):** `/api/health`,
+  `/api/destinations`, affiliate click 400/503, robots, home, and detail pages
+  all correct. **Found & fixed a real bug:** unknown destination ids returned a
+  soft-404 (HTTP 200); switched to `generateStaticParams` + `dynamicParams=false`
+  so they now return a true 404. Re-verified.
+- **Validation:** typecheck, lint, `npm test` (58 passing), build all green.
