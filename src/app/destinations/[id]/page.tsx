@@ -7,6 +7,7 @@ import "@/lib/providers/register";
 import { featuredDestinations, type Destination } from "@/content/destinations";
 import { LightBadge } from "@/components/LightBadge";
 import { AtmosphericScore } from "@/components/AtmosphericScore";
+import { SaveButton } from "@/components/SaveButton";
 import { AffiliateCta } from "@/components/AffiliateCta";
 
 async function getDestinations(): Promise<readonly Destination[]> {
@@ -92,6 +93,9 @@ export default async function DestinationPage({
           <p className="mt-2 text-sm uppercase tracking-[0.3em] text-stone">
             {destination.country}
           </p>
+          <div className="mt-5">
+            <SaveButton id={destination.id} />
+          </div>
         </div>
       </section>
 

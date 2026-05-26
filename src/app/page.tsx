@@ -42,12 +42,18 @@ export default async function Home() {
           <div className="mt-10">
             <QuoteRotator quotes={heroQuotes} />
           </div>
-          <div className="journee-fade-up mt-10">
+          <div className="journee-fade-up mt-10 flex flex-wrap gap-4">
             <Link
               href="/plan"
               className="inline-block rounded-full border border-gold/50 px-7 py-3 text-sm uppercase tracking-[0.2em] text-gold-bright transition-colors hover:bg-gold/10"
             >
               Plan a trip
+            </Link>
+            <Link
+              href="/saved"
+              className="inline-block rounded-full border border-sand/30 px-7 py-3 text-sm uppercase tracking-[0.2em] text-sand/80 transition-colors hover:border-gold/50 hover:text-gold-bright"
+            >
+              Saved
             </Link>
           </div>
         </div>
