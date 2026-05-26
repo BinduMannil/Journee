@@ -50,6 +50,12 @@ export default async function Home() {
               Plan a trip
             </Link>
             <Link
+              href="/discover"
+              className="inline-block rounded-full border border-sand/30 px-7 py-3 text-sm uppercase tracking-[0.2em] text-sand/80 transition-colors hover:border-gold/50 hover:text-gold-bright"
+            >
+              Discover by vibe
+            </Link>
+            <Link
               href="/saved"
               className="inline-block rounded-full border border-sand/30 px-7 py-3 text-sm uppercase tracking-[0.2em] text-sand/80 transition-colors hover:border-gold/50 hover:text-gold-bright"
             >
