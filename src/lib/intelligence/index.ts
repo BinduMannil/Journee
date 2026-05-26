@@ -27,6 +27,13 @@ export {
 } from "./travel-dna";
 export { pathfind, type PathfinderQuery } from "./pathfinder";
 export {
+  buildItinerary,
+  type Itinerary,
+  type ItineraryItem,
+  type ItineraryDay,
+  type Pacing,
+} from "./itinerary";
+export {
   destinationEngine,
   DESTINATION_SIGNAL_KEYS,
   type DestinationContext,
