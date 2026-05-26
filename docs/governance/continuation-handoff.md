@@ -52,6 +52,9 @@ runbooks. Every increment passes `typecheck`, `lint`, `test` (**77**), and
 15. Architecture docs + diagrams — failure/recovery, data-flow, auth,
     deployment/environment, request-lifecycle (mermaid).
 16. CI/CD — concurrency cancellation; Node pinning (`engines` + `.nvmrc`).
+17. Self-hosted fonts (`@fontsource-variable`) — no build-time font fetch.
+18. Discovery — Travel DNA (`rankByDNA`), Pathfinder (`/api/pathfinder`),
+    dynamic itinerary (fatigue-aware pacing); postmortem template.
 
 ## What is real vs. roadmap (read before extending)
 
@@ -78,16 +81,17 @@ No operational claims are made for unbuilt systems — keep it that way.
 
 ## Next autonomous execution queue (non-blocked first)
 
-1. **Self-host brand fonts** (`next/font/local`) — removes the build-time Google
-   Fonts dependency (the one remaining non-blocked infra risk).
-2. **Wire a stable visitor key** (middleware cookie) into `AffiliateCta` so A/B
+- ✅ Self-host brand fonts (done — `@fontsource-variable`).
+- ✅ Travel DNA + Pathfinder discovery + dynamic itinerary scaffolds (done).
+- ✅ Postmortem template (done).
+1. **Wire a stable visitor key** (middleware cookie) into `AffiliateCta` so A/B
    routing is per-visitor (note: makes affected routes dynamic — weigh the
-   static-rendering tradeoff).
-3. **More engine coverage** — Pathfinder/Travel-DNA scaffolds on the scoring
-   core; analytics row pagination.
-4. **Contract test harness** generalization (shared assert for any
-   `Provider`/`WeatherProvider`).
-5. **Postmortem template** in `docs/postmortems/`.
+   static-rendering tradeoff before doing this).
+2. **Analytics row pagination** for `/api/affiliate/analytics`.
+3. **Safety/risk + visa/entry + local-culture engine scaffolds** on the scoring
+   core (same pattern as events/disruption).
+4. **Generalize the provider contract harness** into a reusable test helper.
+5. **Surface Pathfinder/Travel-DNA in the UI** (ranked discovery view).
 
 ## Blocked queue (resume when access is granted)
 

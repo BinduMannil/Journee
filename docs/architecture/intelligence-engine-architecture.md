@@ -80,9 +80,14 @@ query ranking, exposed at `GET /api/pathfinder`) — pure, unit-tested,
 explainable match reasons. A learned/behavioral model can later produce the
 same `TravelDNA` shape without changing consumers.
 
-Additional engines — dynamic itinerary,
-safety/risk, weather/environmental (AQI, comfort index), visa/entry, local
-culture, city energy, memory/reflection, travel confidence — will be built on
-this same core. Each gets its own architecture section/doc and ADR **when its
+**Dynamic itinerary (scaffolded):** `itinerary.ts` packs experiences into days
+under a pacing-based intensity budget (relaxed/balanced/packed) for fatigue-aware
+experience pacing — pure + unit-tested.
+
+**Environmental (scaffolded):** `comfort.ts` maps temperature/humidity/wind/AQI
+to a 0..1 comfort signal (weather-feed ready).
+
+Remaining engines — safety/risk, visa/entry, local culture, city energy,
+memory/reflection — will be built on this same core. Each gets its own architecture section/doc and ADR **when its
 data integration and persistence are designed**, not before. A `confidence`
 aggregate across engines is the natural basis for the Travel Confidence Engine.

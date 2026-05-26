@@ -166,3 +166,25 @@ validation evidence so changes are reviewable without tribal knowledge._
   soft-404 (HTTP 200); switched to `generateStaticParams` + `dynamicParams=false`
   so they now return a true 404. Re-verified.
 - **Validation:** typecheck, lint, `npm test` (58 passing), build all green.
+
+---
+
+## 2026-05-26 — Platform maturity batch (observability, control plane, ops, fonts, discovery)
+
+- **Agent / session:** Claude Code (web), session `01Y1CrecRRnhezjW717nDEXS`.
+- **Scope:** Continue all non-blocked workstreams after hitting external
+  dependency boundaries (hosted Supabase, weather egress). Mark blocked items;
+  keep building.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1.
+- **Changes:** provider contract tests + mock weather/event/disruption
+  dev-providers; counter metrics + `/api/metrics`; secure-by-default
+  `/api/admin/status`; incident/recovery runbooks; analytics indexes (`0003`) +
+  migrations README; failure-recovery / data-flow / auth / deployment-env
+  architecture docs (mermaid); CI concurrency + Node pinning; **self-hosted
+  fonts** (removed build-time Google Fonts dependency, runtime-verified);
+  Travel DNA + Pathfinder discovery (`/api/pathfinder`) + dynamic itinerary
+  engine; postmortem template.
+- **Validation:** typecheck, lint, `npm test` (86 passing), build all green;
+  pathfinder + fonts runtime-verified via `npm start` + curl.
+- **Blocked (marked, not faked):** hosted Supabase (secrets), live weather feed
+  (egress allowlist), branch protection (repo-admin).
