@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { QuoteRotator } from "@/components/QuoteRotator";
 import { DestinationExplorer } from "@/components/DestinationExplorer";
 import { AffiliateCta } from "@/components/AffiliateCta";
@@ -40,6 +41,14 @@ export default async function Home() {
           </p>
           <div className="mt-10">
             <QuoteRotator quotes={heroQuotes} />
+          </div>
+          <div className="journee-fade-up mt-10">
+            <Link
+              href="/plan"
+              className="inline-block rounded-full border border-gold/50 px-7 py-3 text-sm uppercase tracking-[0.2em] text-gold-bright transition-colors hover:bg-gold/10"
+            >
+              Plan a trip
+            </Link>
           </div>
         </div>
       </section>

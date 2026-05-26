@@ -62,6 +62,24 @@ export const featuredDestinations: readonly Destination[] = [
   },
 ];
 
+/**
+ * Mood → experience intensity (0..1), config-driven so the trip planner's
+ * fatigue-aware pacing isn't hardcoded in components. Unknown moods fall back
+ * to `defaultMoodIntensity`.
+ */
+export const moodIntensity: Readonly<Record<string, number>> = {
+  Contemplative: 0.4,
+  Luminous: 0.5,
+  Electric: 0.9,
+  Untamed: 0.8,
+};
+
+export const defaultMoodIntensity = 0.6;
+
+export function intensityForMood(mood: string): number {
+  return moodIntensity[mood] ?? defaultMoodIntensity;
+}
+
 /** Rotating atmospheric quotes for the hero (driven by data, not hardcoded JSX). */
 export const heroQuotes: readonly string[] = [
   "Travel is the only thing you buy that makes you richer.",

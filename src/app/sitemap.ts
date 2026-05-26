@@ -7,6 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   return [
     { url: base, lastModified: now, changeFrequency: "weekly", priority: 1 },
+    { url: `${base}/plan`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     ...featuredDestinations.map((d) => ({
       url: `${base}/destinations/${d.id}`,
       lastModified: now,
