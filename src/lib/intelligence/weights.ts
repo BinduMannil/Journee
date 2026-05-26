@@ -44,6 +44,24 @@ export const disruptionWeights: ScoringWeights = {
   },
 };
 
+export const safetyWeights: ScoringWeights = {
+  version: "safety-v1",
+  defaultWeight: 1,
+  weights: { scam: 2, crowd: 1.5, emergency: 2, health: 2 },
+};
+
+export const visaWeights: ScoringWeights = {
+  version: "visa-v1",
+  defaultWeight: 1,
+  weights: { entry_ease: 2.5, processing: 1.5, documents: 2, policy_stability: 1 },
+};
+
+export const cultureWeights: ScoringWeights = {
+  version: "culture-v1",
+  defaultWeight: 1,
+  weights: { etiquette: 1.5, dress: 1, language: 1.5, photography: 1 },
+};
+
 /** Weights for the Travel Confidence aggregate; keys are sub-engine ids. */
 export const travelConfidenceWeights: ScoringWeights = {
   version: "travel-confidence-v1",
