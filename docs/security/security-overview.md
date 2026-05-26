@@ -19,9 +19,21 @@ it can serve as truthful audit input rather than aspirational marketing.
   `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, a strict
   `Referrer-Policy`, a restrictive `Permissions-Policy`, and HSTS.
   `robots.txt` disallows `/api/`; `/.well-known/security.txt` points here.
-  A **Report-Only CSP** is live (monitoring phase) reporting violations to
-  `/api/csp-report`; switching to an enforcing nonce-based CSP is the next step
-  once reports confirm the allow-list.
+- **Two-tier CSP** (`src/middleware.ts`, rollout phase 2):
+  - *Enforced* (`Content-Security-Policy`): the structural directives the app
+    never exercises — `base-uri 'self'`, `object-src 'none'`,
+    `frame-ancestors 'none'`, `form-action 'self'`. These add clickjacking,
+    plugin-injection, `<base>`-hijack, and form-exfiltration protection with no
+    effect on rendering/hydration and no need for per-request nonces (static
+    rendering is preserved).
+  - *Report-Only* (`Content-Security-Policy-Report-Only`): the script/style/
+    content directives (`default-src`, `script-src 'self'`, `style-src`,
+    `img-src`, `font-src`, `connect-src`) stay monitored, reporting to
+    `/api/csp-report` (surfaced via the `csp_violation` counter on
+    `/api/metrics`). Promoting these to enforcing needs a browser hydration
+    check (Next.js injects inline bootstrap scripts/styles) and would require
+    nonces — which force dynamic rendering — so it remains the next deliberate
+    step once reports confirm a zero-violation allow-list.
 
 ## Recommended next (not yet enforced)
 

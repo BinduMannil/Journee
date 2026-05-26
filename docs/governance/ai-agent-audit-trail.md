@@ -276,3 +276,35 @@ validation evidence so changes are reviewable without tribal knowledge._
   server-rendered markup (ranking computed in render, not post-hydration).
 - **Assumptions / safety:** no secrets, no network; the `avoid` branch is already
   covered by `test/intelligence.discovery.test.ts`.
+
+---
+
+## 2026-05-26 — CSP rollout phase 2: enforce the safe structural subset
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Advance the #1 non-blocked queue item (CSP) without the browser
+  hydration verification that a full nonce-based enforcing policy requires.
+  Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1.
+- **Changes:** `src/middleware.ts` now emits a **two-tier CSP**. The structural
+  directives the app never exercises (`base-uri 'self'`, `object-src 'none'`,
+  `frame-ancestors 'none'`, `form-action 'self'`) move to an **enforcing**
+  `Content-Security-Policy`; the script/style/content directives stay in the
+  existing `Content-Security-Policy-Report-Only`. This hardens clickjacking /
+  plugin-injection / `<base>`-hijack / form-exfiltration now, with no effect on
+  rendering or hydration and no per-request nonce (static rendering preserved).
+  Verified the app has no `<form>`/`<object>`/`<iframe>`/`<base>` before
+  enforcing. Security-overview doc updated.
+- **Validation:** typecheck, lint, `npm test` (108 passing), build all green.
+  Runtime-verified via `npm start` + curl on a clean server: both CSP headers
+  present with the expected directives; `/`, `/discover`, `/plan`, `/saved`,
+  `/about`, `/destinations/kyoto`, `/api/metrics` all 200.
+- **Note (process):** an orphaned `next-server` child from a prior `npm start`
+  initially masked the new header (killing the npm parent leaves the child
+  bound to :3000). Re-verified after a process-group kill — a reminder to use
+  `setsid` + `kill -- -PGID` (as `scripts/smoke.mjs` already does).
+- **Assumptions / safety:** the report-only tier is unchanged, so promoting the
+  remaining directives to enforcing still needs a browser hydration check
+  (Next.js injects inline bootstrap scripts/styles) — left as the next
+  deliberate step; the `csp_violation` counter on `/api/metrics` gives the
+  zero-violation signal an operator needs to flip it.

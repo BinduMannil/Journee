@@ -3,11 +3,29 @@ import { NextResponse, type NextRequest } from "next/server";
 /**
  * Edge middleware:
  *  1. Assigns a stable anonymous visitor id (`jid`) for deterministic A/B.
- *  2. Sets a **Report-Only** Content-Security-Policy. Report-Only never blocks,
- *     so it can't break rendering — it surfaces violations (to /api/csp-report)
- *     so the policy can be tightened before switching to enforcing CSP. This is
- *     the safe phase-1 of CSP rollout. See docs/security/security-overview.md.
+ *  2. Sets a two-tier Content-Security-Policy (CSP rollout phase 2):
+ *     - ENFORCED (`Content-Security-Policy`): the structural directives below
+ *       govern features the app does not use (framing, plugins, <base>,
+ *       cross-origin form posts). They never touch inline script/style or
+ *       content loading, so enforcing them adds real protection with zero risk
+ *       to rendering/hydration — and needs no per-request nonce, so static
+ *       rendering is preserved.
+ *     - REPORT-ONLY (`Content-Security-Policy-Report-Only`): the script/style/
+ *       content directives stay monitored. Next.js injects inline bootstrap
+ *       scripts/styles during hydration, so a strict script-src/style-src must
+ *       be browser-verified (and would need nonces, which force dynamic
+ *       rendering) before it can be enforced. Violations report to
+ *       /api/csp-report (surfaced via the `csp_violation` counter on
+ *       /api/metrics). See docs/security/security-overview.md.
  */
+const CSP_ENFORCED = [
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "report-uri /api/csp-report",
+].join("; ");
+
 const CSP_REPORT_ONLY = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -32,6 +50,7 @@ export function middleware(req: NextRequest): NextResponse {
       maxAge: 60 * 60 * 24 * 365,
     });
   }
+  res.headers.set("Content-Security-Policy", CSP_ENFORCED);
   res.headers.set("Content-Security-Policy-Report-Only", CSP_REPORT_ONLY);
   return res;
 }
