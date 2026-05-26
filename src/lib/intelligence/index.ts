@@ -19,6 +19,14 @@ export {
   type EngineResult,
 } from "./engines/confidence";
 export {
+  affinityFor,
+  rankByDNA,
+  type TravelDNA,
+  type DestinationLike,
+  type MatchResult,
+} from "./travel-dna";
+export { pathfind, type PathfinderQuery } from "./pathfinder";
+export {
   destinationEngine,
   DESTINATION_SIGNAL_KEYS,
   type DestinationContext,

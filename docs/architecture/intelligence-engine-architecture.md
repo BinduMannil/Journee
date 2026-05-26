@@ -74,7 +74,13 @@ silently treated as authoritative.
 
 ## Roadmap (per the product vision)
 
-Additional engines — Travel DNA, Pathfinder discovery, dynamic itinerary,
+**Discovery (scaffolded):** Travel DNA (`travel-dna.ts`, mood-affinity
+preference model + `rankByDNA`) and Pathfinder (`pathfinder.ts`, vibe/avoid
+query ranking, exposed at `GET /api/pathfinder`) — pure, unit-tested,
+explainable match reasons. A learned/behavioral model can later produce the
+same `TravelDNA` shape without changing consumers.
+
+Additional engines — dynamic itinerary,
 safety/risk, weather/environmental (AQI, comfort index), visa/entry, local
 culture, city energy, memory/reflection, travel confidence — will be built on
 this same core. Each gets its own architecture section/doc and ADR **when its
