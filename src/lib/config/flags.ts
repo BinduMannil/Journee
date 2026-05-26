@@ -11,6 +11,7 @@ import { getEnv } from "./env";
 export const KNOWN_FLAGS = [
   "supabase-destinations",
   "affiliate-catalog",
+  "mock-weather",
   "pathfinder",
   "travel-dna",
 ] as const;
