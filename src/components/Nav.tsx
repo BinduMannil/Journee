@@ -19,6 +19,9 @@ export function Nav() {
           <Link href="/saved" className="transition-colors hover:text-gold-bright">
             Saved
           </Link>
+          <Link href="/about" className="transition-colors hover:text-gold-bright">
+            About
+          </Link>
         </nav>
       </div>
     </header>
