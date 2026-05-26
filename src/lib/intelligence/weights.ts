@@ -43,3 +43,14 @@ export const disruptionWeights: ScoringWeights = {
     weather_severity: 1.5,
   },
 };
+
+/** Weights for the Travel Confidence aggregate; keys are sub-engine ids. */
+export const travelConfidenceWeights: ScoringWeights = {
+  version: "travel-confidence-v1",
+  defaultWeight: 1,
+  weights: {
+    disruption: 3,
+    destination: 2,
+    events: 1,
+  },
+};

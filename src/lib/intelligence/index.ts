@@ -11,7 +11,12 @@ export {
   destinationWeights,
   eventWeights,
   disruptionWeights,
+  travelConfidenceWeights,
 } from "./weights";
+export {
+  aggregateTravelConfidence,
+  type EngineResult,
+} from "./engines/confidence";
 export {
   destinationEngine,
   DESTINATION_SIGNAL_KEYS,

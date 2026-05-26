@@ -84,3 +84,19 @@ validation evidence so changes are reviewable without tribal knowledge._
 - **Validation:** typecheck, lint, `npm test` (19 passing), and `npm run build`
   (health route present) all green.
 - **Assumptions:** metrics/tracing/alerting remain roadmap and are not claimed.
+
+---
+
+## 2026-05-26 — Affiliate URL rendering + Travel Confidence aggregate
+
+- **Agent / session:** Claude Code (web), session `01Y1CrecRRnhezjW717nDEXS`.
+- **Scope:** Secret-free, real increments continuing PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1.
+- **Changes:** safe affiliate URL renderer (`src/lib/affiliate/url.ts`,
+  encodes values + rejects non-http(s) schemes), catalog accessor
+  (`catalog.ts`), and the Travel Confidence aggregate engine
+  (`engines/confidence.ts`) reusing the scoring core with mean-of-inputs
+  confidence. Added weights + index exports, doc update, and unit tests.
+- **Validation:** typecheck, lint, `npm test` (28 passing), build all green.
+- **Assumptions:** aggregate uses linear weighting consistent with ADR-006;
+  no new external dependencies.

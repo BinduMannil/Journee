@@ -41,6 +41,12 @@ domain input ──(engine.toSignals)──▶ normalized signals (0..1)
 | Destination (`engines/destination.ts`) | `DestinationContext` | open_now, crowd, season, weather, golden_hour |
 | Events/Cultural (`engines/events.ts`) | `EventContext` | festival_intensity, cultural_significance, operational_accessibility, crowd_comfort |
 | Political/Weather/Disruption (`engines/disruption.ts`) | `DisruptionContext` | advisory, civil_stability, transport, hazard, weather_severity |
+| Travel Confidence (`engines/confidence.ts`) | other engines' scores | aggregate (sub-engine keys) |
+
+**Travel Confidence** is an aggregate: `aggregateTravelConfidence(results,
+weights)` combines sub-engine scores via the same core (each sub-score is a
+signal), and sets overall `confidence` to the mean of the inputs' confidences —
+so a confident aggregate requires confident inputs, not just their presence.
 
 Each maps its domain input to signals. The data that *populates* those inputs
 (live weather APIs, event/holiday calendars, government advisories) is roadmap.
