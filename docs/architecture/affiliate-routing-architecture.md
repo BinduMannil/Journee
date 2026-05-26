@@ -73,9 +73,16 @@ the eventual data source.
   components.
 - Attribution tokens are opaque and carry no PII.
 
+## Catalog loading
+
+The `AffiliateCatalog` is loaded by the `supabase-affiliate` provider
+(`src/lib/providers/affiliate.supabase.ts`) under the `affiliate` capability,
+gated on the `affiliate-catalog` flag + Supabase config. Callers obtain it via
+`resolve<AffiliateCatalog>("affiliate")` and pass it to `resolveAffiliateLink`.
+
 ## Roadmap
 
-1. Catalog provider that loads `AffiliateCatalog` from Supabase (under the
-   `affiliate` capability already declared in the provider registry).
+1. ✅ Catalog provider that loads `AffiliateCatalog` from Supabase.
 2. Click/conversion ingestion endpoints (server-only writes).
 3. Revenue analytics + A/B assignment.
+4. UI surfacing of resolved links (with template rendering + escaping).

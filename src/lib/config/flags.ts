@@ -10,6 +10,7 @@ import { getEnv } from "./env";
  */
 export const KNOWN_FLAGS = [
   "supabase-destinations",
+  "affiliate-catalog",
   "pathfinder",
   "travel-dna",
 ] as const;

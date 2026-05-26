@@ -6,3 +6,4 @@
  */
 import "./destinations.local";
 import "./destinations.supabase";
+import "./affiliate.supabase";
