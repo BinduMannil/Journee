@@ -104,6 +104,19 @@ export default async function DestinationPage({
           {destination.headline}
         </p>
 
+        {destination.description && (
+          <p className="mt-8 text-lg leading-relaxed text-sand/80">
+            {destination.description}
+          </p>
+        )}
+
+        {destination.bestTime && (
+          <p className="mt-6 text-sm text-sand/70">
+            <span className="uppercase tracking-[0.25em] text-gold">Best time</span>
+            <span className="ml-3">{destination.bestTime}</span>
+          </p>
+        )}
+
         {destination.coordinates && (
           <div className="mt-12 rounded-2xl border border-sand/10 p-7">
             <p className="mb-4 text-sm uppercase tracking-[0.3em] text-gold">
