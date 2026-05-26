@@ -114,3 +114,18 @@ validation evidence so changes are reviewable without tribal knowledge._
 - **Validation:** typecheck, lint, tests (28), build (now emits /robots.txt,
   /sitemap.xml) all green.
 - **Assumptions:** canonical URL defaults to localhost until configured.
+
+---
+
+## 2026-05-26 — Affiliate click ingestion (server-only write path)
+
+- **Agent / session:** Claude Code (web), session `01Y1CrecRRnhezjW717nDEXS`.
+- **Scope:** Real, secret-free feature continuing PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1.
+- **Changes:** privileged `getSupabaseServiceClient` + `getSupabaseServiceConfig`
+  (server-only); pure validation/row builder (`src/lib/affiliate/events.ts`);
+  `POST /api/affiliate/click` (400 invalid, 503 unconfigured, 202 accepted);
+  unit tests (incl. route-level behavior without a DB).
+- **Validation:** typecheck, lint, `npm test` (33 passing), build all green.
+- **Assumptions:** unconfigured ingestion returns 503 (honest about data loss)
+  rather than accept-and-drop; conversion endpoint deferred as next step.

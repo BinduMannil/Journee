@@ -61,3 +61,23 @@ export function getSupabaseConfig(): SupabaseClientConfig | null {
     anonKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   };
 }
+
+export interface SupabaseServiceConfig {
+  readonly url: string;
+  readonly serviceRoleKey: string;
+}
+
+/**
+ * Returns privileged (service-role) Supabase config, or null when not
+ * configured. Server-only — never import where it could reach the client.
+ */
+export function getSupabaseServiceConfig(): SupabaseServiceConfig | null {
+  const env = getEnv();
+  if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    return null;
+  }
+  return {
+    url: env.NEXT_PUBLIC_SUPABASE_URL,
+    serviceRoleKey: env.SUPABASE_SERVICE_ROLE_KEY,
+  };
+}
