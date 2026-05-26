@@ -10,6 +10,8 @@ This is the entry point for engineering documentation. It is deliberately
   - [`system-architecture.md`](architecture/system-architecture.md) — the overview; read this first.
   - [`provider-architecture.md`](architecture/provider-architecture.md) — the provider-agnostic adapter pattern.
   - [`configuration-architecture.md`](architecture/configuration-architecture.md) — config-driven / no-hardcoding approach.
+  - [`affiliate-routing-architecture.md`](architecture/affiliate-routing-architecture.md) — data-driven monetization & link routing.
+  - [`intelligence-engine-architecture.md`](architecture/intelligence-engine-architecture.md) — shared explainable scoring + engine scaffolds.
 - **decisions/** — Architecture Decision Records (ADRs). One file per significant choice.
 - **governance/** — how we develop: branching, PRs, change management.
 - **security/** — security posture and the path toward SOC 2 readiness.
@@ -30,11 +32,15 @@ The product vision includes a set of intelligence engines. These are **future
 work**; tracking them here keeps the direction visible without pretending they
 are built:
 
-Destination intelligence · Festival & cultural · Political & disruption ·
-Real-time conditions · AI planning · Pathfinder discovery · Travel DNA ·
-Dynamic itinerary · Weather & environmental · Safety & risk · Social & creator ·
-Memory & reflection · Travel confidence · Visa & entry · Local culture ·
-City energy · Affiliate & monetization.
+**Scaffolded (logic/contracts in place; live data feeds still roadmap):**
+Affiliate & monetization (model + resolver) · Destination intelligence ·
+Festival & cultural (events engine) · Political & disruption · shared explainable
+scoring core.
 
-Each will get its own architecture doc and ADRs **when design and
-implementation begin** — not before.
+**Not yet started:** Real-time conditions · AI planning · Pathfinder discovery ·
+Travel DNA · Dynamic itinerary · Weather & environmental · Safety & risk ·
+Social & creator · Memory & reflection · Travel confidence · Visa & entry ·
+Local culture · City energy.
+
+Each not-yet-started system gets its own architecture doc and ADRs **when design
+and implementation begin** — not before.

@@ -19,7 +19,9 @@ patterns the rest of the platform will build on.
 | Config validation (zod env boundary) + feature flags | ✅ Built |
 | Provider adapter + registry + fallback | ✅ Built (seed + Supabase adapters) |
 | Supabase destinations adapter + RLS migration | ✅ Adapter + migration scaffold (flag-gated) |
-| Intelligence engines (destination, events, weather, safety, etc.) | 🔜 Roadmap (see `/docs`) |
+| Affiliate routing model + pure resolver (no hardcoded links) | ✅ Built (data wiring roadmap) |
+| Explainable intelligence scoring core + engine scaffolds | ✅ Core + destination/events/disruption mappings (data feeds roadmap) |
+| Remaining intelligence engines (Travel DNA, safety, visa, etc.) | 🔜 Roadmap (see `/docs`) |
 
 Everything marked 🔜 is **roadmap, not implemented**. The docs are written to
 say so plainly rather than describe systems that don't exist yet.
