@@ -7,6 +7,7 @@
  */
 export * from "./types";
 export { score } from "./scoring";
+export { comfortScore, type ComfortInput } from "./comfort";
 export {
   destinationWeights,
   eventWeights,
