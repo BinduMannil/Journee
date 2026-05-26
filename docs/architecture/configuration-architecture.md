@@ -31,6 +31,14 @@ grows.
 3. **Validate at the boundary.** When env-driven config arrives, it is parsed
    and validated once, at the edge, then passed as typed values inward.
 
+## Experimentation / A-B assignment
+
+`src/lib/experiments/assignment.ts` provides deterministic, storage-free
+bucketing: `assignVariant(key, variants)` hashes a stable key (session/user id)
+into a weighted variant, so the same key always resolves to the same variant in
+stateless server rendering. This is the seam for monetization A/B tests and
+gradual rollouts (e.g. weighting affiliate priority rules). Pure and unit-tested.
+
 ## Roadmap
 
 - **Remote flag service.** `flags.ts` is the seam; today flags come from env.
