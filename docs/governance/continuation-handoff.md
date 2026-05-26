@@ -6,10 +6,10 @@ without context loss._
 ## Where things stand
 
 Greenfield repo bootstrapped into a **runnable, runtime-verified** platform with
-a complete affiliate vertical, a live (network-free) intelligence signal, a
-working browsable UI, and the core architectural seams in place. Every increment
-passes `typecheck`, `lint`, `test` (58), and `build`; key routes verified via
-`npm start` + curl.
+a complete affiliate vertical, live (network-free) intelligence signals, a
+working browsable UI, an observability + control-plane layer, and operational
+runbooks. Every increment passes `typecheck`, `lint`, `test` (**77**), and
+`build`; key routes verified via `npm start` + curl.
 
 ### Branches & PR
 
@@ -41,36 +41,71 @@ passes `typecheck`, `lint`, `test` (58), and `build`; key routes verified via
     (`/destinations/[id]`, true 404 on unknown); live light-phase badge
     (real solar math); explainable atmosphere score (honest confidence);
     JSON `/api/destinations`; environmental comfort scorer (weather-feed ready).
+11. Provider hardening — contract tests; mock weather dev-provider; mock
+    event/disruption contexts exercising those engines.
+12. Observability — counter metrics scaffold + `/api/metrics`; registry counts
+    resolve/failover/exhaustion.
+13. Control plane — secure-by-default `/api/admin/status` (provider availability,
+    flags, counters).
+14. Ops + DB — incident-response + recovery runbooks; analytics indexes
+    (`0003`); migrations README.
+15. Architecture docs + diagrams — failure/recovery, data-flow, auth,
+    deployment/environment, request-lifecycle (mermaid).
+16. CI/CD — concurrency cancellation; Node pinning (`engines` + `.nvmrc`).
 
 ## What is real vs. roadmap (read before extending)
 
-- **Real & tested (48 tests):** provider registry + fallback, config/flag
-  boundary, the full affiliate vertical (resolver, URL render, ingestion
-  validation/rows, analytics aggregation, time-window parsing), intelligence
-  scoring core + engine mappings + confidence aggregate, A/B assignment,
-  structured logging.
+- **Real & tested (77 tests):** provider registry + fallback + contract tests;
+  config/flag/env boundary; full affiliate vertical (resolver incl. A/B, URL
+  render, ingestion validation/rows, analytics aggregation + time-window);
+  intelligence scoring core + engine mappings + confidence aggregate + real
+  solar signal; deterministic mocks (weather/event/disruption); structured
+  logging + counter metrics; admin status endpoint (secure-by-default).
 - **Scaffold (logic/contracts real, data NOT wired):** intelligence engines have
-  no live weather/events/advisory feeds; Supabase providers + migrations are not
-  applied to any *hosted* project (local-only verified).
-- **Not started:** auth, AI planning, Travel DNA, dynamic itinerary, real-time
-  conditions, safety/risk, visa, local culture, city energy, memory/reflection,
-  social/creator.
+  no live weather/events/advisory feeds (mock providers stand in); Supabase
+  providers + migrations are not applied to any *hosted* project (local-only
+  verified).
+- **EXTERNALLY BLOCKED (cannot proceed without access):**
+  - Hosted Supabase (staging/prod) — needs real project secrets.
+  - Live weather feed — Open-Meteo egress blocked by the network allowlist
+    (`comfortScore` + `WeatherProvider` contract are ready to receive it).
+  - Branch protection / org settings — needs repo-admin access.
+- **Not started (no external block, just scope):** auth/RLS user sessions, AI
+  planning, Travel DNA, dynamic itinerary, real-time conditions, safety/risk,
+  visa, local culture, city energy, memory/reflection, social/creator.
 
 No operational claims are made for unbuilt systems — keep it that way.
 
-## Recommended next priorities (in order)
+## Next autonomous execution queue (non-blocked first)
 
-1. **Merge PR #1** (or split if review prefers) — it is comprehensive and green;
-   further large workstreams should branch off `main` once it lands.
-2. **Hosted Supabase** for staging/prod — needs real secrets (agent stop
-   condition); apply migrations, set env, enable flags.
-3. **First live intelligence feed** (e.g. weather → `DisruptionContext`), then
-   surface an explainable score in the UI with its confidence.
-4. **Wire A/B assignment into affiliate priority** rules; add analytics row
-   pagination.
-5. **Self-host brand fonts** to remove the build-time Google Fonts dependency.
-6. **Branch protection** — enable the recommended controls once collaborators
-   exist.
+1. **Self-host brand fonts** (`next/font/local`) — removes the build-time Google
+   Fonts dependency (the one remaining non-blocked infra risk).
+2. **Wire a stable visitor key** (middleware cookie) into `AffiliateCta` so A/B
+   routing is per-visitor (note: makes affected routes dynamic — weigh the
+   static-rendering tradeoff).
+3. **More engine coverage** — Pathfinder/Travel-DNA scaffolds on the scoring
+   core; analytics row pagination.
+4. **Contract test harness** generalization (shared assert for any
+   `Provider`/`WeatherProvider`).
+5. **Postmortem template** in `docs/postmortems/`.
+
+## Blocked queue (resume when access is granted)
+
+- Hosted Supabase: apply `supabase/migrations/*`, set env, enable flags,
+  verify provider failover against the real DB; then make
+  `generateStaticParams` async (or ISR) so DB destinations get detail pages.
+- Live weather: allowlist the weather host, implement `OpenMeteoWeatherProvider`
+  to the existing `WeatherProvider` contract, register ahead of the mock.
+- Branch protection: enable required PR review + status checks on `main`.
+
+## Conventions to keep
+
+- New external integrations go **behind a provider adapter**, gated by
+  `isAvailable()` so fallback holds.
+- No hardcoded copy/links/thresholds — use `config`/`content`/versioned weights.
+- Every architecture-changing PR updates the relevant `docs/` file in the same
+  PR; add an ADR for significant decisions; append to the AI audit trail for
+  autonomous changes.
 
 ## Conventions to keep
 
