@@ -1,20 +1,11 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Montserrat } from "next/font/google";
+// Self-hosted variable fonts (no build-time Google Fonts fetch). The family
+// names are mapped to design tokens in globals.css. See ADR-001 / dependency map.
+import "@fontsource-variable/playfair-display";
+import "@fontsource-variable/montserrat";
 import { site } from "@/lib/config/site";
 import { getSiteUrl } from "@/lib/config/env";
 import "./globals.css";
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  display: "swap",
-});
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-  display: "swap",
-});
 
 const title = `${site.name} — ${site.tagline}`;
 
@@ -40,7 +31,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${montserrat.variable}`}>
+    <html lang="en">
       <body>{children}</body>
     </html>
   );

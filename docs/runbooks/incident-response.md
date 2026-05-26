@@ -28,7 +28,6 @@ marked. Honest over aspirational._
 | `provider_capability_exhausted{capability=destinations}` | Seed import broke (should never exhaust — seed is always-available) | Treat as code bug; roll back. |
 | Many `provider_failover{providerId=supabase-*}` | Supabase down/misconfigured | Fallback to seed is automatic; verify content acceptable; fix config. |
 | `/api/affiliate/* -> 503` | Ingestion unconfigured (no service role) | Expected when unconfigured; configure or accept no ingestion. |
-| Build fails fetching fonts | Build-time Google Fonts egress | Retry; self-host fonts (roadmap). |
 
 ## Communication
 

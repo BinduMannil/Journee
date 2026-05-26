@@ -7,7 +7,10 @@
  * can be retuned centrally. See docs/architecture/system-architecture.md.
  */
 @theme {
-  /* Typography — Playfair Display (headings) + Montserrat (body). */
+  /* Typography — Playfair Display (headings) + Montserrat (body), self-hosted
+     via @fontsource-variable (imported in layout.tsx). */
+  --font-playfair: "Playfair Display Variable";
+  --font-montserrat: "Montserrat Variable";
   --font-display: var(--font-playfair), Georgia, serif;
   --font-body: var(--font-montserrat), system-ui, sans-serif;
 

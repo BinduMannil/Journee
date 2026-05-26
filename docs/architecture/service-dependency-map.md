@@ -29,7 +29,7 @@ appear under "Roadmap" without operational claims.
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Next.js / React | App framework & rendering | App can't build/serve | none (core) | redeploy last good build | high (core) | server-default secret isolation | build status, uptime |
 | Supabase / Postgres | DB-backed catalog & future data | DB-backed features unavailable | seed provider serves catalog | reconnect; provider re-enables when `isAvailable()` | medium — isolated behind adapter | anon vs service-role split; RLS deny-by-default | query errors, latency |
-| Google Fonts (`next/font`, build-time) | Brand typography | build fails if fetch fails | self-host fonts (roadmap) | retry build / cache | low | none | build status |
+| Brand fonts (self-hosted via `@fontsource-variable`) | Brand typography | n/a — bundled, no network | n/a | n/a | none | none | n/a |
 | Unsplash (runtime images) | Seed imagery | broken images on cards | replace with owned assets | swap config URLs | low — allow-listed in config | allow-list only | n/a |
 | npm registry (build/CI) | Dependency install | CI/build fails | lockfile + cache | retry; vendor cache | low | lockfile pinning, `npm audit` in CI | CI status |
 

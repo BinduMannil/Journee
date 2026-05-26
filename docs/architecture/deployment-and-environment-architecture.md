@@ -25,11 +25,11 @@ flags (`JOURNEE_ENABLED_FEATURES`) and config differ per env so rollout is
 controlled. Provisioning these requires real infrastructure + secrets —
 **externally blocked** for now and not claimed as done.
 
-## Known deployment-time dependency
+## Build-time dependencies
 
-`next/font` fetches Google Fonts at **build time**. A blocked egress or outage
-fails the build. Mitigation (roadmap): self-host the brand fonts via
-`next/font/local`. Tracked in the dependency map.
+Brand fonts are **self-hosted** (`@fontsource-variable/*`, bundled), so the
+build has no Google Fonts network dependency — only `npm install` requires the
+registry.
 
 ## Release & rollback
 

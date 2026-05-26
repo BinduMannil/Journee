@@ -12,7 +12,6 @@ system; hosted-infra specifics are marked roadmap._
 | Affiliate catalog | Monetization CTAs | Registry capability `affiliate` | No CTA rendered (renders null) |
 | Affiliate ingestion | Event writes | Server-only routes | 503 (honest), no UI impact |
 | Weather (mock today) | One signal | Provider contract + null-when-unavailable | No weather signal; score confidence drops |
-| Build-time fonts | Builds only | — | Self-host (roadmap) |
 
 Key property: **no single external dependency can take down rendering** — every
 data dependency is behind a provider that degrades to a fallback.
