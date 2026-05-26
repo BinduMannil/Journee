@@ -5,10 +5,11 @@ _Last updated: 2026-05-26._
 ## Status
 
 - **Structured logging seam:** ✅ implemented (`src/lib/observability/logger.ts`).
-- **Failover instrumentation:** ✅ provider registry logs `provider_failover` and
-  `provider_capability_exhausted`.
-- **Health endpoint:** ✅ `GET /api/health`.
-- **Metrics, tracing, alerting, dashboards:** 🔜 roadmap (no claims made yet).
+- **Failover instrumentation:** ✅ provider registry logs + counts
+  `provider_resolve_success`, `provider_failover`, `provider_capability_exhausted`.
+- **Counter metrics scaffold:** ✅ `src/lib/observability/metrics.ts` +
+  `GET /api/metrics` snapshot.
+- **Tracing, alerting, dashboards, metrics export backend:** 🔜 roadmap.
 
 ## Structured logging
 
@@ -21,12 +22,15 @@ Convention: `msg` is a stable, low-cardinality event name (e.g.
 
 ## What is instrumented today
 
-| Event | Where | Fields |
+| Event | Where | Fields / labels |
 | --- | --- | --- |
+| `provider_resolve_success` | registry, on a provider answering | capability, providerId |
 | `provider_failover` | registry, on a provider throwing | capability, providerId, error |
 | `provider_capability_exhausted` | registry, when all providers fail | capability |
 
-This makes the failover safety property **observable**, not just functional.
+These are emitted both as structured logs and as counters
+(`src/lib/observability/metrics.ts`, snapshot at `GET /api/metrics`), making the
+failover safety property **observable**, not just functional.
 
 ## Health endpoint
 

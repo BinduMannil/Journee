@@ -8,6 +8,7 @@
  */
 import type { Provider, ProviderCapability } from "./types";
 import { log } from "@/lib/observability/logger";
+import { incrementCounter } from "@/lib/observability/metrics";
 
 type AnyProvider = Provider<unknown>;
 
@@ -35,7 +36,9 @@ export async function resolve<TResult>(
   for (const provider of candidates) {
     try {
       if (!(await provider.isAvailable())) continue;
-      return (await provider.fetch()) as TResult;
+      const result = (await provider.fetch()) as TResult;
+      incrementCounter("provider_resolve_success", { capability, providerId: provider.id });
+      return result;
     } catch (error) {
       // Fall through to the next provider, but record the failover so it is
       // observable (see monitoring architecture).
@@ -44,11 +47,13 @@ export async function resolve<TResult>(
         providerId: provider.id,
         error: error instanceof Error ? error.message : String(error),
       });
+      incrementCounter("provider_failover", { capability, providerId: provider.id });
       continue;
     }
   }
   if (candidates.length > 0) {
     log.warn("provider_capability_exhausted", { capability });
+    incrementCounter("provider_capability_exhausted", { capability });
   }
   return null;
 }
