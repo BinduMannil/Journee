@@ -36,6 +36,11 @@ jobs:
       - name: Build
         run: npm run build
 
+      # End-to-end smoke: starts the server and asserts key routes/APIs return
+      # expected statuses (catches integration regressions build/tests miss).
+      - name: Smoke
+        run: npm run smoke
+
       # Dependency scanning (SOC 2 direction). Fails only on high/critical so
       # known moderate advisories don't block; review them in PRs regardless.
       - name: Dependency audit
