@@ -1,0 +1,116 @@
+import Image from "next/image";
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { resolve } from "@/lib/providers/registry";
+import "@/lib/providers/register";
+import { featuredDestinations, type Destination } from "@/content/destinations";
+import { LightBadge } from "@/components/LightBadge";
+import { AffiliateCta } from "@/components/AffiliateCta";
+
+async function getDestinations(): Promise<readonly Destination[]> {
+  return (await resolve<readonly Destination[]>("destinations")) ?? featuredDestinations;
+}
+
+async function findDestination(id: string): Promise<Destination | undefined> {
+  return (await getDestinations()).find((d) => d.id === id);
+}
+
+export function generateStaticParams() {
+  // Seed content is the build-time baseline; DB-backed ids resolve at request.
+  return featuredDestinations.map((d) => ({ id: d.id }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const destination = await findDestination(id);
+  if (!destination) return { title: "Destination not found" };
+  return {
+    title: `${destination.name}, ${destination.country}`,
+    description: destination.headline,
+    openGraph: {
+      title: `${destination.name}, ${destination.country}`,
+      description: destination.headline,
+      images: [destination.imageUrl],
+    },
+  };
+}
+
+export default async function DestinationPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const destination = await findDestination(id);
+  if (!destination) notFound();
+
+  return (
+    <main className="min-h-screen">
+      <section className="relative flex min-h-[70vh] flex-col justify-end overflow-hidden px-6 pb-16 sm:px-12">
+        <Image
+          src={destination.imageUrl}
+          alt={`${destination.name}, ${destination.country}`}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/20" />
+
+        <div className="relative mx-auto w-full max-w-4xl">
+          <Link
+            href="/"
+            className="mb-6 inline-block text-sm uppercase tracking-[0.25em] text-gold-bright hover:text-gold"
+          >
+            &larr; All destinations
+          </Link>
+          <div className="mb-4 flex items-center gap-3">
+            <span className="rounded-full border border-gold/40 px-3 py-1 text-xs uppercase tracking-[0.2em] text-gold-bright">
+              {destination.mood}
+            </span>
+            {destination.coordinates && (
+              <LightBadge
+                lat={destination.coordinates.lat}
+                lon={destination.coordinates.lon}
+              />
+            )}
+          </div>
+          <h1 className="font-display text-5xl font-semibold text-sand sm:text-7xl">
+            {destination.name}
+          </h1>
+          <p className="mt-2 text-sm uppercase tracking-[0.3em] text-stone">
+            {destination.country}
+          </p>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-4xl px-6 py-20 sm:px-12">
+        <p className="font-display text-2xl italic leading-relaxed text-sand/90 sm:text-3xl">
+          {destination.headline}
+        </p>
+
+        {destination.coordinates && (
+          <div className="mt-12 rounded-2xl border border-sand/10 p-7">
+            <p className="mb-2 text-sm uppercase tracking-[0.3em] text-gold">
+              Atmospheric read
+            </p>
+            <p className="text-sand/80">
+              Light phase is computed live from {destination.name}&rsquo;s solar
+              position. Golden hour is the cinematic window — plan exteriors and
+              rooftops around it.
+            </p>
+          </div>
+        )}
+
+        <div className="mt-12">
+          <AffiliateCta category="hotels" label="Plan your stay" />
+        </div>
+      </section>
+    </main>
+  );
+}

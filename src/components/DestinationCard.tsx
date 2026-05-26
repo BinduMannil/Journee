@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Destination } from "@/content/destinations";
 import { LightBadge } from "./LightBadge";
 
@@ -8,7 +9,10 @@ import { LightBadge } from "./LightBadge";
  */
 export function DestinationCard({ destination }: { destination: Destination }) {
   return (
-    <article className="group relative h-[26rem] overflow-hidden rounded-2xl">
+    <Link
+      href={`/destinations/${destination.id}`}
+      className="group relative block h-[26rem] overflow-hidden rounded-2xl"
+    >
       <Image
         src={destination.imageUrl}
         alt={`${destination.name}, ${destination.country}`}
@@ -39,6 +43,6 @@ export function DestinationCard({ destination }: { destination: Destination }) {
         </p>
         <p className="mt-3 max-w-md text-sand/80">{destination.headline}</p>
       </div>
-    </article>
+    </Link>
   );
 }
