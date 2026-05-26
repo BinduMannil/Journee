@@ -19,9 +19,12 @@ patterns the rest of the platform will build on.
 | Config validation (zod env boundary) + feature flags | ✅ Built |
 | Provider adapter + registry + fallback | ✅ Built (seed + Supabase adapters) |
 | Supabase destinations adapter + RLS migration | ✅ Adapter + migration scaffold (flag-gated) |
-| Affiliate routing model + pure resolver (no hardcoded links) | ✅ Built (data wiring roadmap) |
-| Explainable intelligence scoring core + engine scaffolds | ✅ Core + destination/events/disruption mappings (data feeds roadmap) |
+| Affiliate vertical: catalog → resolver → safe URL → gated CTA | ✅ Built (no hardcoded links) |
+| Affiliate ingestion (click + conversion) + revenue analytics | ✅ Built (server-only writes, time-windowed) |
+| Explainable intelligence scoring core + engines + Travel Confidence | ✅ Core + destination/events/disruption + aggregate (data feeds roadmap) |
+| Experiments: deterministic A/B assignment | ✅ Built |
 | Structured logging + failover instrumentation + `/api/health` | ✅ Built |
+| App resilience (loading/error/404) + SEO (robots/sitemap/OG) | ✅ Built |
 | Local Supabase stack (config + seed + runbook) | ✅ Runnable locally without secrets |
 | Remaining intelligence engines (Travel DNA, safety, visa, etc.) | 🔜 Roadmap (see `/docs`) |
 
