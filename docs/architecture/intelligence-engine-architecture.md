@@ -41,7 +41,17 @@ domain input ──(engine.toSignals)──▶ normalized signals (0..1)
 | Destination (`engines/destination.ts`) | `DestinationContext` | open_now, crowd, season, weather, golden_hour |
 | Events/Cultural (`engines/events.ts`) | `EventContext` | festival_intensity, cultural_significance, operational_accessibility, crowd_comfort |
 | Political/Weather/Disruption (`engines/disruption.ts`) | `DisruptionContext` | advisory, civil_stability, transport, hazard, weather_severity |
+| Safety & Risk (`engines/safety.ts`) | `SafetyContext` | scam, crowd, emergency, health |
+| Visa & Entry (`engines/visa.ts`) | `VisaContext` | entry_ease, processing, documents, policy_stability |
+| Local Culture (`engines/culture.ts`) | `CultureContext` | etiquette, dress, language, photography |
+| Real-Time Conditions (`engines/conditions.ts`) | `ConditionsContext` | airport, transit, access, surge |
+| City Energy (`engines/city-energy.ts`) | `CityEnergyContext` | calmness, festivity, nightlife, local_density |
+| Memory & Reflection (`engines/memory.ts`) | `MemoryContext` | emotional_peak, novelty, connection, sensory |
 | Travel Confidence (`engines/confidence.ts`) | other engines' scores | aggregate (sub-engine keys) |
+
+Plus environmental comfort (`comfort.ts`) and discovery (`travel-dna.ts`,
+`pathfinder.ts`, `itinerary.ts`). All share the explainable scoring core +
+versioned weights; live data feeds remain roadmap (mock providers stand in).
 
 **Travel Confidence** is an aggregate: `aggregateTravelConfidence(results,
 weights)` combines sub-engine scores via the same core (each sub-score is a

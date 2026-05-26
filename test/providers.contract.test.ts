@@ -3,27 +3,8 @@ import assert from "node:assert/strict";
 import { localDestinationProvider } from "../src/lib/providers/destinations.local";
 import { supabaseDestinationProvider } from "../src/lib/providers/destinations.supabase";
 import { supabaseAffiliateProvider } from "../src/lib/providers/affiliate.supabase";
-import type { Provider, ProviderCapability } from "../src/lib/providers/types";
-
-const CAPABILITIES: ProviderCapability[] = [
-  "content",
-  "destinations",
-  "affiliate",
-  "weather",
-  "events",
-];
-
-function assertContract(p: Provider<unknown>): void {
-  assert.equal(typeof p.id, "string");
-  assert.ok(p.id.length > 0, "id must be non-empty");
-  assert.equal(typeof p.name, "string");
-  assert.ok(p.name.length > 0, "name must be non-empty");
-  assert.ok(CAPABILITIES.includes(p.capability), `unknown capability ${p.capability}`);
-  assert.equal(typeof p.priority, "number");
-  assert.ok(Number.isFinite(p.priority));
-  assert.equal(typeof p.isAvailable, "function");
-  assert.equal(typeof p.fetch, "function");
-}
+import type { Provider } from "../src/lib/providers/types";
+import { assertProviderContract } from "./helpers/contract";
 
 test("all registered providers satisfy the Provider contract", async () => {
   const providers: Provider<unknown>[] = [
@@ -32,7 +13,7 @@ test("all registered providers satisfy the Provider contract", async () => {
     supabaseAffiliateProvider,
   ];
   for (const p of providers) {
-    assertContract(p);
+    assertProviderContract(p);
     assert.equal(typeof (await p.isAvailable()), "boolean");
   }
 });
