@@ -6,6 +6,7 @@ import { resolve } from "@/lib/providers/registry";
 import "@/lib/providers/register";
 import { featuredDestinations, type Destination } from "@/content/destinations";
 import { LightBadge } from "@/components/LightBadge";
+import { AtmosphericScore } from "@/components/AtmosphericScore";
 import { AffiliateCta } from "@/components/AffiliateCta";
 
 async function getDestinations(): Promise<readonly Destination[]> {
@@ -96,14 +97,13 @@ export default async function DestinationPage({
 
         {destination.coordinates && (
           <div className="mt-12 rounded-2xl border border-sand/10 p-7">
-            <p className="mb-2 text-sm uppercase tracking-[0.3em] text-gold">
+            <p className="mb-4 text-sm uppercase tracking-[0.3em] text-gold">
               Atmospheric read
             </p>
-            <p className="text-sand/80">
-              Light phase is computed live from {destination.name}&rsquo;s solar
-              position. Golden hour is the cinematic window — plan exteriors and
-              rooftops around it.
-            </p>
+            <AtmosphericScore
+              lat={destination.coordinates.lat}
+              lon={destination.coordinates.lon}
+            />
           </div>
         )}
 
