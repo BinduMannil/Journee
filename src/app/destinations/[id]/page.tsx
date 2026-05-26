@@ -17,8 +17,13 @@ async function findDestination(id: string): Promise<Destination | undefined> {
   return (await getDestinations()).find((d) => d.id === id);
 }
 
+// Only ids known at build are valid routes; any other id returns a true 404 at
+// the router level (no soft-404). generateStaticParams uses the seed baseline.
+// NOTE: when DB-backed destinations exist, make this async to include their ids
+// (or revisit rendering strategy). See docs/governance/continuation-handoff.md.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
-  // Seed content is the build-time baseline; DB-backed ids resolve at request.
   return featuredDestinations.map((d) => ({ id: d.id }));
 }
 
