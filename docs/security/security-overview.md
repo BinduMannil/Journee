@@ -19,7 +19,9 @@ it can serve as truthful audit input rather than aspirational marketing.
   `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, a strict
   `Referrer-Policy`, a restrictive `Permissions-Policy`, and HSTS.
   `robots.txt` disallows `/api/`; `/.well-known/security.txt` points here.
-  A strict nonce-based CSP is the next step (deferred — needs per-request nonces).
+  A **Report-Only CSP** is live (monitoring phase) reporting violations to
+  `/api/csp-report`; switching to an enforcing nonce-based CSP is the next step
+  once reports confirm the allow-list.
 
 ## Recommended next (not yet enforced)
 

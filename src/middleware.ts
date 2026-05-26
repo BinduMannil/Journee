@@ -1,20 +1,38 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
- * Assigns a stable anonymous visitor id (`jid`) cookie used for deterministic
- * A/B assignment (e.g. affiliate variant routing). No PII; httpOnly. Kept in
- * middleware so the rest of the app stays statically renderable — A/B selection
- * happens at the edge/client via /api/affiliate/link.
+ * Edge middleware:
+ *  1. Assigns a stable anonymous visitor id (`jid`) for deterministic A/B.
+ *  2. Sets a **Report-Only** Content-Security-Policy. Report-Only never blocks,
+ *     so it can't break rendering — it surfaces violations (to /api/csp-report)
+ *     so the policy can be tightened before switching to enforcing CSP. This is
+ *     the safe phase-1 of CSP rollout. See docs/security/security-overview.md.
  */
+const CSP_REPORT_ONLY = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "img-src 'self' data: https://images.unsplash.com",
+  "style-src 'self' 'unsafe-inline'",
+  "script-src 'self'",
+  "font-src 'self'",
+  "connect-src 'self'",
+  "form-action 'self'",
+  "report-uri /api/csp-report",
+].join("; ");
+
 export function middleware(req: NextRequest): NextResponse {
-  if (req.cookies.get("jid")) return NextResponse.next();
   const res = NextResponse.next();
-  res.cookies.set("jid", crypto.randomUUID(), {
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 365,
-  });
+  if (!req.cookies.get("jid")) {
+    res.cookies.set("jid", crypto.randomUUID(), {
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+    });
+  }
+  res.headers.set("Content-Security-Policy-Report-Only", CSP_REPORT_ONLY);
   return res;
 }
 
