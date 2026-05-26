@@ -202,5 +202,20 @@ validation evidence so changes are reviewable without tribal knowledge._
   provider contract harness; intelligence-doc roster parity.
 - **Validation:** typecheck, lint, `npm test` (98 passing), build all green;
   A/B cookie + link endpoint runtime-verified.
-- **Result:** no meaningful non-blocked work remains; the rest is blocked
-  (hosted Supabase / weather egress / AI LLM / branch protection).
+- **Result:** core platform/engine queue complete (more product work followed).
+
+---
+
+## 2026-05-26 — Product/UX batch (collections, discovery, OG, nav)
+
+- **Agent / session:** Claude Code (web), session `01Y1CrecRRnhezjW717nDEXS`.
+- **Scope:** Continue building user-facing, non-blocked product surface.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1.
+- **Changes:** saved collections (localStorage, pure set logic tested) + `/saved`;
+  `/discover` vibe-ranking UI (Pathfinder); dynamic cinematic OG images per
+  destination + brand favicon (next/og); PWA manifest; shared sticky nav;
+  `/.well-known/security.txt`.
+- **Validation:** typecheck, lint, `npm test` (101 passing), build all green;
+  routes + OG/manifest/security.txt runtime-verified via `npm start` + curl.
+- **Note:** corrects an earlier premature "nothing left" call — substantial
+  non-blocked product work remained and was delivered.
