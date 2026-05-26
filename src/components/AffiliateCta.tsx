@@ -1,43 +1,37 @@
-import { getAffiliateCatalog } from "@/lib/affiliate/catalog";
-import { resolveAffiliateLink } from "@/lib/affiliate/routing";
-import { renderAffiliateUrl, AffiliateUrlError } from "@/lib/affiliate/url";
+"use client";
+
+import { useEffect, useState } from "react";
 import type { AffiliateCategory } from "@/lib/affiliate/types";
-import { log } from "@/lib/observability/logger";
 
 /**
- * Server component that renders an affiliate CTA — but ONLY when a catalog is
- * configured and a link actually resolves for the (category, region). When
- * nothing resolves it renders null: no fabricated links, ever. This is the
- * end-to-end wiring of catalog -> resolver -> safe URL rendering.
+ * Renders an affiliate CTA only when a link actually resolves for the visitor
+ * (per-visitor A/B via the `jid` cookie, server-side in /api/affiliate/link).
+ * Fetches client-side so host pages stay statically rendered; renders nothing
+ * when no catalog is configured — no fabricated links, ever.
  */
-export async function AffiliateCta({
+export function AffiliateCta({
   category,
-  region,
   label,
 }: {
   category: AffiliateCategory;
-  region?: string;
   label: string;
 }) {
-  const catalog = await getAffiliateCatalog();
-  if (!catalog) return null;
+  const [href, setHref] = useState<string | null>(null);
 
-  const resolution = resolveAffiliateLink(catalog, { category, region });
-  if (!resolution) return null;
+  useEffect(() => {
+    let active = true;
+    fetch(`/api/affiliate/link?category=${encodeURIComponent(category)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { link?: { href?: string } } | null) => {
+        if (active) setHref(d?.link?.href ?? null);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [category]);
 
-  let href: string;
-  try {
-    href = renderAffiliateUrl(resolution.link.urlTemplate, {
-      token: resolution.campaign.id,
-    });
-  } catch (error) {
-    log.warn("affiliate_url_render_failed", {
-      category,
-      linkId: resolution.link.id,
-      error: error instanceof AffiliateUrlError ? error.message : String(error),
-    });
-    return null;
-  }
+  if (!href) return null;
 
   return (
     <a
