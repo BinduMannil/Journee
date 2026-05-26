@@ -368,3 +368,21 @@ validation evidence so changes are reviewable without tribal knowledge._
   fails safe on a malformed body (no count, still 204). No source change.
 - **Validation:** typecheck, lint, `npm test` (**112** passing, +3), build all
   green.
+
+---
+
+## 2026-05-26 — Discovery coherence: live light badge on /discover
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Surface the real (solar) light-phase signal on `/discover` rows for
+  parity with the home cards. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green).
+- **Changes:** `DiscoverClient` renders the existing `LightBadge` per ranked
+  result that has coordinates — reuses the proven component; no new logic.
+- **Validation:** typecheck, lint, `npm test` (112 passing), build all green;
+  `/discover` runtime-verified via `npm start` + curl (200; ranked rows render).
+  The badge is client-computed (as on home cards), so its live phase isn't in
+  SSR markup.
+- **Also confirmed (blocked, not faked):** re-tested Open-Meteo egress —
+  `https://api.open-meteo.com/...` returns HTTP 403 from the network allowlist,
+  so the real `OpenMeteoWeatherProvider` stays blocked per the handoff.

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { pathfind } from "@/lib/intelligence/pathfinder";
+import { LightBadge } from "./LightBadge";
 import type { Destination } from "@/content/destinations";
 
 /**
@@ -102,6 +103,11 @@ export function DiscoverClient({ destinations }: { destinations: readonly Destin
                   <span className="ml-2 text-xs uppercase tracking-[0.2em] text-stone">
                     {d.mood}
                   </span>
+                  {d.coordinates && (
+                    <span className="ml-2 align-middle">
+                      <LightBadge lat={d.coordinates.lat} lon={d.coordinates.lon} />
+                    </span>
+                  )}
                 </span>
                 <span className="text-sm text-sand/50">{r.reason}</span>
               </Link>
