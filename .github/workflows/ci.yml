@@ -25,5 +25,13 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Test
+        run: npm test
+
       - name: Build
         run: npm run build
+
+      # Dependency scanning (SOC 2 direction). Fails only on high/critical so
+      # known moderate advisories don't block; review them in PRs regardless.
+      - name: Dependency audit
+        run: npm audit --audit-level=high

@@ -15,6 +15,7 @@
 ## Testing evidence
 - [ ] `npm run typecheck` passes
 - [ ] `npm run lint` passes
+- [ ] `npm test` passes
 - [ ] `npm run build` passes
 - [ ] Manual verification (describe):
 
