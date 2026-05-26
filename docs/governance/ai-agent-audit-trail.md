@@ -68,3 +68,19 @@ validation evidence so changes are reviewable without tribal knowledge._
   are documented for local enablement, not enabled in committed config (enabling
   without config is a no-op due to `isAvailable()` gating — safe either way).
 - **Human review readiness:** Folded into PR #1; ready for review/merge.
+
+---
+
+## 2026-05-26 — Observability seam
+
+- **Agent / session:** Claude Code (web), session `01Y1CrecRRnhezjW717nDEXS`.
+- **Scope:** Make the observability mandate concrete; replace the registry's
+  silent error-swallow with structured logging.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1.
+- **Changes:** structured JSON logger (`src/lib/observability/logger.ts`),
+  registry now logs `provider_failover` / `provider_capability_exhausted`,
+  `GET /api/health` (booleans only, no secret leakage), monitoring architecture
+  doc, logger unit tests.
+- **Validation:** typecheck, lint, `npm test` (19 passing), and `npm run build`
+  (health route present) all green.
+- **Assumptions:** metrics/tracing/alerting remain roadmap and are not claimed.

@@ -21,6 +21,8 @@ patterns the rest of the platform will build on.
 | Supabase destinations adapter + RLS migration | ✅ Adapter + migration scaffold (flag-gated) |
 | Affiliate routing model + pure resolver (no hardcoded links) | ✅ Built (data wiring roadmap) |
 | Explainable intelligence scoring core + engine scaffolds | ✅ Core + destination/events/disruption mappings (data feeds roadmap) |
+| Structured logging + failover instrumentation + `/api/health` | ✅ Built |
+| Local Supabase stack (config + seed + runbook) | ✅ Runnable locally without secrets |
 | Remaining intelligence engines (Travel DNA, safety, visa, etc.) | 🔜 Roadmap (see `/docs`) |
 
 Everything marked 🔜 is **roadmap, not implemented**. The docs are written to

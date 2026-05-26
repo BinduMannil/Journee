@@ -7,6 +7,7 @@
  * where failover policy lives (docs/architecture/provider-architecture.md).
  */
 import type { Provider, ProviderCapability } from "./types";
+import { log } from "@/lib/observability/logger";
 
 type AnyProvider = Provider<unknown>;
 
@@ -30,15 +31,24 @@ export function listProviders(capability: ProviderCapability): readonly AnyProvi
 export async function resolve<TResult>(
   capability: ProviderCapability,
 ): Promise<TResult | null> {
-  for (const provider of listProviders(capability)) {
+  const candidates = listProviders(capability);
+  for (const provider of candidates) {
     try {
       if (!(await provider.isAvailable())) continue;
       return (await provider.fetch()) as TResult;
-    } catch {
-      // Swallow and fall through to the next provider. Real implementations
-      // emit a structured log + metric here (see monitoring architecture).
+    } catch (error) {
+      // Fall through to the next provider, but record the failover so it is
+      // observable (see monitoring architecture).
+      log.warn("provider_failover", {
+        capability,
+        providerId: provider.id,
+        error: error instanceof Error ? error.message : String(error),
+      });
       continue;
     }
+  }
+  if (candidates.length > 0) {
+    log.warn("provider_capability_exhausted", { capability });
   }
   return null;
 }
