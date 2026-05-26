@@ -1,0 +1,64 @@
+/**
+ * Editorial destination catalog (seed content).
+ *
+ * This is intentionally a typed, data-driven catalog rather than markup baked
+ * into a component. In production this shape is what a `ContentProvider`
+ * adapter (see src/lib/providers) will return from Supabase or a CMS, so the
+ * UI never changes when the catalog grows.
+ */
+export interface Destination {
+  readonly id: string;
+  readonly name: string;
+  readonly country: string;
+  /** One-line editorial hook. */
+  readonly headline: string;
+  /** The dominant mood this place evokes — drives mood-first discovery later. */
+  readonly mood: string;
+  readonly imageUrl: string;
+}
+
+export const featuredDestinations: readonly Destination[] = [
+  {
+    id: "kyoto",
+    name: "Kyoto",
+    country: "Japan",
+    headline: "Lantern-lit alleys and the slow theatre of the tea house.",
+    mood: "Contemplative",
+    imageUrl:
+      "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1600&q=80",
+  },
+  {
+    id: "santorini",
+    name: "Santorini",
+    country: "Greece",
+    headline: "Whitewashed terraces poured over a drowned volcano.",
+    mood: "Luminous",
+    imageUrl:
+      "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=1600&q=80",
+  },
+  {
+    id: "marrakech",
+    name: "Marrakech",
+    country: "Morocco",
+    headline: "Spice smoke, brass light, and a medina that never quite sleeps.",
+    mood: "Electric",
+    imageUrl:
+      "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1600&q=80",
+  },
+  {
+    id: "patagonia",
+    name: "Patagonia",
+    country: "Chile",
+    headline: "Granite cathedrals and wind that rearranges the sky.",
+    mood: "Untamed",
+    imageUrl:
+      "https://images.unsplash.com/photo-1531794343993-cd2ef0e94c5b?auto=format&fit=crop&w=1600&q=80",
+  },
+];
+
+/** Rotating atmospheric quotes for the hero (driven by data, not hardcoded JSX). */
+export const heroQuotes: readonly string[] = [
+  "Travel is the only thing you buy that makes you richer.",
+  "The world is a book, and those who do not travel read only one page.",
+  "We travel not to escape life, but for life not to escape us.",
+];

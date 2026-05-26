@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+/*
+ * Journee design system tokens.
+ * These are the single source of truth for the cinematic / editorial / luxury
+ * identity. Components reference tokens, never raw hex values, so the palette
+ * can be retuned centrally. See docs/architecture/system-architecture.md.
+ */
+@theme {
+  /* Typography — Playfair Display (headings) + Montserrat (body). */
+  --font-display: var(--font-playfair), Georgia, serif;
+  --font-body: var(--font-montserrat), system-ui, sans-serif;
+
+  /* Warm luxury palette. */
+  --color-ink: #11100e;
+  --color-ink-soft: #1b1916;
+  --color-sand: #f4ede2;
+  --color-sand-soft: #ece2d2;
+  --color-stone: #8a8175;
+
+  /* Gold accents. */
+  --color-gold: #c9a24b;
+  --color-gold-bright: #e7c878;
+  --color-gold-deep: #9c7b2f;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-ink);
+  color: var(--color-sand);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Slow ambient drift used for atmospheric layering on the hero. */
+@keyframes journee-drift {
+  0% {
+    transform: scale(1.08) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: scale(1.16) translate3d(-1.5%, -2%, 0);
+  }
+}
+
+.journee-kenburns {
+  animation: journee-drift 22s ease-in-out infinite alternate;
+}
+
+@keyframes journee-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.journee-fade-up {
+  animation: journee-fade-up 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journee-kenburns,
+  .journee-fade-up {
+    animation: none;
+  }
+}
