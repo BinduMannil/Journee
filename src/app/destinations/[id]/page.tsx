@@ -7,8 +7,10 @@ import "@/lib/providers/register";
 import { featuredDestinations, type Destination } from "@/content/destinations";
 import { LightBadge } from "@/components/LightBadge";
 import { AtmosphericScore } from "@/components/AtmosphericScore";
+import { TravelReadiness } from "@/components/TravelReadiness";
 import { SaveButton } from "@/components/SaveButton";
 import { AffiliateCta } from "@/components/AffiliateCta";
+import { isFeatureEnabled } from "@/lib/config/flags";
 
 async function getDestinations(): Promise<readonly Destination[]> {
   return (await resolve<readonly Destination[]>("destinations")) ?? featuredDestinations;
@@ -127,6 +129,14 @@ export default async function DestinationPage({
               lon={destination.coordinates.lon}
             />
           </div>
+        )}
+
+        {destination.coordinates && isFeatureEnabled("mock-intelligence") && (
+          <TravelReadiness
+            destinationId={destination.id}
+            lat={destination.coordinates.lat}
+            lon={destination.coordinates.lon}
+          />
         )}
 
         <div className="mt-12">
