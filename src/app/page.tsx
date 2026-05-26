@@ -1,5 +1,6 @@
 import { QuoteRotator } from "@/components/QuoteRotator";
 import { DestinationCard } from "@/components/DestinationCard";
+import { AffiliateCta } from "@/components/AffiliateCta";
 import { site } from "@/lib/config/site";
 import { heroQuotes, type Destination } from "@/content/destinations";
 import { resolve } from "@/lib/providers/registry";
@@ -57,6 +58,12 @@ export default async function Home() {
           {destinations.map((destination) => (
             <DestinationCard key={destination.id} destination={destination} />
           ))}
+        </div>
+
+        {/* Renders only when an affiliate catalog is configured and a link
+            resolves; otherwise nothing is shown (no fabricated links). */}
+        <div className="mt-12 flex justify-center">
+          <AffiliateCta category="hotels" label="Plan your stay" />
         </div>
       </section>
 
