@@ -337,3 +337,19 @@ validation evidence so changes are reviewable without tribal knowledge._
 - **Note (process):** earlier local server checks were flaky because a
   `pkill -f next-server` pattern matched the dev shell's own command line; fixed
   by starting on a dedicated port without the self-matching pkill.
+
+---
+
+## 2026-05-26 — Saved collection: inline remove + count
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Close a `/saved` UX gap — items couldn't be removed without opening
+  each destination. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green).
+- **Changes:** `SavedList` now shows a saved count and an inline, accessible
+  "Remove" button per item (reuses the already-tested `useSaved().toggle`, which
+  persists to localStorage and syncs across tabs). No new persistence logic.
+- **Validation:** typecheck, lint, `npm test` (109 passing), build all green;
+  `/saved` runtime-verified via `npm start` + curl (200; empty-state renders
+  server-side). Remove affordance is client-side over the tested set logic
+  (`test/saved.collection.test.ts`).
