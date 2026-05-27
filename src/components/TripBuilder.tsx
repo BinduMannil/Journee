@@ -2,12 +2,14 @@
 
 import { useMemo, useState } from "react";
 import { buildItinerary, type Pacing } from "@/lib/intelligence/itinerary";
+import { routeDistanceKm } from "@/lib/intelligence/geo";
 
 export interface PlannableDestination {
   readonly id: string;
   readonly name: string;
   readonly mood: string;
   readonly intensity: number;
+  readonly coordinates?: { readonly lat: number; readonly lon: number };
 }
 
 const PACINGS: Pacing[] = ["relaxed", "balanced", "packed"];
@@ -24,12 +26,29 @@ export function TripBuilder({ destinations }: { destinations: readonly Plannable
   const toggle = (id: string) =>
     setSelected((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
 
+  const selectedDestinations = useMemo(
+    () => destinations.filter((d) => selected.includes(d.id)),
+    [destinations, selected],
+  );
+
   const itinerary = useMemo(() => {
-    const items = destinations
-      .filter((d) => selected.includes(d.id))
-      .map((d) => ({ id: d.id, title: d.name, intensity: d.intensity }));
+    const items = selectedDestinations.map((d) => ({
+      id: d.id,
+      title: d.name,
+      intensity: d.intensity,
+    }));
     return buildItinerary(items, pacing);
-  }, [destinations, selected, pacing]);
+  }, [selectedDestinations, pacing]);
+
+  const route = useMemo(
+    () =>
+      routeDistanceKm(
+        selectedDestinations
+          .filter((d) => d.coordinates)
+          .map((d) => d.coordinates!),
+      ),
+    [selectedDestinations],
+  );
 
   return (
     <div className="grid gap-10 md:grid-cols-2">
@@ -83,6 +102,12 @@ export function TripBuilder({ destinations }: { destinations: readonly Plannable
             </p>
           )}
         </div>
+        {route.totalKm > 0 && (
+          <p className="mb-4 text-xs uppercase tracking-[0.2em] text-stone">
+            Spans ~{route.totalKm.toLocaleString()} km · longest leg{" "}
+            {route.longestLegKm.toLocaleString()} km
+          </p>
+        )}
         {itinerary.days.length === 0 ? (
           <p className="text-sand/60">Select destinations to build a paced itinerary.</p>
         ) : (

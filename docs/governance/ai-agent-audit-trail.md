@@ -408,3 +408,23 @@ validation evidence so changes are reviewable without tribal knowledge._
   covered by the solar unit tests.
 - **Assumptions / safety:** times are approximate local solar time and labeled as
   such — no civil-clock claim without a timezone source; no fabricated data.
+
+---
+
+## 2026-05-26 — Distance-aware trip planner (haversine over real coordinates)
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Give `/plan` real spatial context from the catalog coordinates — no
+  external API. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green).
+- **Changes:** new pure `geo.ts` (`haversineKm`, `routeDistanceKm` → total +
+  longest leg). `TripBuilder` now shows the selected trip's span (~total km and
+  longest leg) computed from real coordinates; `PlannableDestination` carries
+  optional `coordinates`, passed through from the plan page. Memoized the
+  selected-destinations derivation so dependent memos stay stable.
+- **Validation:** typecheck, lint, `npm test` (**122** passing, +6 geo cases
+  incl. equator-degree checks, symmetry, route total/longest-leg, <2-stop zero),
+  build all green; `/plan` runtime-verified (200, no regression). The span line
+  is client-computed after selection; the distance math is unit-tested.
+- **Assumptions / safety:** straight-line great-circle distance (labeled "spans"),
+  not routed travel distance; no network, no fabricated data.

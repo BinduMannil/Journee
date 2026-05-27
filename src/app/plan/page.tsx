@@ -22,6 +22,7 @@ export default async function PlanPage() {
     name: d.name,
     mood: d.mood,
     intensity: intensityForMood(d.mood),
+    coordinates: d.coordinates,
   }));
 
   return (
