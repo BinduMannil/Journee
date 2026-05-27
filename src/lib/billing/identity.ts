@@ -14,3 +14,23 @@ export function getClientIp(headers: Headers): string {
   }
   return headers.get("x-real-ip")?.trim() || "unknown";
 }
+
+/**
+ * Anonymous visitor id (`jid`) parsed from the request's Cookie header, or null
+ * when absent. Reading the header (rather than `next/headers` cookies()) keeps
+ * the metering subject a pure function of the Request — the same value the
+ * middleware-set cookie carries — so route handlers stay testable and free of
+ * request-scope coupling.
+ */
+export function getVisitorId(headers: Headers): string | null {
+  const cookie = headers.get("cookie");
+  if (!cookie) return null;
+  for (const part of cookie.split(";")) {
+    const eq = part.indexOf("=");
+    if (eq === -1) continue;
+    if (part.slice(0, eq).trim() !== "jid") continue;
+    const value = part.slice(eq + 1).trim();
+    return value || null;
+  }
+  return null;
+}

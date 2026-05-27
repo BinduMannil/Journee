@@ -41,6 +41,11 @@ are already built and tested.
 
 ## 2. LLM / AI trip planning
 
+**Status:** the backend is **complete and tested** — the only remaining step to
+go live is config (the env + flag below). No code change is required. UI
+integration is intentionally **deferred** (the `/plan` page still renders the
+deterministic itinerary; wiring it to this endpoint is a separate, later task).
+
 **You need:** an LLM API key (recommended: Anthropic / Claude).
 
 1. Set environment variables:
@@ -52,13 +57,42 @@ are already built and tested.
 3. Rebuild/redeploy. Behaviour:
    - `POST /api/plan/ai` now returns an LLM-generated day-by-day plan; when the
      key/flag are absent it returns `503` and the UI uses the deterministic
-     itinerary engine. The provider is **inert until both are set**.
+     itinerary engine. The provider is **inert until both are set** —
+     `isAvailable()` requires the key **and** the flag (an AND-gate; covered by
+     tests for each half).
    - The default adapter targets the Anthropic Messages API
      (`src/lib/providers/llm/anthropic.ts`). To use a different vendor, implement
      the `PlanningProvider` contract and add it to the list in
      `src/lib/providers/llm/index.ts`.
 4. Verify: `POST /api/plan/ai` with a destinations + pacing body returns a plan
    (200) instead of 503.
+
+### API contract (`POST /api/plan/ai`)
+
+| Status | Meaning |
+| --- | --- |
+| `200` | Plan generated. Body: `{ summary, days[], providerId, model, entitlement }`. |
+| `400` | `invalid_json` (unparseable body) or `invalid_body` (fails the request schema). |
+| `402` | `quota_exhausted` — free quota + credits used up. |
+| `429` | `ip_free_limit_reached` — the per-IP free ceiling was hit. |
+| `502` | `ai_planning_failed` — the LLM call failed or returned a malformed shape; quota is **not** consumed. The client falls back to the deterministic planner. |
+| `503` | `ai_planning_unavailable` — the capability is off (key and/or flag missing). |
+
+**Request bounds (cost/abuse guard):** `destinations` is 1–20 items; each
+`id`/`name`/`mood` is a non-empty string (≤100/120/120 chars); `pacing` is one of
+`relaxed|balanced|packed`; optional `notes` ≤500 chars.
+
+**Response-shape validation:** the model's JSON is validated against a strict
+schema (`parsePlanResponse`) before it is returned — `summary` non-empty,
+1–60 `days`, each with a non-empty `title` (and an optional `detail`). A
+truncated or off-shape completion throws and surfaces as `502`, never a partial
+or malformed `200`.
+
+**Metering subject:** derived from the `jid` cookie parsed off the request's
+`Cookie` header (`getVisitorId`), so the handler is a pure function of the
+`Request`. The LLM call itself is **server-only** — the adapter reads the
+non-public `LLM_API_KEY` (never `NEXT_PUBLIC_`, so it is never bundled
+client-side) and is imported only by this server route.
 
 ## 2a. Metering, free trial, and abuse limits
 

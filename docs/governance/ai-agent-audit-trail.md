@@ -628,3 +628,46 @@ validation evidence so changes are reviewable without tribal knowledge._
   server-only (never `NEXT_PUBLIC_`, never logged or returned); `.env.local`
   gitignored and never created. The provided key was used inline for one test
   only and should be rotated (it was shared in plaintext chat).
+
+---
+
+## 2026-05-27 — Finalize + audit the AI planning backend (scope-locked)
+
+- **Agent / session:** Claude Code (web), session `014jSUALjh8BSziymG86z7ZA`.
+- **Scope:** Complete and audit the **AI planning backend only** — review the
+  provider/registry/flag/route, harden validation + failure handling, raise test
+  coverage, update backend docs. Hard constraints: no UI work; do **not** attempt
+  hosted Supabase (blocked 5–6 days); no secrets; no fake operational claims.
+- **Branch / PR:** `claude/ai-planning-backend-frceX`.
+- **Changes:**
+  - **Server-only gating (verified):** `anthropicPlanningProvider.isAvailable()`
+    is a strict AND of `getLlmConfig()` (non-public `LLM_API_KEY`) and the
+    `ai-planning` flag; imported only by the server route. Documented why the
+    key can never reach the client bundle.
+  - **Request hardening:** `POST /api/plan/ai` request schema now bounds the
+    payload (1–20 destinations, per-field length caps) as a cost/abuse guard.
+  - **Response-shape hardening:** new `parsePlanResponse` validates the model's
+    JSON with a strict zod schema (non-empty summary, 1–60 days, non-empty
+    titles) → a bad/truncated completion throws → `502` (never a malformed 200).
+  - **Testability + portability:** metering subject now derives from the `jid`
+    cookie via `getVisitorId(request.headers)` instead of `next/headers`
+    `cookies()`; the handler is a pure function of the `Request` (same prod
+    value). Added test-only `resetEnvCache` / `resetFlagsCache` (mirroring the
+    existing `resetUsageStore`).
+  - **Tests (+10; suite 151 → 161):** new `test/ai.planning.enabled.test.ts`
+    covers provider availability, missing-key + flag-disabled gating, over-large
+    payload (400), quota exhausted (402), per-IP free limit (429), LLM failure
+    (502), malformed response (502), successful structured parse (200, quota
+    consumed), and `parsePlanResponse` shape validation. Smoke now POSTs
+    `/api/plan/ai` and asserts the inert `503`.
+  - **Docs (backend only):** hosted-enablement runbook (status + full status-code
+    table + bounds/validation/server-only notes); continuation-handoff (AI
+    backend moved to "config-only to enable"; removed a duplicated section);
+    docs README status line.
+- **Validation:** `typecheck`, `lint`, `npm test` (**161** passing), `build`, and
+  `npm run smoke` (**24/24**) all green.
+- **Assumptions / safety:** **no UI changes** (the `/plan` page is untouched; UI
+  wiring is deferred). **No hosted Supabase work and no hosted DB migrations** —
+  hosted setup remains blocked. **No live LLM call** — no key is present in this
+  environment, so the network boundary is covered by mocked-`fetch` tests; no
+  operational claim is made that wasn't observed. No secrets committed.

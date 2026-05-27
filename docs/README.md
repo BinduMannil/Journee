@@ -11,6 +11,7 @@ This is the entry point for engineering documentation. It is deliberately
   - [`provider-architecture.md`](architecture/provider-architecture.md) — the provider-agnostic adapter pattern.
   - [`configuration-architecture.md`](architecture/configuration-architecture.md) — config-driven / no-hardcoding approach.
   - [`affiliate-routing-architecture.md`](architecture/affiliate-routing-architecture.md) — data-driven monetization & link routing.
+  - [`ai-planning-architecture.md`](architecture/ai-planning-architecture.md) — server-only LLM trip-planning seam + route contract (config-only to enable).
   - [`intelligence-engine-architecture.md`](architecture/intelligence-engine-architecture.md) — shared explainable scoring + engine scaffolds.
   - [`monitoring-observability-architecture.md`](architecture/monitoring-observability-architecture.md) — logging, metrics, health.
   - [`service-dependency-map.md`](architecture/service-dependency-map.md) — real dependency register.
@@ -47,7 +48,12 @@ Affiliate & monetization (model + resolver) · Destination intelligence ·
 Festival & cultural (events engine) · Political & disruption · shared explainable
 scoring core.
 
-**Not yet started:** Real-time conditions · AI planning · Pathfinder discovery ·
+**Backend built, config-only to enable:** AI planning — `POST /api/plan/ai` with
+a server-only LLM provider (Anthropic adapter), strict request/response
+validation, metering + abuse gates; enable with `LLM_API_KEY` + the `ai-planning`
+flag (see `docs/runbooks/hosted-enablement.md`). UI wiring is deferred.
+
+**Not yet started:** Real-time conditions · Pathfinder discovery ·
 Travel DNA · Dynamic itinerary · Weather & environmental · Safety & risk ·
 Social & creator · Memory & reflection · Travel confidence · Visa & entry ·
 Local culture · City energy.

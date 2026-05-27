@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { cookies } from "next/headers";
 import { getPlanningProvider } from "@/lib/providers/llm";
 import { getUsageStore } from "@/lib/billing/store";
 import {
@@ -8,7 +7,7 @@ import {
   EMPTY_USAGE,
   type UsageState,
 } from "@/lib/billing/entitlements";
-import { getClientIp } from "@/lib/billing/identity";
+import { getClientIp, getVisitorId } from "@/lib/billing/identity";
 import { FREE_AI_PLANS, FREE_AI_PLANS_PER_IP } from "@/content/pricing";
 import { log } from "@/lib/observability/logger";
 
@@ -20,10 +19,19 @@ import { log } from "@/lib/observability/logger";
  */
 export const dynamic = "force-dynamic";
 
+// Bounds double as a cost/abuse guard: the request shape caps how large a prompt
+// (and therefore how expensive an LLM call) a single request can produce.
 const requestSchema = z.object({
   destinations: z
-    .array(z.object({ id: z.string().min(1), name: z.string().min(1), mood: z.string().min(1) }))
-    .min(1),
+    .array(
+      z.object({
+        id: z.string().min(1).max(100),
+        name: z.string().min(1).max(120),
+        mood: z.string().min(1).max(120),
+      }),
+    )
+    .min(1)
+    .max(20),
   pacing: z.enum(["relaxed", "balanced", "packed"]),
   notes: z.string().max(500).optional(),
 });
@@ -52,8 +60,7 @@ export async function POST(request: Request): Promise<Response> {
   // Cost guardrail: gate the (paid) LLM call on the visitor's entitlement BEFORE
   // calling it. Free quota first, then credits; 402 when exhausted.
   const store = getUsageStore();
-  const jar = await cookies();
-  const subject = `jid:${jar.get("jid")?.value ?? "anonymous"}`;
+  const subject = `jid:${getVisitorId(request.headers) ?? "anonymous"}`;
   const usage = await store.get(subject);
   const entitlement = evaluateEntitlement(usage, FREE_AI_PLANS);
   if (!entitlement.allowed) {

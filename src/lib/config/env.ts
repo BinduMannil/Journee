@@ -48,6 +48,11 @@ export function getEnv(): Env {
   return cached;
 }
 
+/** Exposed for tests: drop the memoized env so a changed `process.env` re-reads. */
+export function resetEnvCache(): void {
+  cached = null;
+}
+
 export interface SupabaseClientConfig {
   readonly url: string;
   readonly anonKey: string;

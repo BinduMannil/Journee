@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type { PlanningProvider, PlanningRequest, PlanningResult } from "./types";
 import { getLlmConfig } from "@/lib/config/env";
 import { isFeatureEnabled } from "@/lib/config/flags";
@@ -45,6 +46,30 @@ interface AnthropicTextBlock {
   readonly text?: string;
 }
 
+/**
+ * The structured plan we require back from the model. Validating the parsed JSON
+ * here (rather than trusting its shape) means a malformed/truncated completion
+ * throws cleanly — the route turns that into a 502 and the deterministic planner
+ * takes over. Bounds keep a runaway response from becoming a runaway payload.
+ */
+const planResponseSchema = z.object({
+  summary: z.string().min(1),
+  days: z
+    .array(
+      z.object({
+        title: z.string().min(1),
+        detail: z.string().default(""),
+      }),
+    )
+    .min(1)
+    .max(60),
+});
+
+/** Parse the model's text into a validated plan, or throw on a bad shape. */
+export function parsePlanResponse(text: string): z.infer<typeof planResponseSchema> {
+  return planResponseSchema.parse(JSON.parse(stripCodeFence(text)));
+}
+
 export const anthropicPlanningProvider: PlanningProvider = {
   id: "anthropic-planning",
   isAvailable: () => getLlmConfig() !== null && isFeatureEnabled("ai-planning"),
@@ -75,19 +100,10 @@ export const anthropicPlanningProvider: PlanningProvider = {
       .filter((b) => b.type === "text" && typeof b.text === "string")
       .map((b) => b.text as string)
       .join("");
-    const parsed = JSON.parse(stripCodeFence(text)) as {
-      summary?: unknown;
-      days?: { title?: unknown; detail?: unknown }[];
-    };
-    if (typeof parsed.summary !== "string" || !Array.isArray(parsed.days)) {
-      throw new Error("Unexpected LLM response shape");
-    }
+    const parsed = parsePlanResponse(text);
     return {
       summary: parsed.summary,
-      days: parsed.days.map((d) => ({
-        title: String(d.title ?? ""),
-        detail: String(d.detail ?? ""),
-      })),
+      days: parsed.days.map((d) => ({ title: d.title, detail: d.detail })),
       providerId: anthropicPlanningProvider.id,
       model: config.model,
     };

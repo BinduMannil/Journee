@@ -33,6 +33,15 @@ entries describe what genuinely shipped (roadmap items are labeled as such).
   per-visitor A/B, safe URL rendering, gated CTA, click/conversion ingestion,
   paginated time-windowed analytics. No hardcoded links.
 
+### AI planning backend (config-only to enable; UI deferred)
+- `POST /api/plan/ai` with a **server-only** LLM provider seam (Anthropic
+  adapter), inert until `LLM_API_KEY` **and** the `ai-planning` flag are both set.
+- Hardened contract: bounded request schema (cost/abuse guard), strict
+  response-shape validation (`parsePlanResponse`), and a clean failure contract
+  (`502` on LLM error/bad shape — quota not consumed). Metering + per-IP abuse
+  gates run before the paid call (`402`/`429`). Status table in
+  `docs/runbooks/hosted-enablement.md`.
+
 ### Intelligence
 - Shared explainable scoring core (versioned weights, contribution breakdown,
   confidence). Engines: destination, events, disruption, safety, visa, culture,
@@ -51,6 +60,7 @@ entries describe what genuinely shipped (roadmap items are labeled as such).
   e2e smoke (`scripts/smoke.mjs`) asserts route status + security headers in CI.
 
 ### Roadmap / externally blocked
-- Hosted Supabase (secrets), live weather feed (egress allowlist), AI planning
-  (LLM provider), branch protection (repo-admin). See
-  `docs/governance/continuation-handoff.md`.
+- Hosted Supabase (secrets — currently blocked; no hosted migrations applied),
+  live weather feed (egress allowlist), branch protection (repo-admin). AI
+  planning backend is built and config-only to enable (LLM key + flag); only its
+  UI wiring is deferred. See `docs/governance/continuation-handoff.md`.

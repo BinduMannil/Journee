@@ -37,3 +37,8 @@ function enabledSet(): ReadonlySet<string> {
 export function isFeatureEnabled(flag: FeatureFlag): boolean {
   return enabledSet().has(flag);
 }
+
+/** Exposed for tests: drop the memoized flag set so a changed env re-reads. */
+export function resetFlagsCache(): void {
+  cached = null;
+}
