@@ -119,6 +119,17 @@ Two design points keep this honest and composable:
   wired. The bridge is exercised end-to-end by the seed adapters, not by any
   live feed — so no fake operational claims are introduced. A live source slots
   in behind the same contract without touching the bridge or the engines.
+- **Backend assembler (`destination-readiness.ts`).** Composes a destination's
+  Travel Confidence aggregate from the travel-data layer via the bridge:
+  `composeDestinationReadiness(...)` is pure (takes resolved responses);
+  `assembleDestinationReadiness(...)` resolves through the registry first. A
+  sub-engine is included **only** when its source yields a usable fragment, and
+  every source's `provenance` (status / source type / quality / whether it
+  contributed) is returned — so callers can show what was seed vs live vs stale.
+  This is the REAL (seed-fed) server-side counterpart to the gated UI preview
+  (`TravelReadiness`), which uses mock contexts. Never throws: with no providers
+  registered, sources resolve `unavailable` and the aggregate just has zero
+  coverage.
 
 ## Roadmap (per the product vision)
 
