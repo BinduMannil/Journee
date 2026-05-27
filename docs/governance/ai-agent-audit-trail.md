@@ -671,3 +671,28 @@ validation evidence so changes are reviewable without tribal knowledge._
   hosted setup remains blocked. **No live LLM call** — no key is present in this
   environment, so the network boundary is covered by mocked-`fetch` tests; no
   operational claim is made that wasn't observed. No secrets committed.
+
+---
+
+## 2026-05-27 — Live end-to-end verification of the AI planning backend
+
+- **Agent / session:** Claude Code (web), session `014jSUALjh8BSziymG86z7ZA`.
+- **Scope:** Runtime-only verification of the merged backend (PR #7) against the
+  real Anthropic API. No code or repo changes beyond this audit note.
+- **Result:** `POST /api/plan/ai` with a two-destination, balanced-pacing body
+  returned **`200`** with a genuine 8-day itinerary (`providerId:
+  anthropic-planning`, `model: claude-sonnet-4-6` — the default), and the
+  `entitlement` metering decremented free quota **3 → 2** (`remainingFree: 2`).
+  This exercised the full real path: key + flag gating, request validation, the
+  live LLM call, fence-stripping + strict `parsePlanResponse` shape validation,
+  metering, and the success response. Egress to `api.anthropic.com` is open from
+  this environment (an unauthenticated probe returned `401`, i.e. reachable).
+- **Security:** the key was supplied **inline for a single command**, never
+  written to disk, never committed, and its value never printed; the throwaway
+  runner script was deleted. Working tree confirmed clean (no `.env.local`; a
+  tree-wide grep for the key prefix returns nothing). The key was shared in
+  plaintext chat and **must be rotated** — treat it as exposed.
+- **Conclusion:** the AI planning backend is **confirmed production-ready** — it
+  goes live by setting `LLM_API_KEY` (+ optional `LLM_MODEL`) and adding
+  `ai-planning` to `JOURNEE_ENABLED_FEATURES` in the environment config. Hosted
+  Supabase remains blocked; UI integration remains deferred.
