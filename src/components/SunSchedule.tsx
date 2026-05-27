@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { sunTimes, formatSolarTime, type SunTimes } from "@/lib/intelligence/solar";
+import { moonPhase, type MoonPhase } from "@/lib/intelligence/moon";
 
 /**
  * Today's light schedule for a destination — sunrise, sunset, golden hour, and
@@ -17,9 +18,12 @@ function dayLength(hours: number): string {
 
 export function SunSchedule({ lat }: { lat: number }) {
   const [t, setT] = useState<SunTimes | null>(null);
+  const [moon, setMoon] = useState<MoonPhase | null>(null);
 
   useEffect(() => {
-    setT(sunTimes(new Date(), lat));
+    const now = new Date();
+    setT(sunTimes(now, lat));
+    setMoon(moonPhase(now));
   }, [lat]);
 
   if (!t) return null;
@@ -79,6 +83,15 @@ export function SunSchedule({ lat }: { lat: number }) {
             </p>
           )}
         </>
+      )}
+
+      {moon && (
+        <p className="mt-4 border-t border-sand/10 pt-4 text-sm text-sand/70">
+          <span className="uppercase tracking-[0.25em] text-gold">Moon</span>
+          <span className="ml-3">
+            {moon.phase} · {Math.round(moon.illumination * 100)}% lit
+          </span>
+        </p>
       )}
     </div>
   );

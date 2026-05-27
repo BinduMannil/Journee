@@ -428,3 +428,22 @@ validation evidence so changes are reviewable without tribal knowledge._
   is client-computed after selection; the distance math is unit-tested.
 - **Assumptions / safety:** straight-line great-circle distance (labeled "spans"),
   not routed travel distance; no network, no fabricated data.
+
+---
+
+## 2026-05-26 — Moon phase signal (pure astronomy)
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Round out the celestial "how the night feels" story alongside the
+  sun schedule — no external resource. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green).
+- **Changes:** new pure `moon.ts` (`moonPhase(date)` → age, illuminated fraction,
+  phase name) from a known new-moon epoch + the mean synodic month. Surfaced as a
+  "Moon · <phase> · N% lit" line in the existing `SunSchedule` detail card.
+- **Validation:** typecheck, lint, `npm test` (**127** passing, +5 moon cases
+  incl. new/full/first-quarter anchors, 0..1 bound, synodic wrap), build all
+  green. Rendered within the already-verified detail card (client-computed; math
+  unit-tested).
+- **Assumptions / safety:** mean-synodic approximation (well within a day),
+  labeled as a derived signal; a real ephemeris can replace it behind the same
+  shape; no network, no fabricated data.
