@@ -120,9 +120,18 @@ what makes the entitlement/abuse paths unit-testable.
 | --- | --- |
 | Key and/or flag missing | `503`; client falls back to the deterministic planner. |
 | LLM HTTP error (non-2xx) | Adapter throws → `502`; quota not consumed. |
+| Upstream hang | The call is aborted after a fixed timeout (`AbortController`, 60s) → `502`; quota not consumed. |
 | Malformed/truncated completion | `parsePlanResponse` throws → `502`; quota not consumed. |
 | Out of quota + credits | `402` before any LLM call. |
 | Per-IP free ceiling reached | `429` before any LLM call. |
+
+## Observability
+
+The route emits counters (`src/lib/observability/metrics.ts`, surfaced on
+`/api/metrics` and admin status): `ai_planning_success{providerId}` on a `200`
+and `ai_planning_failed` on a `502`. Gating responses (`503/402/429/400`) are not
+counted as generation outcomes. The adapter logs the underlying error message on
+failure (never the key).
 
 ## Tests
 

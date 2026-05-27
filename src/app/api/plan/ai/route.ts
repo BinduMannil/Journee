@@ -10,6 +10,7 @@ import {
 import { getClientIp, getVisitorId } from "@/lib/billing/identity";
 import { FREE_AI_PLANS, FREE_AI_PLANS_PER_IP } from "@/content/pricing";
 import { log } from "@/lib/observability/logger";
+import { incrementCounter } from "@/lib/observability/metrics";
 
 /**
  * AI trip planning (server-only). Returns an LLM-generated day-by-day plan when
@@ -92,6 +93,7 @@ export async function POST(request: Request): Promise<Response> {
       if (ipConsumed) await store.save(ipSubject, ipConsumed.next);
     }
     const remaining = evaluateEntitlement(after, FREE_AI_PLANS);
+    incrementCounter("ai_planning_success", { providerId: plan.providerId });
     return Response.json(
       {
         ...plan,
@@ -104,6 +106,7 @@ export async function POST(request: Request): Promise<Response> {
       { status: 200 },
     );
   } catch (error) {
+    incrementCounter("ai_planning_failed");
     log.error("ai_planning_failed", {
       error: error instanceof Error ? error.message : String(error),
     });
