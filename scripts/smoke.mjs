@@ -32,6 +32,17 @@ const checks = [
   ["/opengraph-image", 200],
 ];
 
+// [path, body, expectedStatus] — POST checks. With no LLM key/flag in the smoke
+// env, AI planning must be inert: a well-formed request returns 503 (capability
+// off), not a 200 or a crash.
+const postChecks = [
+  [
+    "/api/plan/ai",
+    { destinations: [{ id: "kyoto", name: "Kyoto", mood: "Contemplative" }], pacing: "balanced" },
+    503,
+  ],
+];
+
 // [path, header, substring] — assert a response header contains an expected
 // token. Guards the enforced security headers against silent regression.
 const headerChecks = [
@@ -88,6 +99,23 @@ try {
     if (!ok) failed++;
     console.log(`${ok ? "ok  " : "FAIL"} ${path} -> ${status} (expected ${expected})`);
   }
+  for (const [path, body, expected] of postChecks) {
+    let status = 0;
+    try {
+      const res = await fetch(`${base}${path}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body),
+        redirect: "manual",
+      });
+      status = res.status;
+    } catch {
+      status = -1;
+    }
+    const ok = status === expected;
+    if (!ok) failed++;
+    console.log(`${ok ? "ok  " : "FAIL"} POST ${path} -> ${status} (expected ${expected})`);
+  }
   for (const [path, header, substring] of headerChecks) {
     let value = "";
     try {
@@ -102,7 +130,7 @@ try {
       `${ok ? "ok  " : "FAIL"} ${path} [${header}] contains "${substring}" (got "${value}")`,
     );
   }
-  const total = checks.length + headerChecks.length;
+  const total = checks.length + postChecks.length + headerChecks.length;
   console.log(`\n${total - failed}/${total} checks passed`);
   cleanup(failed === 0 ? 0 : 1);
 } catch (e) {

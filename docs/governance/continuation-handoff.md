@@ -1,7 +1,41 @@
 # Continuation Handoff
 
-_Last updated: 2026-05-26. Snapshot for the next engineer/agent to resume
+_Last updated: 2026-05-27. Snapshot for the next engineer/agent to resume
 without context loss._
+
+## Latest session (2026-05-27) — AI planning backend finalized
+
+The AI trip-planning **backend** is now complete, audited, and fully tested —
+**config-only to enable** (no further code needed). What changed this session:
+
+- **Server-only LLM seam confirmed:** the Anthropic adapter reads the non-public
+  `LLM_API_KEY` (never `NEXT_PUBLIC_`, so never bundled client-side) and is
+  imported only by the server route. `isAvailable()` is a strict AND of the key
+  **and** the `ai-planning` flag — inert until both are set.
+- **Hardened request validation:** `POST /api/plan/ai` now bounds the payload
+  (1–20 destinations, per-field length caps, ≤500-char notes) as a cost/abuse
+  guard.
+- **Hardened response-shape validation:** the model's JSON is validated with a
+  strict zod schema (`parsePlanResponse`) before return; a truncated/off-shape
+  completion throws → `502` (never a malformed `200`).
+- **Clean failure contract:** `502 ai_planning_failed` on LLM error or bad shape;
+  quota is **not** consumed on failure. Full status table in
+  `docs/runbooks/hosted-enablement.md`.
+- **Testable handler:** the metering subject now derives from the `jid` cookie
+  parsed off the request headers (`getVisitorId`) instead of `next/headers`
+  `cookies()`, so the route is a pure function of the `Request` (same value in
+  production).
+- **Tests (+10, suite now 161):** provider availability; missing-key and
+  flag-disabled gating; invalid body / over-large payload; quota exhausted (402);
+  per-IP free limit (429); LLM failure (502); malformed response (502);
+  successful structured parse (200, quota consumed). Smoke now also POSTs
+  `/api/plan/ai` and asserts the inert `503`.
+
+**Explicitly out of scope / unchanged this session:** no UI work (the `/plan`
+page is untouched; wiring it to this endpoint is deferred); **hosted Supabase
+remains blocked** and **no hosted DB migrations were applied**; no secrets
+committed; no live LLM call was made (no key in this environment — the network
+boundary is covered by mocked-`fetch` tests, not fabricated operational claims).
 
 ## Where things stand
 
@@ -83,9 +117,12 @@ routes verified via `npm start` + curl, and a 19+ check e2e smoke
   - Live weather feed — Open-Meteo egress blocked by the network allowlist
     (`comfortScore` + `WeatherProvider` contract are ready to receive it).
   - Branch protection / org settings — needs repo-admin access.
-- **Not started (no external block, just scope):** auth/RLS user sessions, AI
-  planning, Travel DNA, dynamic itinerary, real-time conditions, safety/risk,
-  visa, local culture, city energy, memory/reflection, social/creator.
+- **Backend built, config-only to enable:** AI planning (`POST /api/plan/ai`) —
+  provider + adapter + route + metering + abuse gates complete and tested; needs
+  only `LLM_API_KEY` + the `ai-planning` flag (and UI wiring, deferred).
+- **Not started (no external block, just scope):** auth/RLS user sessions,
+  Travel DNA, dynamic itinerary, real-time conditions, safety/risk, visa, local
+  culture, city energy, memory/reflection, social/creator.
 
 No operational claims are made for unbuilt systems — keep it that way.
 
@@ -111,7 +148,8 @@ fatigue budget + a per-day load meter; `/saved` gained inline remove + a count;
 - **Hosted Supabase** (staging/prod) — real secrets.
 - **Live weather feed** — Open-Meteo egress still 403 from the allowlist
   (re-verified); `WeatherProvider` + `comfortScore` ready to receive it.
-- **AI planning engine** — needs an LLM/provider (network).
+- **AI planning backend** — **done + tested**; config-only to enable (set
+  `LLM_API_KEY` + flag). Only the UI wiring remains and is intentionally deferred.
 - **Branch protection** — repo-admin access.
 - **Full nonce-based CSP enforcement** — needs a real-browser hydration check
   (Next.js injects inline bootstrap scripts/styles) and would force dynamic
@@ -131,21 +169,15 @@ The seams are now **config-only to enable** — see
   async and resolves through the provider, so DB destinations get pages at build
   (kept `dynamicParams=false` for true 404s; rows added post-build appear on the
   next build, or wire ISR later if desired).
-- LLM / AI planning: set `LLM_API_KEY` (+ optional `LLM_MODEL`) and enable the
-  `ai-planning` flag. Seam built + tested: `PlanningProvider` contract, Anthropic
-  adapter (inert until configured), `POST /api/plan/ai` (503 until enabled).
+- LLM / AI planning: **backend complete + tested — config-only to enable.** Set
+  `LLM_API_KEY` (+ optional `LLM_MODEL`) and enable the `ai-planning` flag.
+  `PlanningProvider` contract, Anthropic adapter (inert until configured, strict
+  response-shape validation), and `POST /api/plan/ai` (bounded request, metering
+  + abuse gates, `503` until enabled, `502` on failure). UI wiring is the only
+  remaining (deferred) step.
 - Live weather: allowlist the weather host, implement `OpenMeteoWeatherProvider`
   to the existing `WeatherProvider` contract, register ahead of the mock.
 - Branch protection: enable required PR review + status checks on `main`.
-
-## Conventions to keep
-
-- New external integrations go **behind a provider adapter**, gated by
-  `isAvailable()` so fallback holds.
-- No hardcoded copy/links/thresholds — use `config`/`content`/versioned weights.
-- Every architecture-changing PR updates the relevant `docs/` file in the same
-  PR; add an ADR for significant decisions; append to the AI audit trail for
-  autonomous changes.
 
 ## Conventions to keep
 
