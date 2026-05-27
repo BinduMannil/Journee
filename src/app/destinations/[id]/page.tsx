@@ -7,6 +7,7 @@ import "@/lib/providers/register";
 import { featuredDestinations, type Destination } from "@/content/destinations";
 import { LightBadge } from "@/components/LightBadge";
 import { AtmosphericScore } from "@/components/AtmosphericScore";
+import { SunSchedule } from "@/components/SunSchedule";
 import { TravelReadiness } from "@/components/TravelReadiness";
 import { SaveButton } from "@/components/SaveButton";
 import { AffiliateCta } from "@/components/AffiliateCta";
@@ -130,6 +131,8 @@ export default async function DestinationPage({
             />
           </div>
         )}
+
+        {destination.coordinates && <SunSchedule lat={destination.coordinates.lat} />}
 
         {destination.coordinates && isFeatureEnabled("mock-intelligence") && (
           <TravelReadiness

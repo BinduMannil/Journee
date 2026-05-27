@@ -386,3 +386,25 @@ validation evidence so changes are reviewable without tribal knowledge._
 - **Also confirmed (blocked, not faked):** re-tested Open-Meteo egress —
   `https://api.open-meteo.com/...` returns HTTP 403 from the network allowlist,
   so the real `OpenMeteoWeatherProvider` stays blocked per the handoff.
+
+---
+
+## 2026-05-26 — Real sun-times / golden-hour schedule (no network)
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Add genuinely-computed (not mock) intelligence that needs no
+  external resource — a per-destination light schedule. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green).
+- **Changes:** extended `solar.ts` with `sunTimes(date, lat)` (sunrise, sunset,
+  solar noon, day length, morning/evening golden-hour windows) + `formatSolarTime`,
+  refactoring declination into one shared source. Handles polar day/night
+  (midnight-sun / polar-night). New `SunSchedule` component surfaces it on
+  destination detail pages, honestly labeled *local solar time* (omits tz/DST/
+  equation-of-time). All values are real solar geometry — no network, no mock.
+- **Validation:** typecheck, lint, `npm test` (**116** passing, +4 solar cases
+  incl. equator-equinox, polar edge cases, hemisphere asymmetry, formatting),
+  build all green; detail route runtime-verified (200, no regression). The panel
+  is client-computed (like the atmosphere score), so its rendered times are
+  covered by the solar unit tests.
+- **Assumptions / safety:** times are approximate local solar time and labeled as
+  such — no civil-clock claim without a timezone source; no fabricated data.
