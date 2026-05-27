@@ -144,8 +144,19 @@ test("LLM failure (upstream non-2xx) -> 502 and free quota NOT consumed", async 
   assert.equal((await res.json()).error, "ai_planning_failed");
   const after = await getUsageStore().get("jid:user-fail");
   assert.equal(after.usedFree, 0);
-  // Failure is counted for observability.
-  assert.equal(getCounters()["ai_planning_failed"], 1);
+  // Failure is counted with a coarse reason label (HTTP error -> upstream_error).
+  assert.equal(getCounters()["ai_planning_failed{reason=upstream_error}"], 1);
+});
+
+test("an aborted/timed-out upstream call -> 502 counted as reason=timeout", async () => {
+  mockFetch(() => {
+    const err = new Error("The operation was aborted");
+    err.name = "AbortError";
+    throw err;
+  });
+  const res = await POST(req(validBody, { cookie: "jid=user-timeout" }));
+  assert.equal(res.status, 502);
+  assert.equal(getCounters()["ai_planning_failed{reason=timeout}"], 1);
 });
 
 test("malformed LLM response shape -> 502 and free quota NOT consumed", async () => {
@@ -155,6 +166,8 @@ test("malformed LLM response shape -> 502 and free quota NOT consumed", async ()
   assert.equal((await res.json()).error, "ai_planning_failed");
   const after = await getUsageStore().get("jid:user-bad");
   assert.equal(after.usedFree, 0);
+  // A bad shape is a parse/validation failure, not an upstream one.
+  assert.equal(getCounters()["ai_planning_failed{reason=invalid_response}"], 1);
 });
 
 test("quota exhausted -> 402 before any LLM call", async () => {
