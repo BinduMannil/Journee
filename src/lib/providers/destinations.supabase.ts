@@ -12,16 +12,20 @@ import type { DestinationProvider } from "./types";
 import type { Destination } from "@/content/destinations";
 import { isFeatureEnabled } from "@/lib/config/flags";
 
-interface DestinationRow {
+export interface DestinationRow {
   readonly id: string;
   readonly name: string;
   readonly country: string;
   readonly headline: string;
   readonly mood: string;
   readonly image_url: string;
+  readonly latitude: number | null;
+  readonly longitude: number | null;
+  readonly description: string | null;
+  readonly best_time: string | null;
 }
 
-function mapRow(row: DestinationRow): Destination {
+export function mapRow(row: DestinationRow): Destination {
   return {
     id: row.id,
     name: row.name,
@@ -29,6 +33,12 @@ function mapRow(row: DestinationRow): Destination {
     headline: row.headline,
     mood: row.mood,
     imageUrl: row.image_url,
+    coordinates:
+      row.latitude !== null && row.longitude !== null
+        ? { lat: row.latitude, lon: row.longitude }
+        : undefined,
+    description: row.description ?? undefined,
+    bestTime: row.best_time ?? undefined,
   };
 }
 
@@ -44,7 +54,7 @@ export const supabaseDestinationProvider: DestinationProvider = {
     if (!client) throw new Error("Supabase client unavailable");
     const { data, error } = await client
       .from("destinations")
-      .select("id,name,country,headline,mood,image_url")
+      .select("id,name,country,headline,mood,image_url,latitude,longitude,description,best_time")
       .order("name");
     if (error) throw new Error(error.message);
     return (data as DestinationRow[]).map(mapRow);

@@ -30,6 +30,7 @@ supabase db reset   # runs every migration in order, then seed.sql
 | `0001_destinations.sql` | Destinations catalog + public-read RLS. |
 | `0002_affiliate.sql` | Affiliate catalog + event tables + deny-by-default RLS. |
 | `0003_event_indexes.sql` | Indexes for analytics aggregation/time-windowing. |
+| `0004_destination_details.sql` | Adds coordinates + description + best_time to destinations (parity with the app's `Destination` type / coordinate-driven signals). |
 
 ## Hosted environments (externally blocked for the agent)
 

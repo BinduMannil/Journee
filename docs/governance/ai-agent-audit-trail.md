@@ -447,3 +447,31 @@ validation evidence so changes are reviewable without tribal knowledge._
 - **Assumptions / safety:** mean-synodic approximation (well within a day),
   labeled as a derived signal; a real ephemeris can replace it behind the same
   shape; no network, no fabricated data.
+
+---
+
+## 2026-05-26 — Supabase schema parity: destination coordinates + editorial
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Audit the Supabase file structure for completeness/consistency and
+  close a gap that would regress the product on connect. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green).
+- **Audit result:** for the built surfaces (destinations + affiliate) the schema,
+  RLS, seed, local `config.toml`, clients, env boundary, provider `select`s, and
+  write/analytics paths all line up. **Gap found:** the `destinations` table
+  carried only `id/name/country/headline/mood/image_url`, but the app's
+  `Destination` type also has `coordinates`/`description`/`bestTime` — so a
+  DB-backed catalog would silently lose the coordinate-driven signals (light
+  phase, sun/moon schedule, atmosphere score, trip distance) and editorial copy.
+- **Changes:** new forward-only `0004_destination_details.sql`
+  (`add column if not exists` latitude/longitude/description/best_time); provider
+  `mapRow`/`select` now read + map them (coordinates only when both lat/lon
+  present); `seed.sql` carries the four destinations' real coordinates + copy;
+  migrations README updated; `mapRow` exported + unit-tested.
+- **Validation:** typecheck, lint, `npm test` (**130** passing, +3 mapping cases),
+  build all green. (Seed SQL applies on `supabase db reset` locally — not run
+  here; no hosted DB.)
+- **Still open (documented, needs DB to exercise):** when Supabase is connected,
+  make `generateStaticParams` async/ISR so DB-only destinations get detail pages
+  (per the handoff blocked queue). No schema for not-yet-built surfaces
+  (auth/users/saved) — expected, not a defect.
