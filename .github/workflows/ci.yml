@@ -5,9 +5,15 @@ on:
     branches: [main]
   pull_request:
 
+# Cancel superseded runs on the same ref to save CI minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -25,5 +31,18 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Test
+        run: npm test
+
       - name: Build
         run: npm run build
+
+      # End-to-end smoke: starts the server and asserts key routes/APIs return
+      # expected statuses (catches integration regressions build/tests miss).
+      - name: Smoke
+        run: npm run smoke
+
+      # Dependency scanning (SOC 2 direction). Fails only on high/critical so
+      # known moderate advisories don't block; review them in PRs regardless.
+      - name: Dependency audit
+        run: npm audit --audit-level=high

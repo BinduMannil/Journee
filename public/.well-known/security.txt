@@ -1,0 +1,4 @@
+# https://securitytxt.org/
+Contact: https://github.com/BinduMannil/Journee/blob/main/SECURITY.md
+Policy: https://github.com/BinduMannil/Journee/blob/main/SECURITY.md
+Preferred-Languages: en

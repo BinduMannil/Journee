@@ -26,8 +26,28 @@ Journee is a cinematic travel-intelligence platform. This document describes the
                 └─────────────────────────────────────────────┘
 ```
 
-Rendering is server-first. Interactive pieces (e.g. `QuoteRotator`) are small,
-explicitly-marked Client Components.
+Rendering is server-first. Interactive pieces (e.g. `QuoteRotator`,
+`LightBadge`, `AtmosphericScore`) are small, explicitly-marked Client Components.
+
+## Request lifecycle
+
+```mermaid
+sequenceDiagram
+  participant B as Browser
+  participant RSC as RSC page (server)
+  participant Reg as Provider registry
+  participant Prov as Adapter (Supabase/seed)
+  B->>RSC: GET /
+  RSC->>Reg: resolve("destinations")
+  Reg->>Prov: isAvailable()? fetch()
+  Prov-->>Reg: data (or throw -> failover -> seed)
+  Reg-->>RSC: data (+ success/failover metric)
+  RSC-->>B: streamed HTML (cinematic shell)
+  B->>B: hydrate client bits (light phase, score, filters)
+```
+
+See [`failure-and-recovery.md`](failure-and-recovery.md) for failover/recovery
+diagrams.
 
 ## Layers
 
@@ -56,20 +76,22 @@ reference tokens, never raw hex.
   the source without UI changes. See
   [`configuration-architecture.md`](configuration-architecture.md).
 
-## What is intentionally NOT here yet
+## What exists now vs. not yet
 
-No database, auth, API routes, intelligence engines, or external integrations
-exist yet. The data platform direction is recorded in
-[ADR-002](../decisions/ADR-002-supabase-data-platform.md). Those systems —
-and their failure modes, recovery, and monitoring docs — will be written as
-they are built.
+Built since the first foundation: API routes (`/api/health`, `/api/metrics`,
+`/api/destinations`, `/api/affiliate/*`, `/api/admin/status`), the affiliate
+vertical, intelligence engines + scoring, observability, and detail pages. Still
+**not** built: end-user auth, a hosted database, and live external data feeds
+(see the engine + dependency docs and the continuation handoff). The data
+platform direction is recorded in
+[ADR-002](../decisions/ADR-002-supabase-data-platform.md).
 
 ## Dependencies (today)
 
 | Dependency | Why | If unavailable |
 | --- | --- | --- |
 | Next.js / React | App framework & rendering | App cannot build/run (dev-time only). |
-| Google Fonts (build-time via `next/font`) | Brand typography | Build fetches fonts; failure blocks build. Mitigation: self-host fonts (roadmap). |
+| Brand fonts (self-hosted, `@fontsource-variable`) | Brand typography | Bundled with the build — no network dependency. |
 | Unsplash (runtime images) | Seed imagery | Cards show broken images; allow-listed in `next.config.mjs`. Replace with owned/licensed assets before launch. |
 
 ## Scaling considerations

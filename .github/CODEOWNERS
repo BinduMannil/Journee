@@ -1,0 +1,4 @@
+# Default owner for everything in the repo.
+# Required-review-from-owner is part of the recommended branch protection
+# (see docs/governance/branch-and-pr-governance.md).
+* @BinduMannil

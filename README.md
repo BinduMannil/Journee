@@ -16,9 +16,17 @@ patterns the rest of the platform will build on.
 | App scaffold (Next.js 15 App Router, TS strict, Tailwind v4) | ✅ Built & building |
 | Cinematic design system (Playfair Display + Montserrat, gold/warm palette) | ✅ Built |
 | Config-driven content (no hardcoding in components) | ✅ Pattern in place |
-| Provider adapter + registry + fallback | ✅ Pattern in place (local seed provider) |
-| Supabase / Postgres / RLS data platform | 🔜 Roadmap (see ADR-002) |
-| Intelligence engines (destination, events, weather, safety, etc.) | 🔜 Roadmap (see `/docs`) |
+| Config validation (zod env boundary) + feature flags | ✅ Built |
+| Provider adapter + registry + fallback | ✅ Built (seed + Supabase adapters) |
+| Supabase destinations adapter + RLS migration | ✅ Adapter + migration scaffold (flag-gated) |
+| Affiliate vertical: catalog → resolver → safe URL → gated CTA | ✅ Built (no hardcoded links) |
+| Affiliate ingestion (click + conversion) + revenue analytics | ✅ Built (server-only writes, time-windowed) |
+| Explainable intelligence scoring core + engines + Travel Confidence | ✅ Core + destination/events/disruption + aggregate (data feeds roadmap) |
+| Experiments: deterministic A/B assignment | ✅ Built |
+| Structured logging + failover instrumentation + `/api/health` | ✅ Built |
+| App resilience (loading/error/404) + SEO (robots/sitemap/OG) | ✅ Built |
+| Local Supabase stack (config + seed + runbook) | ✅ Runnable locally without secrets |
+| Remaining intelligence engines (Travel DNA, safety, visa, etc.) | 🔜 Roadmap (see `/docs`) |
 
 Everything marked 🔜 is **roadmap, not implemented**. The docs are written to
 say so plainly rather than describe systems that don't exist yet.
@@ -31,7 +39,25 @@ npm run dev      # http://localhost:3000
 npm run build    # production build
 npm run typecheck
 npm run lint
+npm test         # 101 unit tests (node:test)
 ```
+
+## Live surface (runtime-verified)
+
+| Route | What |
+| --- | --- |
+| `/` | Cinematic landing; mood filter + search over destinations |
+| `/destinations/[id]` | Editorial detail page; live light phase + explainable atmosphere score (unknown id → 404) |
+| `/plan` | Trip planner — fatigue-aware day-by-day itinerary (dynamic-itinerary engine) |
+| `/discover` | Vibe-based discovery ranking (Pathfinder engine, explainable) |
+| `/saved` | Saved collection (localStorage, no account needed) |
+| `/api/destinations` | Registry-resolved catalog (JSON) |
+| `/api/pathfinder` | Mood-based discovery ranking (`?vibe=&avoid=`) |
+| `/api/health`, `/api/metrics` | Liveness/config + counter metrics |
+| `/api/admin/status` | Control-plane snapshot (secure-by-default) |
+| `/api/affiliate/click`, `/conversion` | Server-only ingestion (400/503/202) |
+| `/api/affiliate/analytics` | Per-campaign metrics (`?since=&until=&limit=&offset=`) |
+| `/robots.txt`, `/sitemap.xml` | SEO (sitemap includes destinations + /plan) |
 
 ## Stack
 

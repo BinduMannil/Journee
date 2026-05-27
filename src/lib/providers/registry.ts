@@ -7,6 +7,8 @@
  * where failover policy lives (docs/architecture/provider-architecture.md).
  */
 import type { Provider, ProviderCapability } from "./types";
+import { log } from "@/lib/observability/logger";
+import { incrementCounter } from "@/lib/observability/metrics";
 
 type AnyProvider = Provider<unknown>;
 
@@ -23,6 +25,11 @@ export function listProviders(capability: ProviderCapability): readonly AnyProvi
   return registry.get(capability) ?? [];
 }
 
+/** All registered providers across capabilities (for the control plane). */
+export function allProviders(): readonly AnyProvider[] {
+  return [...registry.values()].flat();
+}
+
 /**
  * Resolve a capability by trying providers in priority order until one is
  * available and succeeds. Returns null if every provider is exhausted.
@@ -30,15 +37,28 @@ export function listProviders(capability: ProviderCapability): readonly AnyProvi
 export async function resolve<TResult>(
   capability: ProviderCapability,
 ): Promise<TResult | null> {
-  for (const provider of listProviders(capability)) {
+  const candidates = listProviders(capability);
+  for (const provider of candidates) {
     try {
       if (!(await provider.isAvailable())) continue;
-      return (await provider.fetch()) as TResult;
-    } catch {
-      // Swallow and fall through to the next provider. Real implementations
-      // emit a structured log + metric here (see monitoring architecture).
+      const result = (await provider.fetch()) as TResult;
+      incrementCounter("provider_resolve_success", { capability, providerId: provider.id });
+      return result;
+    } catch (error) {
+      // Fall through to the next provider, but record the failover so it is
+      // observable (see monitoring architecture).
+      log.warn("provider_failover", {
+        capability,
+        providerId: provider.id,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      incrementCounter("provider_failover", { capability, providerId: provider.id });
       continue;
     }
+  }
+  if (candidates.length > 0) {
+    log.warn("provider_capability_exhausted", { capability });
+    incrementCounter("provider_capability_exhausted", { capability });
   }
   return null;
 }
