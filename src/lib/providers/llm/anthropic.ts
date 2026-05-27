@@ -48,6 +48,14 @@ interface AnthropicTextBlock {
   readonly text?: string;
 }
 
+/** A non-2xx response from the LLM API, carrying the status for classification. */
+export class LlmHttpError extends Error {
+  constructor(readonly status: number) {
+    super(`Anthropic API error ${status}`);
+    this.name = "LlmHttpError";
+  }
+}
+
 /**
  * The structured plan we require back from the model. Validating the parsed JSON
  * here (rather than trusting its shape) means a malformed/truncated completion
@@ -98,7 +106,7 @@ export const anthropicPlanningProvider: PlanningProvider = {
       });
 
       if (!res.ok) {
-        throw new Error(`Anthropic API error ${res.status}`);
+        throw new LlmHttpError(res.status);
       }
 
       const body = (await res.json()) as { content?: AnthropicTextBlock[] };

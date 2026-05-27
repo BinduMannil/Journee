@@ -129,9 +129,13 @@ what makes the entitlement/abuse paths unit-testable.
 
 The route emits counters (`src/lib/observability/metrics.ts`, surfaced on
 `/api/metrics` and admin status): `ai_planning_success{providerId}` on a `200`
-and `ai_planning_failed` on a `502`. Gating responses (`503/402/429/400`) are not
-counted as generation outcomes. The adapter logs the underlying error message on
-failure (never the key).
+and `ai_planning_failed{reason}` on a `502`. The `reason` is a coarse,
+low-cardinality bucket — `upstream_error` (non-2xx from the LLM), `timeout` (the
+abort fired), `invalid_response` (JSON/shape validation failed), or `unknown` —
+so on-call can tell a bad key/rate-limit from model drift from a slow upstream.
+Full detail (HTTP status, message) goes to the log, never the metric label, and
+never the key. Gating responses (`503/402/429/400`) are not counted as
+generation outcomes.
 
 `GET /api/health` reports `config.aiPlanningReady` — a boolean equal to the
 provider's AND-gate (key + flag), never the key — so uptime/readiness checks can

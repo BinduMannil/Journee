@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { getPlanningProvider } from "@/lib/providers/llm";
+import { LlmHttpError } from "@/lib/providers/llm/anthropic";
 import { getUsageStore } from "@/lib/billing/store";
 import {
   evaluateEntitlement,
@@ -36,6 +37,19 @@ const requestSchema = z.object({
   pacing: z.enum(["relaxed", "balanced", "packed"]),
   notes: z.string().max(500).optional(),
 });
+
+/**
+ * Coarse, low-cardinality failure bucket for the `ai_planning_failed` metric.
+ * Detail (status, message) goes to the log; the label stays small on purpose.
+ */
+function aiFailureReason(error: unknown): string {
+  if (error instanceof LlmHttpError) return "upstream_error";
+  if (error instanceof Error) {
+    if (error.name === "AbortError") return "timeout";
+    if (error.name === "ZodError" || error.name === "SyntaxError") return "invalid_response";
+  }
+  return "unknown";
+}
 
 export async function POST(request: Request): Promise<Response> {
   let body: unknown;
@@ -106,8 +120,10 @@ export async function POST(request: Request): Promise<Response> {
       { status: 200 },
     );
   } catch (error) {
-    incrementCounter("ai_planning_failed");
+    const reason = aiFailureReason(error);
+    incrementCounter("ai_planning_failed", { reason });
     log.error("ai_planning_failed", {
+      reason,
       error: error instanceof Error ? error.message : String(error),
     });
     return Response.json({ error: "ai_planning_failed" }, { status: 502 });
