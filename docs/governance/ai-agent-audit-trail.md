@@ -538,3 +538,27 @@ validation evidence so changes are reviewable without tribal knowledge._
   `backgroundImage` style is gone.
 - **Assumptions / safety:** `images.unsplash.com` already allow-listed in
   `next.config`; decorative hero so empty alt is the correct a11y choice.
+
+---
+
+## 2026-05-26 — Trust + a11y: privacy page, shared footer, active-nav semantics
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** World-standard trust + accessibility basics, no external dependency.
+  Continuation of PR #1. (Service worker deliberately deferred — sticky in
+  clients and not browser-verifiable here; wrong risk/verify tradeoff for now.)
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green).
+- **Changes:** new `/privacy` page (honest, plain-language disclosure of the
+  anonymous `jid` cookie, device-local saves, and the no-trackers/no-accounts
+  posture) + canonical + sitemap entry. New shared `Footer` (labeled landmark,
+  About + Privacy links) rendered in the layout; removed the duplicate inline
+  home footer; body switched to a min-height flex column so the footer sits at
+  the bottom. `Nav` now marks the active route with `aria-current="page"` and
+  carries `aria-label="Primary"`.
+- **Validation:** typecheck, lint, `npm test` (138 passing), build all green;
+  runtime-verified — `/privacy` 200 with expected content; footer + Privacy link
+  on `/about`; `aria-current="page"` on the active nav link; `/privacy` in the
+  sitemap.
+- **Assumptions / safety:** privacy copy reflects only what the app does today
+  and is committed to be updated alongside any data-handling change; no
+  fabricated claims.

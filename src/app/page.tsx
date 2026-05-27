@@ -103,11 +103,6 @@ export default async function Home() {
           <AffiliateCta category="hotels" label="Plan your stay" />
         </div>
       </section>
-
-      <footer className="border-t border-sand/10 px-6 py-12 text-center text-sm text-stone sm:px-12">
-        {site.name} — {site.tagline}. An early foundation; systems roadmap lives in{" "}
-        <span className="text-sand/70">/docs</span>.
-      </footer>
     </main>
   );
 }

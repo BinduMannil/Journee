@@ -6,6 +6,7 @@ import "@fontsource-variable/montserrat";
 import { site } from "@/lib/config/site";
 import { getSiteUrl } from "@/lib/config/env";
 import { Nav } from "@/components/Nav";
+import { Footer } from "@/components/Footer";
 import "./globals.css";
 
 const title = `${site.name} — ${site.tagline}`;
@@ -33,7 +34,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="flex min-h-screen flex-col">
         <a
           href="#content"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded focus:bg-ink focus:px-4 focus:py-2 focus:text-gold-bright"
@@ -41,7 +42,8 @@ export default function RootLayout({
           Skip to content
         </a>
         <Nav />
-        <div id="content">{children}</div>
+        <div id="content" className="flex-1">{children}</div>
+        <Footer />
       </body>
     </html>
   );
