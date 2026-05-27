@@ -133,6 +133,10 @@ and `ai_planning_failed` on a `502`. Gating responses (`503/402/429/400`) are no
 counted as generation outcomes. The adapter logs the underlying error message on
 failure (never the key).
 
+`GET /api/health` reports `config.aiPlanningReady` — a boolean equal to the
+provider's AND-gate (key + flag), never the key — so uptime/readiness checks can
+see whether AI planning is live without authenticating to admin status.
+
 ## Tests
 
 `test/ai.planning.test.ts` (unconfigured env): missing-key `503`, malformed JSON
