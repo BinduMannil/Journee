@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 // Self-hosted variable fonts (no build-time Google Fonts fetch). The family
 // names are mapped to design tokens in globals.css. See ADR-001 / dependency map.
 import "@fontsource-variable/playfair-display";
@@ -27,6 +27,12 @@ export const metadata: Metadata = {
     title,
     description: site.description,
   },
+};
+
+// Mobile browser chrome theming to match the cinematic dark palette.
+export const viewport: Viewport = {
+  themeColor: "#11100e", // --color-ink
+  colorScheme: "dark",
 };
 
 export default function RootLayout({

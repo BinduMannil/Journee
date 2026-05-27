@@ -14,6 +14,7 @@ const checks = [
   ["/plan", 200],
   ["/saved", 200],
   ["/about", 200],
+  ["/privacy", 200],
   ["/destinations/kyoto", 200],
   ["/destinations/nope", 404],
   ["/api/health", 200],

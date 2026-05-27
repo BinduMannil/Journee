@@ -562,3 +562,6 @@ validation evidence so changes are reviewable without tribal knowledge._
 - **Assumptions / safety:** privacy copy reflects only what the app does today
   and is committed to be updated alongside any data-handling change; no
   fabricated claims.
+- **Follow-up:** added `/privacy` to the e2e smoke checks (CI regression guard)
+  and a `viewport` `themeColor`/`colorScheme` so mobile browser chrome matches
+  the dark palette. Runtime-verified: `<meta name="theme-color" content="#11100e">`.
