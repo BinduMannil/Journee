@@ -35,10 +35,11 @@ export default function PrivacyPage() {
           </h2>
           <p>
             We set one first-party cookie, <code className="text-gold">jid</code>:
-            a random, anonymous identifier used only to keep experiences (such as
-            which variant of a link you see) consistent across your visit. It is
-            HTTP-only, contains no personal information, is not linked to your
-            identity, and is never sold or shared with third parties.
+            a random, anonymous identifier used to keep experiences (such as which
+            variant of a link you see) consistent across your visit and to count
+            your free AI trip plans. It is HTTP-only, contains no personal
+            information, is not linked to your identity, and is never sold or
+            shared with third parties.
           </p>
         </div>
 

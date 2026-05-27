@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { POST } from "../src/app/api/plan/ai/route";
-import { anthropicPlanningProvider } from "../src/lib/providers/llm/anthropic";
+import { anthropicPlanningProvider, stripCodeFence } from "../src/lib/providers/llm/anthropic";
 import { getPlanningProvider } from "../src/lib/providers/llm";
 
 function req(body: unknown): Request {
@@ -41,4 +41,11 @@ test("rejects an invalid body (missing destinations) with 400", async () => {
 test("rejects an unknown pacing with 400", async () => {
   const res = await POST(req({ ...validBody, pacing: "frantic" }));
   assert.equal(res.status, 400);
+});
+
+test("stripCodeFence unwraps markdown-fenced JSON (as Claude returns it)", () => {
+  const fenced = '```json\n{"summary":"x","days":[]}\n```';
+  assert.deepEqual(JSON.parse(stripCodeFence(fenced)), { summary: "x", days: [] });
+  // bare JSON passes through unchanged
+  assert.deepEqual(JSON.parse(stripCodeFence('{"a":1}')), { a: 1 });
 });

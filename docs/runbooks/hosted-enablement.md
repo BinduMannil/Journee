@@ -60,6 +60,29 @@ are already built and tested.
 4. Verify: `POST /api/plan/ai` with a destinations + pacing body returns a plan
    (200) instead of 503.
 
+## 2a. Metering, free trial, and abuse limits
+
+Costly actions (AI planning) are metered (`src/lib/billing/`). New visitors get
+`FREE_AI_PLANS` free plans (per the `jid` cookie); beyond that they spend credits
+(`src/content/pricing.ts`). `POST /api/plan/ai` enforces this **before** the LLM
+call: `402` when out of quota+credits.
+
+A per-IP ceiling (`FREE_AI_PLANS_PER_IP`) bounds free usage so cycling cookies /
+"accounts" from one IP can't farm unlimited free plans (`429` when exceeded);
+paid usage is exempt.
+
+**Important limits of the current implementation (harden before launch):**
+- The usage store is **in-memory and per-instance** (`getUsageStore()`), so it
+  resets on restart and isn't shared across instances. For real enforcement,
+  implement a **durable, shared** `UsageStore` (Supabase table keyed by subject,
+  or a managed limiter such as Upstash/Redis) and swap it in `getUsageStore()`.
+- The IP ceiling is **cumulative**, not windowed. A production limit should be
+  **per time window** (e.g. per day) — implement that in the durable store.
+- IP comes from `x-forwarded-for`/`x-real-ip`, trustworthy **only behind your
+  proxy/CDN**; it's spoofable otherwise and over-counts shared NAT/mobile IPs.
+- Truly non-bypassable limits require **accounts** (Supabase Auth) so quota binds
+  to a verified identity rather than a cookie/IP heuristic.
+
 ## 3. Live weather feed (when a weather host is allow-listed)
 
 Implement `WeatherProvider` (`src/lib/providers/weather/types.ts`) against the

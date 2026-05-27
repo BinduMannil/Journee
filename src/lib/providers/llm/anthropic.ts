@@ -14,6 +14,15 @@ import { isFeatureEnabled } from "@/lib/config/flags";
 const ENDPOINT = "https://api.anthropic.com/v1/messages";
 const ANTHROPIC_VERSION = "2023-06-01";
 
+/** Models often wrap JSON in a ```json fence; strip it before parsing. */
+export function stripCodeFence(text: string): string {
+  return text
+    .trim()
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/\s*```$/, "")
+    .trim();
+}
+
 function buildPrompt(request: PlanningRequest): string {
   const places = request.destinations
     .map((d) => `- ${d.name} (mood: ${d.mood})`)
@@ -52,7 +61,7 @@ export const anthropicPlanningProvider: PlanningProvider = {
       },
       body: JSON.stringify({
         model: config.model,
-        max_tokens: 1024,
+        max_tokens: 4096,
         messages: [{ role: "user", content: buildPrompt(request) }],
       }),
     });
@@ -66,7 +75,7 @@ export const anthropicPlanningProvider: PlanningProvider = {
       .filter((b) => b.type === "text" && typeof b.text === "string")
       .map((b) => b.text as string)
       .join("");
-    const parsed = JSON.parse(text) as {
+    const parsed = JSON.parse(stripCodeFence(text)) as {
       summary?: unknown;
       days?: { title?: unknown; detail?: unknown }[];
     };

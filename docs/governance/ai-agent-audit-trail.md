@@ -596,3 +596,35 @@ validation evidence so changes are reviewable without tribal knowledge._
   deterministic planner as the fallback; no secrets committed; no fabricated
   data. DB rows added after a build appear on the next build (ISR is a later
   opt-in) — documented.
+
+---
+
+## 2026-05-27 — Usage metering + AI cost guardrail (live-verified) + IP abuse ceiling
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Pass LLM costs to users — free trial → credits — and prevent free-tier
+  abuse; verify the AI path live. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green).
+- **Changes:**
+  - **Metering:** config-driven pricing/quota (`content/pricing.ts`: `FREE_AI_PLANS`,
+    credit packages, `FREE_AI_PLANS_PER_IP`), pure entitlements engine
+    (`billing/entitlements.ts`), and a `UsageStore` seam (`billing/store.ts`,
+    in-memory default; durable/Supabase drop-in documented).
+  - **Cost guardrail:** `POST /api/plan/ai` now checks entitlement BEFORE the LLM
+    call — `402` when out of free quota + credits, consumes only on success.
+  - **Abuse ceiling:** per-IP free cap (`getClientIp` from forwarding headers);
+    `429` when an IP exhausts free plans; **paid usage exempt**. Honest limits
+    (in-memory/cumulative; needs durable+windowed store + accounts) documented in
+    the hosted-enablement runbook.
+  - **LLM hardening (proven by live calls):** strip ```json fences before parse;
+    raised `max_tokens` to 4096 (1024 truncated multi-day plans).
+  - Privacy page updated (the `jid` cookie also counts free AI plans).
+- **Validation:** typecheck, lint, `npm test` (**151** passing, +9: entitlements,
+  store, identity, fence), build all green. **Live end-to-end test** (key passed
+  inline, never written to disk): `POST /api/plan/ai` → `200` with a real
+  Anthropic-generated itinerary and `entitlement: {source:"free",remainingFree:2}`
+  — the metering decremented correctly.
+- **Security:** no secret committed (diff scanned for the key value); `LLM_API_KEY` is
+  server-only (never `NEXT_PUBLIC_`, never logged or returned); `.env.local`
+  gitignored and never created. The provided key was used inline for one test
+  only and should be rotated (it was shared in plaintext chat).
