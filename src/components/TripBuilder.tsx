@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { buildItinerary, type Pacing } from "@/lib/intelligence/itinerary";
+import { itineraryToICS } from "@/lib/intelligence/itinerary-export";
 import { routeDistanceKm } from "@/lib/intelligence/geo";
 
 export interface PlannableDestination {
@@ -49,6 +50,20 @@ export function TripBuilder({ destinations }: { destinations: readonly Plannable
       ),
     [selectedDestinations],
   );
+
+  const downloadIcs = () => {
+    const now = new Date();
+    const startDate = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    const ics = itineraryToICS(itinerary, { startDate, calendarName: "Journee trip" });
+    const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "journee-trip.ics";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="grid gap-10 md:grid-cols-2">
@@ -141,6 +156,15 @@ export function TripBuilder({ destinations }: { destinations: readonly Plannable
               );
             })}
           </ol>
+        )}
+        {itinerary.days.length > 0 && (
+          <button
+            type="button"
+            onClick={downloadIcs}
+            className="mt-6 rounded-full border border-gold/50 px-5 py-2 text-xs uppercase tracking-[0.2em] text-gold-bright transition-colors hover:bg-gold/10"
+          >
+            Download .ics
+          </button>
         )}
       </div>
     </div>

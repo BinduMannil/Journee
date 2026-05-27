@@ -475,3 +475,22 @@ validation evidence so changes are reviewable without tribal knowledge._
   make `generateStaticParams` async/ISR so DB-only destinations get detail pages
   (per the handoff blocked queue). No schema for not-yet-built surfaces
   (auth/users/saved) — expected, not a defect.
+
+---
+
+## 2026-05-26 — Itinerary export (.ics) for the trip planner
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Let travelers take a built plan into any calendar app — no external
+  dependency. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green).
+- **Changes:** new pure `itinerary-export.ts` (`itineraryToICS`) emitting a
+  RFC-5545 VCALENDAR with one all-day VEVENT per itinerary day (RFC text
+  escaping, CRLF line endings, UTC date-only values). `TripBuilder` adds a
+  "Download .ics" button (client Blob download) when a plan exists.
+- **Validation:** typecheck, lint, `npm test` (**134** passing, +4 export cases:
+  per-day VEVENT count, date advance, comma escaping/CRLF, empty calendar),
+  build all green; `/plan` runtime-verified (200, no regression). The download
+  trigger is client-only; the ICS string is unit-tested.
+- **Assumptions / safety:** all-day events from a UTC-midnight start (today by
+  default); no network, no fabricated data.
