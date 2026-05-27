@@ -519,3 +519,22 @@ validation evidence so changes are reviewable without tribal knowledge._
 - **Follow-up:** added per-page `alternates.canonical` to home, discover, plan,
   saved, about, and destination detail pages (resolved against `metadataBase`).
   Runtime-verified: every route emits a correct `<link rel="canonical">` in SSR.
+
+---
+
+## 2026-05-26 — Core Web Vitals: optimize the LCP hero image
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Replace the home hero's raw CSS background-image (unoptimized,
+  hardcoded URL) with an optimized, preloaded `next/image` — a real LCP win and
+  a no-hardcoding cleanup. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green).
+- **Changes:** moved the hero URL into `site` config (`heroImageUrl`); rendered it
+  via `next/image` (`fill`, `priority`, `sizes="100vw"`, decorative `alt=""`)
+  inside the existing kenburns wrapper (animation preserved).
+- **Validation:** typecheck, lint, `npm test` (138 passing), build all green;
+  home runtime-verified — emits `<link rel="preload" as="image">` and
+  `/_next/image?...&w=…&q=75` srcset (Next image optimization active); the raw
+  `backgroundImage` style is gone.
+- **Assumptions / safety:** `images.unsplash.com` already allow-listed in
+  `next.config`; decorative hero so empty alt is the correct a11y choice.

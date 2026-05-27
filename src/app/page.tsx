@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { QuoteRotator } from "@/components/QuoteRotator";
@@ -35,12 +36,14 @@ export default async function Home() {
       />
       <section className="relative flex min-h-screen flex-col justify-center overflow-hidden px-6 sm:px-12">
         <div className="journee-kenburns absolute inset-0 -z-10">
-          <div
-            className="h-full w-full bg-cover bg-center"
-            style={{
-              backgroundImage:
-                "url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=2000&q=80')",
-            }}
+          <Image
+            src={site.heroImageUrl}
+            alt=""
+            aria-hidden
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
           />
         </div>
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-ink/70 via-ink/50 to-ink" />
