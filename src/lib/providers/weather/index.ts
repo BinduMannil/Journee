@@ -1,15 +1,21 @@
 import type { WeatherProvider } from "./types";
+import { openMeteoWeatherProvider } from "./open-meteo";
 import { mockWeatherProvider } from "./mock";
 import { comfortScore } from "@/lib/intelligence/comfort";
 
 /**
  * Weather provider selection + the destination comfort signal.
  *
- * Today only the mock provider exists (flag-gated). A live provider would be
- * registered here ahead of the mock. Returns null when no provider is
- * available so callers render no weather signal rather than fabricating one.
+ * The live Open-Meteo provider is preferred (gated by the `live-weather` flag +
+ * an allow-listed host), falling back to the deterministic mock (`mock-weather`
+ * flag) and then to null — so callers render no weather signal rather than
+ * fabricating one. To add a vendor, implement `WeatherProvider` and list it in
+ * priority order here.
  */
-const providers: readonly WeatherProvider[] = [mockWeatherProvider];
+const providers: readonly WeatherProvider[] = [
+  openMeteoWeatherProvider,
+  mockWeatherProvider,
+];
 
 export async function getWeatherProvider(): Promise<WeatherProvider | null> {
   for (const p of providers) {
