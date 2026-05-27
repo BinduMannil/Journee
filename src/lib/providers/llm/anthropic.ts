@@ -14,6 +14,8 @@ import { isFeatureEnabled } from "@/lib/config/flags";
  */
 const ENDPOINT = "https://api.anthropic.com/v1/messages";
 const ANTHROPIC_VERSION = "2023-06-01";
+/** Abort the upstream call after this long so a hung LLM can't hang the request. */
+const REQUEST_TIMEOUT_MS = 60_000;
 
 /** Models often wrap JSON in a ```json fence; strip it before parsing. */
 export function stripCodeFence(text: string): string {
@@ -77,35 +79,42 @@ export const anthropicPlanningProvider: PlanningProvider = {
     const config = getLlmConfig();
     if (!config) throw new Error("LLM not configured");
 
-    const res = await fetch(ENDPOINT, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": config.apiKey,
-        "anthropic-version": ANTHROPIC_VERSION,
-      },
-      body: JSON.stringify({
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-api-key": config.apiKey,
+          "anthropic-version": ANTHROPIC_VERSION,
+        },
+        body: JSON.stringify({
+          model: config.model,
+          max_tokens: 4096,
+          messages: [{ role: "user", content: buildPrompt(request) }],
+        }),
+        signal: controller.signal,
+      });
+
+      if (!res.ok) {
+        throw new Error(`Anthropic API error ${res.status}`);
+      }
+
+      const body = (await res.json()) as { content?: AnthropicTextBlock[] };
+      const text = (body.content ?? [])
+        .filter((b) => b.type === "text" && typeof b.text === "string")
+        .map((b) => b.text as string)
+        .join("");
+      const parsed = parsePlanResponse(text);
+      return {
+        summary: parsed.summary,
+        days: parsed.days.map((d) => ({ title: d.title, detail: d.detail })),
+        providerId: anthropicPlanningProvider.id,
         model: config.model,
-        max_tokens: 4096,
-        messages: [{ role: "user", content: buildPrompt(request) }],
-      }),
-    });
-
-    if (!res.ok) {
-      throw new Error(`Anthropic API error ${res.status}`);
+      };
+    } finally {
+      clearTimeout(timer);
     }
-
-    const body = (await res.json()) as { content?: AnthropicTextBlock[] };
-    const text = (body.content ?? [])
-      .filter((b) => b.type === "text" && typeof b.text === "string")
-      .map((b) => b.text as string)
-      .join("");
-    const parsed = parsePlanResponse(text);
-    return {
-      summary: parsed.summary,
-      days: parsed.days.map((d) => ({ title: d.title, detail: d.detail })),
-      providerId: anthropicPlanningProvider.id,
-      model: config.model,
-    };
   },
 };

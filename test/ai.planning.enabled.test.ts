@@ -10,6 +10,7 @@ import { resetEnvCache } from "../src/lib/config/env";
 import { resetFlagsCache } from "../src/lib/config/flags";
 import { getUsageStore, resetUsageStore } from "../src/lib/billing/store";
 import { FREE_AI_PLANS, FREE_AI_PLANS_PER_IP } from "../src/content/pricing";
+import { getCounters, resetCounters } from "../src/lib/observability/metrics";
 
 /**
  * Exercises the AI planning route on the *enabled* path. The provider is the
@@ -20,6 +21,7 @@ import { FREE_AI_PLANS, FREE_AI_PLANS_PER_IP } from "../src/content/pricing";
  */
 const realFetch = globalThis.fetch;
 let fetchCalls = 0;
+let lastFetchInit: RequestInit | undefined;
 
 const validDay = { title: "Day 1 — Eastern temples", detail: "Kiyomizu at dawn, tea after." };
 const validPlan = {
@@ -36,8 +38,9 @@ function anthropicResponse(text: string, status = 200): Response {
 }
 
 function mockFetch(impl: () => Response | Promise<Response>): void {
-  globalThis.fetch = (async () => {
+  globalThis.fetch = (async (_url: string, init?: RequestInit) => {
     fetchCalls += 1;
+    lastFetchInit = init;
     return impl();
   }) as typeof fetch;
 }
@@ -63,7 +66,9 @@ beforeEach(() => {
   resetEnvCache();
   resetFlagsCache();
   resetUsageStore();
+  resetCounters();
   fetchCalls = 0;
+  lastFetchInit = undefined;
   mockFetch(() => anthropicResponse(JSON.stringify(validPlan)));
 });
 
@@ -123,9 +128,13 @@ test("successful structured response -> 200 with parsed plan and consumed free q
   assert.equal(json.entitlement.source, "free");
   assert.equal(json.entitlement.remainingFree, FREE_AI_PLANS - 1);
   assert.equal(fetchCalls, 1);
+  // The upstream call is given an abort signal (the request-timeout guard).
+  assert.ok(lastFetchInit?.signal instanceof AbortSignal);
   // Free quota was consumed exactly once for this subject.
   const after = await getUsageStore().get("jid:user-success");
   assert.equal(after.usedFree, 1);
+  // Success is counted for observability.
+  assert.equal(getCounters()["ai_planning_success{providerId=anthropic-planning}"], 1);
 });
 
 test("LLM failure (upstream non-2xx) -> 502 and free quota NOT consumed", async () => {
@@ -135,6 +144,8 @@ test("LLM failure (upstream non-2xx) -> 502 and free quota NOT consumed", async 
   assert.equal((await res.json()).error, "ai_planning_failed");
   const after = await getUsageStore().get("jid:user-fail");
   assert.equal(after.usedFree, 0);
+  // Failure is counted for observability.
+  assert.equal(getCounters()["ai_planning_failed"], 1);
 });
 
 test("malformed LLM response shape -> 502 and free quota NOT consumed", async () => {
