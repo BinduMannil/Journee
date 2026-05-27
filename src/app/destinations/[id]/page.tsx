@@ -12,6 +12,8 @@ import { TravelReadiness } from "@/components/TravelReadiness";
 import { SaveButton } from "@/components/SaveButton";
 import { AffiliateCta } from "@/components/AffiliateCta";
 import { isFeatureEnabled } from "@/lib/config/flags";
+import { getSiteUrl } from "@/lib/config/env";
+import { destinationJsonLd, jsonLdScript } from "@/lib/seo/jsonld";
 
 async function getDestinations(): Promise<readonly Destination[]> {
   return (await resolve<readonly Destination[]>("destinations")) ?? featuredDestinations;
@@ -59,8 +61,17 @@ export default async function DestinationPage({
   const destination = await findDestination(id);
   if (!destination) notFound();
 
+  const jsonLd = destinationJsonLd(
+    destination,
+    `${getSiteUrl()}/destinations/${destination.id}`,
+  );
+
   return (
     <main className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
+      />
       <section className="relative flex min-h-[70vh] flex-col justify-end overflow-hidden px-6 pb-16 sm:px-12">
         <Image
           src={destination.imageUrl}

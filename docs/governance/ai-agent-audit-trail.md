@@ -494,3 +494,25 @@ validation evidence so changes are reviewable without tribal knowledge._
   trigger is client-only; the ICS string is unit-tested.
 - **Assumptions / safety:** all-day events from a UTC-midnight start (today by
   default); no network, no fabricated data.
+
+---
+
+## 2026-05-26 — SEO: schema.org structured data (JSON-LD)
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Add the structured data world-standard sites expose for rich search
+  results — no external dependency. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green).
+- **Changes:** new pure `seo/jsonld.ts` — `destinationJsonLd` (TouristAttraction
+  with PostalAddress + GeoCoordinates when known), `siteJsonLd` (WebSite +
+  Organization @graph), and `jsonLdScript` (serializes + escapes `<` so the
+  inline data block can't break out of the `<script>`). Server-rendered on the
+  home page and destination detail pages.
+- **Validation:** typecheck, lint, `npm test` (**138** passing, +4 SEO cases incl.
+  geo/headline fallback + the `<`-escape safety case), build all green.
+  **Runtime-verified in the SSR HTML** (not just client): home emits WebSite +
+  Organization; `/destinations/kyoto` emits TouristAttraction + GeoCoordinates
+  (lat 35.0116) + `addressCountry: Japan`.
+- **Notes:** `<script type="application/ld+json">` is a non-executable data block,
+  so it's unaffected by the `script-src` CSP; no policy change needed. No
+  fabricated data — all fields come from the catalog.

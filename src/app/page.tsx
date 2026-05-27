@@ -3,6 +3,8 @@ import { QuoteRotator } from "@/components/QuoteRotator";
 import { DestinationExplorer } from "@/components/DestinationExplorer";
 import { AffiliateCta } from "@/components/AffiliateCta";
 import { site } from "@/lib/config/site";
+import { getSiteUrl } from "@/lib/config/env";
+import { siteJsonLd, jsonLdScript } from "@/lib/seo/jsonld";
 import { heroQuotes, type Destination } from "@/content/destinations";
 import { resolve } from "@/lib/providers/registry";
 // Importing the registration module wires up all provider adapters.
@@ -14,8 +16,18 @@ export default async function Home() {
   const destinations =
     (await resolve<readonly Destination[]>("destinations")) ?? [];
 
+  const jsonLd = siteJsonLd({
+    name: site.name,
+    description: site.description,
+    url: getSiteUrl(),
+  });
+
   return (
     <main className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
+      />
       <section className="relative flex min-h-screen flex-col justify-center overflow-hidden px-6 sm:px-12">
         <div className="journee-kenburns absolute inset-0 -z-10">
           <div
