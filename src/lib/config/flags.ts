@@ -12,6 +12,7 @@ export const KNOWN_FLAGS = [
   "supabase-destinations",
   "affiliate-catalog",
   "mock-weather",
+  "live-weather",
   "mock-intelligence",
   "pathfinder",
   "travel-dna",

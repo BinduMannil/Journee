@@ -117,11 +117,25 @@ paid usage is exempt.
 - Truly non-bypassable limits require **accounts** (Supabase Auth) so quota binds
   to a verified identity rather than a cookie/IP heuristic.
 
-## 3. Live weather feed (when a weather host is allow-listed)
+## 3. Live weather feed (Open-Meteo — keyless)
 
-Implement `WeatherProvider` (`src/lib/providers/weather/types.ts`) against the
-host, register it ahead of the mock in `src/lib/providers/weather/index.ts`, and
-the comfort signal goes live with no other change.
+**Status:** the live provider is **built and tested** — a keyless Open-Meteo
+adapter (`src/lib/providers/weather/open-meteo.ts`), registered ahead of the
+mock. It is **inert** until two things are true:
+
+1. **Allow-list the host:** add `api.open-meteo.com` to the environment's network
+   policy (outbound egress to it is otherwise blocked — re-verified `403`).
+2. **Enable the flag:** add `live-weather` to `JOURNEE_ENABLED_FEATURES`.
+
+Then `getWeatherProvider()` prefers Open-Meteo (falling back to the mock when the
+`mock-weather` flag is set instead, else to null) and the comfort signal goes
+live with no code change. No API key is required.
+
+> Verification note: the adapter is verified against Open-Meteo's documented
+> `current` response shape with a mocked `fetch` (temperature °C, humidity %,
+> wind km/h → `ComfortInput`); it has **not** been run against the live host from
+> this environment because egress is blocked. The comfort signal also has no UI
+> consumer yet — surfacing it is a separate (deferred) UI task.
 
 ## Network note
 

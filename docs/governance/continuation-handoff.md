@@ -114,8 +114,9 @@ routes verified via `npm start` + curl, and a 19+ check e2e smoke
   verified).
 - **EXTERNALLY BLOCKED (cannot proceed without access):**
   - Hosted Supabase (staging/prod) — needs real project secrets.
-  - Live weather feed — Open-Meteo egress blocked by the network allowlist
-    (`comfortScore` + `WeatherProvider` contract are ready to receive it).
+  - Live weather feed — the keyless **Open-Meteo adapter is built + tested**
+    (inert behind the `live-weather` flag); egress to `api.open-meteo.com` is
+    still blocked by the network allowlist, so it can't be run live here.
   - Branch protection / org settings — needs repo-admin access.
 - **Backend built, config-only to enable:** AI planning (`POST /api/plan/ai`) —
   provider + adapter + route + metering + abuse gates complete and tested; needs
@@ -146,8 +147,10 @@ fatigue budget + a per-day load meter; `/saved` gained inline remove + a count;
 
 **Remaining non-blocked work is genuinely thin** — what's left is blocked:
 - **Hosted Supabase** (staging/prod) — real secrets.
-- **Live weather feed** — Open-Meteo egress still 403 from the allowlist
-  (re-verified); `WeatherProvider` + `comfortScore` ready to receive it.
+- **Live weather feed** — Open-Meteo egress still `403` from the allowlist
+  (re-verified). The keyless `OpenMeteoWeatherProvider` is now **built + tested**
+  (inert behind `live-weather`); going live needs only the host allow-listed +
+  the flag. No UI consumer yet (deferred).
 - **AI planning backend** — **done + tested**; config-only to enable (set
   `LLM_API_KEY` + flag). Only the UI wiring remains and is intentionally deferred.
 - **Branch protection** — repo-admin access.
@@ -175,8 +178,9 @@ The seams are now **config-only to enable** — see
   response-shape validation), and `POST /api/plan/ai` (bounded request, metering
   + abuse gates, `503` until enabled, `502` on failure). UI wiring is the only
   remaining (deferred) step.
-- Live weather: allowlist the weather host, implement `OpenMeteoWeatherProvider`
-  to the existing `WeatherProvider` contract, register ahead of the mock.
+- Live weather: `OpenMeteoWeatherProvider` is **built + registered** ahead of the
+  mock and tested (keyless). To go live: allow-list `api.open-meteo.com` and add
+  `live-weather` to `JOURNEE_ENABLED_FEATURES` — no code change.
 - Branch protection: enable required PR review + status checks on `main`.
 
 ## Conventions to keep

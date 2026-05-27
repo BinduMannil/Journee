@@ -696,3 +696,36 @@ validation evidence so changes are reviewable without tribal knowledge._
   goes live by setting `LLM_API_KEY` (+ optional `LLM_MODEL`) and adding
   `ai-planning` to `JOURNEE_ENABLED_FEATURES` in the environment config. Hosted
   Supabase remains blocked; UI integration remains deferred.
+
+---
+
+## 2026-05-27 — Build the keyless Open-Meteo live weather provider (inert)
+
+- **Agent / session:** Claude Code (web), session `014jSUALjh8BSziymG86z7ZA`.
+- **Scope:** Implement the documented next step for the weather seam — a real,
+  keyless live provider — gated so it stays inert until the host is allow-listed.
+  Backend only; no UI; no Supabase.
+- **Branch / PR:** `claude/ai-planning-backend-frceX`.
+- **Egress re-check:** `api.open-meteo.com` (and other weather hosts) return
+  `403` in ~45ms from this environment — the network allow-list rejects them, so
+  a live call is impossible here. (`api.anthropic.com` is allow-listed; weather
+  hosts are not.)
+- **Changes:**
+  - `OpenMeteoWeatherProvider` (`src/lib/providers/weather/open-meteo.ts`):
+    keyless GET to `/v1/forecast`, an `AbortController` timeout, and a strict zod
+    parse of the documented `current` block (temperature °C, humidity %, wind
+    km/h) → `ComfortInput`. Gated by a new `live-weather` flag.
+  - Registered ahead of the mock in `weather/index.ts`; `getWeatherProvider()`
+    now prefers live → mock → null. Added `live-weather` to `KNOWN_FLAGS`.
+  - Tests (`test/providers.weather.live.test.ts`): flag gating, response→
+    `ComfortInput` mapping, abort-signal wiring, upstream-error throw, parser
+    validation (valid/partial/bad-shape), and provider preference/fallback.
+  - Docs: hosted-enablement §3 rewritten (built + how to enable); handoff weather
+    entries updated.
+- **Validation:** `typecheck`, `lint`, `npm test` (**169** passing), `build`,
+  `npm run smoke` (**24/24**) green.
+- **Assumptions / safety:** **no live call made** — egress is blocked, so the
+  adapter is verified only against Open-Meteo's documented response shape with a
+  mocked `fetch`; no operational claim of a working live feed. **No UI changes**
+  (the comfort signal still has no UI consumer — deferred). No secrets (Open-Meteo
+  is keyless). To go live: allow-list `api.open-meteo.com` + set `live-weather`.
