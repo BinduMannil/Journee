@@ -35,8 +35,9 @@ failover safety property **observable**, not just functional.
 ## Health endpoint
 
 `GET /api/health` returns `{ status, time, config }` where `config` reports only
-**booleans** about configuration presence (Supabase configured? which flags on?)
-— never secret values. Suitable for uptime checks and readiness gating.
+**booleans** about configuration presence (Supabase configured? `aiPlanningReady`
+— the LLM key + `ai-planning` flag AND-gate? which flags on?) — never secret
+values. Suitable for uptime checks and readiness gating.
 
 ## Roadmap
 
