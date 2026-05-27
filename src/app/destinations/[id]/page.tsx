@@ -23,14 +23,16 @@ async function findDestination(id: string): Promise<Destination | undefined> {
   return (await getDestinations()).find((d) => d.id === id);
 }
 
-// Only ids known at build are valid routes; any other id returns a true 404 at
-// the router level (no soft-404). generateStaticParams uses the seed baseline.
-// NOTE: when DB-backed destinations exist, make this async to include their ids
-// (or revisit rendering strategy). See docs/governance/continuation-handoff.md.
+// Pre-render the ids known at build time from the resolved provider — the seed
+// today, the full DB catalog once Supabase is connected (no code change needed).
+// `dynamicParams = false` keeps any other id a true router-level 404 (no
+// soft-404). DB rows added AFTER a build appear on the next build/deploy (or via
+// ISR if enabled later). See docs/runbooks/hosted-enablement.md.
 export const dynamicParams = false;
 
-export function generateStaticParams() {
-  return featuredDestinations.map((d) => ({ id: d.id }));
+export async function generateStaticParams() {
+  const destinations = await getDestinations();
+  return destinations.map((d) => ({ id: d.id }));
 }
 
 export async function generateMetadata({

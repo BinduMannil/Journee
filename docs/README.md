@@ -20,6 +20,7 @@ This is the entry point for engineering documentation. It is deliberately
   - [`authentication-architecture.md`](architecture/authentication-architecture.md) — key separation now; Supabase Auth + RLS roadmap.
   - [`deployment-and-environment-architecture.md`](architecture/deployment-and-environment-architecture.md) — build, env separation, rollback.
 - **runbooks/** — operational procedures.
+  - [`hosted-enablement.md`](runbooks/hosted-enablement.md) — config-only turn-on for hosted Supabase + LLM + weather.
   - [`supabase-local-setup.md`](runbooks/supabase-local-setup.md) · [`incident-response.md`](runbooks/incident-response.md) · [`recovery.md`](runbooks/recovery.md)
 - **decisions/** — Architecture Decision Records (ADRs). One file per significant choice.
 - **governance/** — how we develop: branching, PRs, change management.

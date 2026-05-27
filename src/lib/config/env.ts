@@ -16,6 +16,10 @@ const envSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.string().url().optional(),
   JOURNEE_ENABLED_FEATURES: z.string().optional(),
   JOURNEE_ADMIN_TOKEN: z.string().min(1).optional(),
+  /** LLM / AI planning provider (server-only). Optional: when unset, AI planning
+   * reports unavailable and the deterministic planner is used instead. */
+  LLM_API_KEY: z.string().min(1).optional(),
+  LLM_MODEL: z.string().min(1).optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -32,6 +36,8 @@ export function getEnv(): Env {
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
     JOURNEE_ENABLED_FEATURES: process.env.JOURNEE_ENABLED_FEATURES,
     JOURNEE_ADMIN_TOKEN: process.env.JOURNEE_ADMIN_TOKEN,
+    LLM_API_KEY: process.env.LLM_API_KEY,
+    LLM_MODEL: process.env.LLM_MODEL,
   });
   if (!parsed.success) {
     throw new Error(
@@ -70,6 +76,23 @@ export function getSupabaseConfig(): SupabaseClientConfig | null {
     url: env.NEXT_PUBLIC_SUPABASE_URL,
     anonKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   };
+}
+
+export interface LlmConfig {
+  readonly apiKey: string;
+  /** Defaults to a sensible model when only the key is provided. */
+  readonly model: string;
+}
+
+/**
+ * LLM provider config, or null when no key is set. Server-only — drives the AI
+ * planning provider's `isAvailable()`. Defaults the model so a key alone is
+ * enough to switch AI planning on.
+ */
+export function getLlmConfig(): LlmConfig | null {
+  const env = getEnv();
+  if (!env.LLM_API_KEY) return null;
+  return { apiKey: env.LLM_API_KEY, model: env.LLM_MODEL ?? "claude-sonnet-4-6" };
 }
 
 export interface SupabaseServiceConfig {

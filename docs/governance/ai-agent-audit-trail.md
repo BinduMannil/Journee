@@ -565,3 +565,34 @@ validation evidence so changes are reviewable without tribal knowledge._
 - **Follow-up:** added `/privacy` to the e2e smoke checks (CI regression guard)
   and a `viewport` `themeColor`/`colorScheme` so mobile browser chrome matches
   the dark palette. Runtime-verified: `<meta name="theme-color" content="#11100e">`.
+
+---
+
+## 2026-05-27 — Make Supabase + LLM integration drop-in ready
+
+- **Agent / session:** Claude Code (web), session `01Juf5y7hd431tmBs8UzjJkq`.
+- **Scope:** Get the externally-gated integrations to "config-only to enable" so
+  connecting Supabase or an LLM needs no code change. Continuation of PR #1.
+- **Branch / PR:** `claude/quirky-keller-2S10c` → PR #1 (CI green).
+- **Changes:**
+  - **Detail pages DB-ready:** `generateStaticParams` is now async and resolves
+    through the provider, so DB destinations get pages at build once Supabase is
+    on. Kept `dynamicParams = false` (true 404s) after confirming `dynamicParams
+    = true` regressed `/destinations/nope` to a 200 soft-404.
+  - **LLM seam:** `PlanningProvider` contract + Anthropic adapter (real Messages
+    API call, gated by `getLlmConfig()` + the new `ai-planning` flag, so it is
+    inert until a key + flag are set) + selection (`getPlanningProvider`) +
+    `POST /api/plan/ai` (400 invalid, 503 when unconfigured, 502 on provider
+    error, 200 with a plan). `LLM_API_KEY`/`LLM_MODEL` added to the env boundary.
+  - **Docs/ops:** `docs/runbooks/hosted-enablement.md` (exact turn-on steps for
+    Supabase + LLM + weather); `.env.example`, docs README, and the handoff
+    blocked queue updated; smoke now covers `GET /api/plan/ai` (405, POST-only).
+- **Validation:** typecheck, lint, `npm test` (**142** passing, +4 AI cases),
+  build all green. Runtime-verified: `/destinations/kyoto` 200, `/destinations/
+  nope` 404 (preserved), `POST /api/plan/ai` 503 unconfigured, `GET` 405,
+  invalid body 400.
+- **Assumptions / safety:** the Anthropic call is standard but unrun here (no key,
+  egress restricted) — it is fully gated and inert until enabled, with the
+  deterministic planner as the fallback; no secrets committed; no fabricated
+  data. DB rows added after a build appear on the next build (ISR is a later
+  opt-in) — documented.

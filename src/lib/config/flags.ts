@@ -15,6 +15,7 @@ export const KNOWN_FLAGS = [
   "mock-intelligence",
   "pathfinder",
   "travel-dna",
+  "ai-planning",
 ] as const;
 
 export type FeatureFlag = (typeof KNOWN_FLAGS)[number];

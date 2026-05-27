@@ -123,9 +123,17 @@ home search/filter into a pure tested helper.
 
 ## Blocked queue (resume when access is granted)
 
-- Hosted Supabase: apply `supabase/migrations/*`, set env, enable flags,
-  verify provider failover against the real DB; then make
-  `generateStaticParams` async (or ISR) so DB destinations get detail pages.
+The seams are now **config-only to enable** — see
+`docs/runbooks/hosted-enablement.md` for exact steps.
+
+- Hosted Supabase: set env + `supabase db push` (migrations `0001`–`0004`) +
+  enable flags. Detail pages are already DB-ready — `generateStaticParams` is
+  async and resolves through the provider, so DB destinations get pages at build
+  (kept `dynamicParams=false` for true 404s; rows added post-build appear on the
+  next build, or wire ISR later if desired).
+- LLM / AI planning: set `LLM_API_KEY` (+ optional `LLM_MODEL`) and enable the
+  `ai-planning` flag. Seam built + tested: `PlanningProvider` contract, Anthropic
+  adapter (inert until configured), `POST /api/plan/ai` (503 until enabled).
 - Live weather: allowlist the weather host, implement `OpenMeteoWeatherProvider`
   to the existing `WeatherProvider` contract, register ahead of the mock.
 - Branch protection: enable required PR review + status checks on `main`.
