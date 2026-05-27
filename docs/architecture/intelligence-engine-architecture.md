@@ -107,10 +107,18 @@ Two design points keep this honest and composable:
   flow straight into an engine's per-signal confidence — a stale or seed source
   yields a lower-confidence signal rather than being silently treated as
   authoritative.
+- **Pure bridge, honest by construction.** `travel-data-context.ts` maps
+  travel-data responses to engine input fragments (opening hours → `isOpenNow`;
+  safety advisory level → `advisoryConfidence`; active local events →
+  `festivalIntensity`). A fragment is produced **only** from an `ok` response
+  (optionally only from non-stale data); an unavailable/error/dropped source
+  yields an **empty** fragment, so the engine simply lacks that input — lowering
+  its coverage-based `confidence` rather than fabricating a value. Pure + unit
+  tested.
 - **Contract-ready only, today.** Only SEED adapters exist; no live vendor is
-  wired. Engines are *not* yet fed from this layer — wiring source → signal is
-  intentionally deferred until a live source is implemented behind the contract,
-  so no fake operational claims are introduced.
+  wired. The bridge is exercised end-to-end by the seed adapters, not by any
+  live feed — so no fake operational claims are introduced. A live source slots
+  in behind the same contract without touching the bridge or the engines.
 
 ## Roadmap (per the product vision)
 

@@ -42,6 +42,7 @@ appear under "Roadmap" without operational claims.
 | `lib/providers/travel-data/*` | own contracts/source/freshness only | Pure + seed data; **no external I/O today**. Contracts for places/hours/prices/links/reviews/events/advisories; only SEED adapters wired. |
 | `lib/affiliate/routing` | `lib/affiliate/types` only | Pure; no I/O. |
 | `lib/intelligence/*` | own types/weights | Pure; no I/O. |
+| `lib/intelligence/travel-data-context` | intelligence engine types + travel-data contract/freshness types | Pure bridge; no I/O. Maps travel-data responses → engine input fragments, gated on response status/freshness. |
 
 ## Roadmap dependencies (not yet integrated)
 
