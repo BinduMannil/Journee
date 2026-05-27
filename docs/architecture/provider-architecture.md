@@ -1,6 +1,6 @@
 # Provider Architecture
 
-_Last updated: 2026-05-26. Reflects code in `src/lib/providers`._
+_Last updated: 2026-05-27. Reflects code in `src/lib/providers`._
 
 ## Purpose
 
@@ -62,8 +62,71 @@ back to seed automatically. The backing schema + RLS live in
 | Preferred provider throws | Caught → next provider. |
 | All providers fail | `resolve` returns `null`; callers render an empty/sensible state. |
 
+## Travel-data provider layer (`travel-data/`)
+
+A second, **backend-only** provider family for real-world travel intelligence
+lives under `src/lib/providers/travel-data`. These capabilities are
+parameterized by a query (a destination or a place), so — like the weather
+provider — they use their own small contract + registry rather than the no-arg
+capability `resolve()`.
+
+**Status: contract-ready only.** The contracts and the shared
+source/freshness/confidence model are implemented and tested. The **only**
+adapters wired today are clearly-labeled **SEED** adapters. No live travel-data
+vendor is integrated, and none will be claimed as live until it is actually
+implemented behind these contracts.
+
+### Contracts (`contracts.ts`)
+
+`TravelDataKind` covers seven domains: `places`, `opening-hours`,
+`ticket-prices`, `ticket-links`, `reviews`, `local-events`,
+`safety-advisories`. Each is a `TravelDataProvider<TQuery, TData>` with
+`{ id, name, kind, sourceType, isAvailable(), fetch(query) }`.
+
+`fetch` always resolves to a **fallback-safe** `TravelDataResponse<TData>` — a
+discriminated union of `ok | unavailable | error` where `data` is always a
+present key (`null` unless `ok`) and non-ok states carry a `reason` rather than
+throwing. Every response carries `SourceMetadata`.
+
+### Source attribution (`source.ts`)
+
+`SourceMetadata` = `{ sourceName, sourceType, providerId, confidence,
+fetchedAt?, expiresAt?, attributionUrl? }`. `sourceType` is one of
+`seed | mock | live | stale | unavailable` (providers may only *declare*
+`seed | mock | live`; `stale`/`unavailable` are runtime-derived). Confidence is
+always clamped to 0..1 so a source can never claim out-of-range certainty.
+
+### Freshness, confidence & quality (`freshness.ts`)
+
+Pure, deterministic helpers (no I/O): `computeFreshness`/`isStale` (from
+`expiresAt`), `normalizeConfidence` + `confidenceLevel` banding,
+`effectiveSourceType` (demotes expired data to `stale`), `rankSources` (orders
+live > seed > mock, then confidence, then recency), and `classifySourceQuality`
+(`high|medium|low|none`, demoting stale data a band). This is where "is this
+data good enough / fresh enough?" is decided.
+
+### Registry & readiness (`registry.ts`)
+
+Providers self-register (via `register.ts`) and are ordered by trust
+(live > seed > mock). `resolveTravelData(kind, query)` tries them in order,
+skips unavailable/non-ok, and **always** returns a `TravelDataResponse` (never
+throws / never null). `reportTravelDataReadiness()` reports, per kind, whether a
+contract exists, the registered providers + availability, the source types in
+play, and whether the kind is **blocked** (no live provider wired) and why. It
+is surfaced (read-only) under `/api/admin/status`.
+
+### Seed adapters (`seed/`)
+
+Deterministic sample data for the four seed destinations, one adapter per kind.
+Seed is the always-available, lowest-trust fallback (mirroring the local-seed
+destinations provider); ticket links use a neutral `example.com` placeholder
+host so no real ticketing vendor is implied. Honesty is preserved by the `seed`
+label on every response — seed data is never presentable as a live observation.
+
 ## Roadmap
 
-Affiliate, weather, and events capabilities are declared in the enum but have no
-adapters yet. They will be added under the same contract when those systems are
-designed.
+Affiliate and the live travel-data vendors are declared/contracted but have no
+live adapters yet. Each will be added under the same contract **only when
+actually implemented** — registered ahead of the seed adapter, gated on config
+via `isAvailable()`, with its dependency-register row and docs updated in the
+same PR.

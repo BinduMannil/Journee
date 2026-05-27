@@ -1,15 +1,18 @@
 # Intelligence Engine Architecture
 
-_Last updated: 2026-05-26._
+_Last updated: 2026-05-27._
 
 ## Status
 
 - **Shared scoring core + signal model:** ✅ implemented (`src/lib/intelligence`).
 - **Engine scaffolds (destination, events, disruption):** ✅ input→signal mapping implemented & testable.
+- **Travel-data provider contracts (places, hours, prices, links, reviews, events, advisories):** ✅ contracts + source/freshness/confidence model + SEED adapters implemented & tested (`src/lib/providers/travel-data`).
 - **Live data feeds (weather, events, advisories) + persistence + UI surfacing:** 🔜 roadmap.
 
 No live-data or accuracy claims are made for unbuilt feeds. Engines accept
-injected inputs so the logic is exercisable now.
+injected inputs so the logic is exercisable now. The travel-data layer is
+**contract-ready only**: just SEED adapters are wired, every response is labeled
+with its source type (`seed`), and no live vendor is integrated.
 
 ## The pattern
 
@@ -87,6 +90,27 @@ no-hardcoding/auditability policy, not an add-on.
 `confidence` = (expected signal keys present) / (expected keys). A score built
 from partial data is still returned, but flagged as lower confidence rather than
 silently treated as authoritative.
+
+## Travel-data sources (the inputs that populate engine signals)
+
+The engines above map **inputs** to signals; the **travel-data provider layer**
+(`src/lib/providers/travel-data`, see provider-architecture.md) is the seam that
+will eventually produce those inputs from the real world — places, opening
+hours, ticket prices/links, reviews, local events and safety advisories.
+
+Two design points keep this honest and composable:
+
+- **Shared confidence/freshness vocabulary.** Travel-data sources carry
+  `SourceMetadata` with a normalized `confidence` (0..1) and a freshness state
+  (`computeFreshness`/`classifySourceQuality`). This is the same 0..1 confidence
+  the scoring core already speaks, so a source's confidence/quality can later
+  flow straight into an engine's per-signal confidence — a stale or seed source
+  yields a lower-confidence signal rather than being silently treated as
+  authoritative.
+- **Contract-ready only, today.** Only SEED adapters exist; no live vendor is
+  wired. Engines are *not* yet fed from this layer — wiring source → signal is
+  intentionally deferred until a live source is implemented behind the contract,
+  so no fake operational claims are introduced.
 
 ## Roadmap (per the product vision)
 

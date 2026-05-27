@@ -1,6 +1,6 @@
 # Service & Dependency Map
 
-_Last updated: 2026-05-26. Reflects dependencies that actually exist today._
+_Last updated: 2026-05-27. Reflects dependencies that actually exist today._
 
 This map is deliberately scoped to **real** dependencies. Planned integrations
 appear under "Roadmap" without operational claims.
@@ -39,12 +39,17 @@ appear under "Roadmap" without operational claims.
 | --- | --- | --- |
 | `app/page` | provider registry, config, content | Never imports a vendor SDK directly. |
 | `lib/providers/*` | `config/env`, `config/flags` | Adapters gate availability on config/flags. |
+| `lib/providers/travel-data/*` | own contracts/source/freshness only | Pure + seed data; **no external I/O today**. Contracts for places/hours/prices/links/reviews/events/advisories; only SEED adapters wired. |
 | `lib/affiliate/routing` | `lib/affiliate/types` only | Pure; no I/O. |
 | `lib/intelligence/*` | own types/weights | Pure; no I/O. |
 
 ## Roadmap dependencies (not yet integrated)
 
 Weather/AQI APIs, event/holiday calendars, government travel advisories,
-affiliate networks, AI model providers. Each will be added **behind a provider
-adapter** with its own dependency-register row when integrated — including
-failure/fallback/recovery once those are real, not before.
+affiliate networks, AI model providers, and the live **travel-data** vendors
+(places, opening hours, ticket prices/links, reviews). The travel-data
+**contracts** exist now (`lib/providers/travel-data`), backed only by SEED
+adapters; no live vendor is wired, so there is **no external dependency to
+register yet**. Each will be added **behind a provider adapter** with its own
+dependency-register row when integrated — including failure/fallback/recovery
+once those are real, not before.
