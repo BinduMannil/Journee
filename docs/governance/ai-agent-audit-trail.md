@@ -516,3 +516,6 @@ validation evidence so changes are reviewable without tribal knowledge._
 - **Notes:** `<script type="application/ld+json">` is a non-executable data block,
   so it's unaffected by the `script-src` CSP; no policy change needed. No
   fabricated data — all fields come from the catalog.
+- **Follow-up:** added per-page `alternates.canonical` to home, discover, plan,
+  saved, about, and destination detail pages (resolved against `metadataBase`).
+  Runtime-verified: every route emits a correct `<link rel="canonical">` in SSR.

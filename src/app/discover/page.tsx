@@ -8,6 +8,7 @@ import { DiscoverClient } from "@/components/DiscoverClient";
 export const metadata: Metadata = {
   title: "Discover",
   description: "Find destinations by the vibe you're chasing.",
+  alternates: { canonical: "/discover" },
 };
 
 export default async function DiscoverPage() {

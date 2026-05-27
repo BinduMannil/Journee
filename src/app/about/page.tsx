@@ -6,6 +6,7 @@ import { platformSystems, type SystemStatus } from "@/content/systems";
 export const metadata: Metadata = {
   title: "About",
   description: "How Journee thinks about travel — and what's built so far.",
+  alternates: { canonical: "/about" },
 };
 
 const STATUS_LABEL: Record<SystemStatus, string> = {

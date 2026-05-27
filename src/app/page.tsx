@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { QuoteRotator } from "@/components/QuoteRotator";
 import { DestinationExplorer } from "@/components/DestinationExplorer";
 import { AffiliateCta } from "@/components/AffiliateCta";
@@ -9,6 +10,10 @@ import { heroQuotes, type Destination } from "@/content/destinations";
 import { resolve } from "@/lib/providers/registry";
 // Importing the registration module wires up all provider adapters.
 import "@/lib/providers/register";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default async function Home() {
   // Resolved via the provider registry, not imported directly — this is the

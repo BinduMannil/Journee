@@ -8,6 +8,7 @@ import { SavedList } from "@/components/SavedList";
 export const metadata: Metadata = {
   title: "Saved",
   description: "Your saved destinations.",
+  alternates: { canonical: "/saved" },
 };
 
 export default async function SavedPage() {

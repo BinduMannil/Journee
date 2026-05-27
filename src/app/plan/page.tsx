@@ -12,6 +12,7 @@ import { TripBuilder } from "@/components/TripBuilder";
 export const metadata: Metadata = {
   title: "Plan a trip",
   description: "Build a fatigue-aware, paced itinerary across destinations.",
+  alternates: { canonical: "/plan" },
 };
 
 export default async function PlanPage() {
