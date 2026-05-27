@@ -1,6 +1,6 @@
 # Continuation Handoff
 
-_Last updated: 2026-05-26. Snapshot for the next engineer/agent to resume
+_Last updated: 2026-05-27. Snapshot for the next engineer/agent to resume
 without context loss._
 
 ## Where things stand
@@ -66,6 +66,34 @@ routes verified via `npm start` + curl, and a 19+ check e2e smoke
 21. Trip planner UI (`/plan`) surfacing the dynamic-itinerary engine
     (config-driven mood→intensity).
 
+Done (session 3 — this branch `claude/travel-provider-contracts-*`): **Travel-data
+provider contracts** (backend-only). New `src/lib/providers/travel-data` layer:
+seven capability contracts (places, opening hours, ticket prices, ticket links,
+reviews, local events, safety advisories); a shared **source-attribution model**
+(`source.ts` — sourceName/type/providerId/confidence/fetchedAt/expiresAt/
+attributionURL, sourceType ∈ seed|mock|live|stale|unavailable); pure
+**freshness/confidence** helpers (`freshness.ts` — freshness state, stale
+detection, confidence normalization + banding, source ranking, result-quality
+classification); a fallback-safe discriminated `TravelDataResponse`
+(ok|unavailable|error, `data` always present); a parameterized **registry** with
+trust-ordered resolution + `reportTravelDataReadiness()`; **SEED adapters only**
+(one per kind, deterministic, ticket links use a neutral `example.com`
+placeholder). Readiness is surfaced read-only under `/api/admin/status`. Tests:
+**194 total** (added contracts, source, freshness, confidence, registry/readiness,
+fallback). **No live vendor wired; no Supabase; no UI; no LLM change.**
+
+### Honesty notes for this session (must stay true)
+
+- **Supabase remains blocked** (hosted) — no hosted DB migrations were applied;
+  none attempted this session.
+- **LLM planning is already provided and tested** — not changed this session.
+- **UI is intentionally deferred** — no UI files were touched.
+- The travel-data providers are **contract-ready only**. Live data vendors are
+  **not wired** — only clearly-labeled SEED adapters exist, and every response
+  carries `SourceMetadata` so seed data is never presentable as live.
+- **No fake operational/live-data claims** were introduced; readiness reporting
+  reports kinds as `blocked` (no live provider) honestly.
+
 ## What is real vs. roadmap (read before extending)
 
 - **Real & tested (77 tests):** provider registry + fallback + contract tests;
@@ -77,7 +105,9 @@ routes verified via `npm start` + curl, and a 19+ check e2e smoke
 - **Scaffold (logic/contracts real, data NOT wired):** intelligence engines have
   no live weather/events/advisory feeds (mock providers stand in); Supabase
   providers + migrations are not applied to any *hosted* project (local-only
-  verified).
+  verified); **travel-data provider contracts** (places/hours/prices/links/
+  reviews/events/advisories) exist with source/freshness/confidence model +
+  registry, backed only by SEED adapters — no live travel-data vendor wired.
 - **EXTERNALLY BLOCKED (cannot proceed without access):**
   - Hosted Supabase (staging/prod) — needs real project secrets.
   - Live weather feed — Open-Meteo egress blocked by the network allowlist

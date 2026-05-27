@@ -1,5 +1,7 @@
 import { allProviders } from "@/lib/providers/registry";
 import "@/lib/providers/register";
+import "@/lib/providers/travel-data/register";
+import { reportTravelDataReadiness } from "@/lib/providers/travel-data/registry";
 import { getAdminToken } from "@/lib/config/env";
 import { getCounters } from "@/lib/observability/metrics";
 import { KNOWN_FLAGS, isFeatureEnabled } from "@/lib/config/flags";
@@ -31,10 +33,12 @@ export async function GET(request: Request): Promise<Response> {
     })),
   );
   const flags = Object.fromEntries(KNOWN_FLAGS.map((f) => [f, isFeatureEnabled(f)]));
+  const travelData = await reportTravelDataReadiness();
 
   return Response.json({
     time: new Date().toISOString(),
     providers,
+    travelData,
     flags,
     counters: getCounters(),
   });
