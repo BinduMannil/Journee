@@ -15,4 +15,11 @@ export * from "./source";
 export * from "./freshness";
 export * from "./contracts";
 export * from "./registry";
+export {
+  cachedResolveTravelData,
+  createTravelDataCache,
+  defaultTravelDataCache,
+  type CacheOptions,
+  type TravelDataCache,
+} from "./cache";
 export { seedTravelDataProviders } from "./seed";
