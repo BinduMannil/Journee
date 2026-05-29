@@ -82,6 +82,14 @@ export {
   type ChainCategory,
 } from "./chains";
 export {
+  getFruitsProfile,
+  inSeasonFruits,
+  mustTryFruits,
+  FRUITS_DATA_NOTE,
+  type FruitsProfile,
+  type SeasonalFruit,
+} from "./fruits";
+export {
   estimateTripCarbon,
   inferTravelMode,
   carbonModelV1,
