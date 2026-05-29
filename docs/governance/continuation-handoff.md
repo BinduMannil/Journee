@@ -169,21 +169,27 @@ No operational claims are made for unbuilt systems — keep it that way.
 ## Non-blocked next steps (pick in order)
 
 **Product-owner requested feature backlog (build next, in this order — same
-seed-backed pattern as session 5; `docs/roadmap.md` is the live register):**
+seed-backed pattern; `docs/roadmap.md` is the live register).** TIP: independent
+seed features can be built **in parallel** — spawn one sub-agent per feature to
+write only its 3 new files (content + lib accessor + test, no shared-file edits,
+self-test with tsx), then the orchestrator wires the barrel/`systems.ts`/roadmap
+once and runs one gate (this is how #49 and #50 shipped 6 features in 2 batches).
 
-1. **City vibe & local friendliness** — add a "friendliness/hospitality" signal
-   to the existing **City Energy** engine (`engines/city-energy.ts`), seed-fed.
-2. **Follow graph & journey feed** — pure feed-composition over a follow set +
-   posts. (Storage/auth/UI blocked; build the pure core now.)
-3. **Public notes & travel blogs/vlogs** — pure content model + zod validation
-   (scaffold like `affiliate/types.ts`). (Storage/auth/UI blocked.)
-4. **UV & weather-protection customs** — editorial seed of local protections
+1. **UV & weather-protection customs** — editorial seed of local protections
    (siesta, parasols, layering, hammam); UV index from the live weather feed
    later (⛔ egress).
-5. **Hospital / clinic locations** — extend essentials (live/geo later).
-6. **Trip budget / cost estimate**, **best-time-to-visit**, **accessibility
-   capability**, **multi-currency normalization**, **"explain my ranking"
-   endpoint**, **itinerary GeoJSON export** — see `docs/roadmap.md` backlog.
+2. **Hospital / clinic locations** — extend essentials (live/geo later).
+3. **Follow graph & journey feed** — pure feed-composition over a follow set +
+   posts. (Storage/auth/UI blocked; build the pure core now.)
+4. **Public notes & travel blogs/vlogs** — pure content model + zod validation
+   (scaffold like `affiliate/types.ts`). (Storage/auth/UI blocked.)
+5. **best-time-to-visit**, **accessibility capability**, **multi-currency
+   normalization**, **"explain my ranking" endpoint**, **itinerary GeoJSON
+   export**, plus more suggestions (dress code, public-transport how-to,
+   timezone & business hours, packing guidance, photography rules) — see
+   `docs/roadmap.md` backlog.
+6. **Fold seed signals into engines** — e.g. city-vibe friendliness → City
+   Energy engine; inclusion → safety; these are currently standalone accessors.
 
 **Engineering hardening (non-blocked):**
 
@@ -194,12 +200,14 @@ seed-backed pattern as session 5; `docs/roadmap.md` is the live register):**
 9. **Per-destination editorial-confidence signal** — seed-readiness × editorial
    coverage % → per-destination "data confidence" under admin readiness.
 
-Done in session 5: `resolveTravelDataMany` (#33), `/api/admin/cache` (#34),
-carbon (#35), culinary (#36), essentials (#37), shopping (#38), chains (#39),
-seasonal fruits (#40), session-5 handoff (#41), **airport & terminal intel
-(#42)**, **ratings aggregation core (#43)**, **airport & airline ratings (#44)**.
-Test count **279 → 327**. (Build order above reflects what's left — airport,
-ratings core, and airport/airline ratings are now done.)
+Done in session 5 (all merged to `main`): `resolveTravelDataMany` (#33),
+`/api/admin/cache` (#34), carbon (#35), food/drink customs (#36), essentials
+(#37), shopping (#38), chains (#39), seasonal fruits (#40), handoff (#41),
+airport intel (#42), ratings core (#43), airport/airline ratings (#44), handoff
+(#45), local gems (#46), city vibe (#47), festivals + UI backlog (#48),
+**parallel batch 1**: religion + tipping + connectivity (#49), **parallel batch
+2**: inclusion + cost index + scams/safety (#50). Test count **279 → 356**.
+New this session: `docs/ui-backlog.md` (the deferred-UI register).
 
 > Branch note: session-4/5 work went to `main` directly via PRs branched off
 > `main`. `claude/quirky-keller-2S10c` is stale — branch fresh from `main`.
