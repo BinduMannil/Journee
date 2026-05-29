@@ -22,6 +22,7 @@ export const platformSystems: readonly PlatformSystem[] = [
   { name: "Local Chains", status: "scaffold", note: "Recognizable cinema/coffee/pharmacy/supermarket/fast-food/hospital chains per destination; seed data." },
   { name: "Seasonal Fruits", status: "scaffold", note: "In-season + must-try fruits with editorial global taste/production ratings; seed data." },
   { name: "Airport & Terminal Intel", status: "scaffold", note: "Terminals, inter-terminal transfer, boarding method, airport→city distance + access modes; seed data." },
+  { name: "Ratings & Recommendations", status: "scaffold", note: "Confidence-weighted (Bayesian) rating core for places/restaurants/users; persistence + UI roadmap." },
   { name: "Affiliate & Monetization", status: "live", note: "Data-driven routing, A/B, ingestion, analytics." },
   { name: "Travel Confidence", status: "scaffold", note: "Aggregates engine scores; sample inputs." },
   { name: "Event & Cultural", status: "scaffold", note: "Engine + mapping; live calendars roadmap." },

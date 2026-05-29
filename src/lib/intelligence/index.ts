@@ -100,6 +100,15 @@ export {
   type CityAccessMode,
 } from "./airports";
 export {
+  aggregateRatings,
+  rankByRating,
+  ratingModelV1,
+  type RatingModel,
+  type RatingAggregate,
+  type RatedItem,
+  type RankedItem,
+} from "./ratings";
+export {
   estimateTripCarbon,
   inferTravelMode,
   carbonModelV1,
