@@ -43,6 +43,7 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | Connectivity & Power | ✅ (seed) | Plug types/voltage, SIM/eSIM options, tap-water potability + `tapWaterAdvice`, coverage notes; `CONNECTIVITY_DATA_NOTE` | Live coverage data, UI |
 | Traveller Inclusion & Safety | ✅ (seed) | LGBTQ+ legal status + same-sex-marriage + social climate, religious-minority & solo-women notes; `getInclusionProfile`; factual, strongly disclaimered (`INCLUSION_DATA_NOTE`) | Tie to live govt advisories, expanded coverage, UI |
 | Cost Index | ✅ (seed) | Approx meal/coffee/beer/taxi prices + affordability band + `dailyBudgetEstimateUsd`; `COSTS_DATA_NOTE` | Live FX, more cities, UI |
+| Multi-Currency Normalization | ✅ (seed) | Indicative, dated SEED FX table (`fx-seed-v1`) + `convertUsd` / `convertCurrency` (cross via USD) / `costPricesIn` (cost anchors in any catalogued currency); `FX_DATA_NOTE` (never a live quote) | Live FX feed behind a provider (⛔ egress); more currencies; UI |
 | Scams & Safety Tips | ✅ (seed) | Common scams (how + how-to-avoid) + general safety tips per destination; `getSafetyTips` / `scamNames`; `SAFETY_TIPS_DATA_NOTE` | Expanded coverage, UI |
 | Hazards & Advisories | ✅ (seed) | Per-destination natural-hazard exposure (quake/volcano/typhoon/wildfire/etc.), conflict status, typical advisory level (1–4); `getHazardsProfile` / `highRiskHazards`; factual exposure not a forecast (`HAZARDS_DATA_NOTE`) | Tie to live govt advisories + disruption engine; UI |
 | Display Preferences & Units | ✅ (pure) | `UserPreferences` (currency, °C/°F, km/mi) + converters + `formatTemperature`/`formatDistance`/`formatCurrency` (display only, no FX yet); `PREFERENCES_NOTE` | Persistence + profile UI + live FX (⛔) |
@@ -135,7 +136,8 @@ data first (honestly labeled), live sources and UI later.
   hospital/clinic info (live/geo source later; emergency numbers already shipped).
 - **Trip budget / cost estimate** — aggregate seed ticket prices + lodging-tier
   config into a per-trip estimate with confidence.
-- **Multi-currency normalization** — seed FX layer over ticket prices (labeled).
+- ✅ **Multi-currency normalization** — shipped (seed FX layer over the cost
+  anchors, indicative-only, behind a provider-ready accessor).
 - **"Explain my ranking" endpoint** — expose the scoring contribution breakdown.
 - ✅ **Itinerary GeoJSON / route export** — shipped (`itineraryToGeoJSON`,
   pure; complements the `.ics` export).
