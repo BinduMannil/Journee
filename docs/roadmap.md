@@ -39,6 +39,7 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | Shopping & Essentials | ✅ (seed) | Per-destination malls, markets/souks, online/e-commerce, fuel networks + EV-charging availability, payment norms + derived tips; `SHOPPING_DATA_NOTE` disclaimer | Live directory/geo, expanded coverage, UI |
 | Local Chains | ✅ (seed) | Recognizable chains by category (cinema, coffee, pharmacy, supermarket, fast food, hospital) per destination + `chainsForCategory`; `CHAINS_DATA_NOTE` disclaimer | Live directory/geo, expanded coverage, UI |
 | Seasonal Fruits | ✅ (seed) | In-season (by local month) + must-try fruits with editorial global taste/production ratings; `inSeasonFruits` / `mustTryFruits`; `FRUITS_DATA_NOTE` disclaimer | Live/expanded coverage, UI |
+| Airport & Terminal Intel | ✅ (seed) | Per-destination airports: terminals, inter-terminal transfer mode, boarding method, airport→city distance + access modes; `getAirportsProfile` / `primaryAirport`; `AIRPORTS_DATA_NOTE` | Live/geo source, more airports, UI |
 | Affiliate & Monetization | ✅ | Data-driven routing, A/B, click/conversion ingestion, analytics | Live catalog via hosted Supabase (⛔) |
 | Travel-data backend | ✅ (seed) | 7 capability contracts, source/freshness/confidence model, trust-ordered registry, TTL cache, strict resolver, readiness assemblers, **JSON-Schema export**, observability, gated admin readiness | **Live vendor adapters** (⛔ egress); UI surfacing (deferred) |
 | Observability & control plane | ✅ | Structured logs, counter metrics, `/api/metrics`, `/api/health`, secure-by-default `/api/admin/{status,readiness}` | Cache stats endpoint; latency histograms (non-blocked queue) |
@@ -101,11 +102,6 @@ Requested by the product owner; built in roughly this order, seed/estimate
 data first (honestly labeled), live sources and UI later.
 
 **Local-knowledge intelligence (seed/editorial, buildable now):**
-- **Airport & terminal intelligence** ⭐ — per-destination airports: terminal
-  count, inter-terminal distance + transfer mode (walk / shuttle bus / inter-
-  terminal train/metro), boarding method (jet bridge vs bus/stairs), and
-  airport→city distance + access mode (metro / rail / taxi / bus). New
-  `airport-info` capability behind the existing contract + seed adapter.
 - **UV & weather-protection customs** — UV index from the live weather feed
   (Open-Meteo supports it, ⛔ egress) + an editorial seed of how locals protect
   against the elements (siesta, parasols, layering, hammam, etc.).

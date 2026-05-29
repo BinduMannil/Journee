@@ -90,6 +90,16 @@ export {
   type SeasonalFruit,
 } from "./fruits";
 export {
+  getAirportsProfile,
+  primaryAirport,
+  AIRPORTS_DATA_NOTE,
+  type AirportsProfile,
+  type AirportInfo,
+  type TransferMode,
+  type BoardingMethod,
+  type CityAccessMode,
+} from "./airports";
+export {
   estimateTripCarbon,
   inferTravelMode,
   carbonModelV1,
