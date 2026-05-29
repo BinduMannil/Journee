@@ -42,6 +42,9 @@ import { getTouristPrices } from "./tourist-prices";
 import { getAttractions } from "./attractions";
 import { getIntercityOptions } from "./intercity";
 import { getCombos } from "./itinerary-combos";
+import { getNightlife } from "./nightlife";
+import { getBeaches } from "./beaches";
+import { getFamilyActivities } from "./family-activities";
 
 /** The seed features whose coverage is tallied. Add a row when a feature ships. */
 const FEATURE_CHECKS: Readonly<Record<string, (id: string) => unknown>> = {
@@ -77,6 +80,9 @@ const FEATURE_CHECKS: Readonly<Record<string, (id: string) => unknown>> = {
   attractions: getAttractions,
   intercity: getIntercityOptions,
   combos: getCombos,
+  nightlife: getNightlife,
+  beaches: getBeaches,
+  familyActivities: getFamilyActivities,
 };
 
 /** The full set of feature keys coverage is measured against (sorted). */

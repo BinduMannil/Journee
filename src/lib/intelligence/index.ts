@@ -198,6 +198,36 @@ export {
   type ComboReason,
 } from "./itinerary-combos";
 export {
+  getNightlife,
+  nightlifeByKind,
+  nightlifeByVibe,
+  NIGHTLIFE_DATA_NOTE,
+  type NightlifeProfile,
+  type NightlifeSpot,
+  type NightlifeKind,
+  type Vibe,
+} from "./nightlife";
+export {
+  getBeaches,
+  swimmableSpots,
+  spotsByWaterType,
+  BEACHES_DATA_NOTE,
+  type BeachesProfile,
+  type SwimSpot,
+  type WaterType,
+  type BeachVibe,
+} from "./beaches";
+export {
+  getFamilyActivities,
+  activitiesForAge,
+  activitiesByKind,
+  FAMILY_DATA_NOTE,
+  type FamilyActivitiesProfile,
+  type FamilyActivity,
+  type ActivityKind,
+  type AgeSuitability,
+} from "./family-activities";
+export {
   supportedCurrencies,
   fxRate,
   convertUsd,
