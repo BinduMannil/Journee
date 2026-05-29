@@ -295,6 +295,18 @@ export {
   type ItineraryDay,
   type Pacing,
 } from "./itinerary";
+export { itineraryToICS, type ICSOptions } from "./itinerary-export";
+export {
+  itineraryToGeoJSON,
+  itineraryToGeoJSONString,
+  type RouteWaypoint,
+  type GeoJSONOptions,
+  type Position,
+  type PointFeature,
+  type LineStringFeature,
+  type RouteFeature,
+  type RouteFeatureCollection,
+} from "./itinerary-geojson";
 export {
   destinationEngine,
   DESTINATION_SIGNAL_KEYS,
