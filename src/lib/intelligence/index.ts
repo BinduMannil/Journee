@@ -177,6 +177,24 @@ export {
   type Busyness,
 } from "./attractions";
 export {
+  getIntercityOptions,
+  recommendedRoutes,
+  routesByMode,
+  INTERCITY_DATA_NOTE,
+  type IntercityProfile,
+  type IntercityRoute,
+  type IntercityMode,
+} from "./intercity";
+export {
+  getCombos,
+  pairsForReason,
+  suggestedTripLength,
+  COMBOS_DATA_NOTE,
+  type CombosProfile,
+  type ComboPlace,
+  type ComboReason,
+} from "./itinerary-combos";
+export {
   supportedCurrencies,
   fxRate,
   convertUsd,
