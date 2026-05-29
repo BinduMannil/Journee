@@ -57,6 +57,10 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | Dress Code by Venue | ✅ (seed) | Respectful-dress guidance by venue kind (religious site/fine dining/beach-pool/nightlife/general) with strictness; `getDressCode` / `dressGuidanceFor` / `venuesNeedingModesty`; `DRESS_CODE_NOTE` | Expanded coverage, UI |
 | Photography Rules & Etiquette | ✅ (seed) | Per-destination photo/drone rules by subject kind (people/religious/government/museum/drone) with permission level; `getPhotographyProfile` / `photoRuleFor` / `prohibitedSubjects`; `PHOTOGRAPHY_DATA_NOTE` | Live/expanded regulations, UI |
 | Public-Transport How-To | ✅ (seed) | Modes, ticketing/passes, payment methods + practical tip per destination; `getTransitHowTo` / `transitOptionFor` / `acceptsContactless`; `TRANSIT_HOWTO_NOTE` | Live operator/route/fare data, expanded coverage, UI |
+| Accessibility Capability | ✅ (seed) | Step-free/wheelchair access + mobility realities by facet (getting around/attractions/lodging/terrain) with a level; `getAccessibilityProfile` / `accessAspectFor` / `challengingFacets`; `ACCESSIBILITY_DATA_NOTE` | Per-venue live data, expanded coverage, UI |
+| Timezone & Business Hours | ✅ (seed) | IANA timezone + UTC offset, typical shop/restaurant/bank/government/market hours, weekend days, siesta notes; `getTimezoneProfile` / `businessHoursFor` / `currentTimeAt` (live local time via the zone); `TIMEZONE_DATA_NOTE` | Live/expanded hours, holiday calendars, UI |
+| Packing Guidance | ✅ (seed) | Year-round + seasonal packing items with priority + reason, climate/customs-aware; `getPackingProfile` / `packingForSeason` / `essentialItems`; `PACKING_DATA_NOTE` | Tie to live forecast + itinerary activities, UI |
+| Best Time to Visit | ✅ (seed) | Per-month visit rating (weather/crowds/prices) + reason; `getBestTimeProfile` / `monthAssessment` / `idealMonths`; `BEST_TIME_DATA_NOTE` | Tie to real solar + live events/weather, UI |
 | Affiliate & Monetization | ✅ | Data-driven routing, A/B, click/conversion ingestion, analytics | Live catalog via hosted Supabase (⛔) |
 | Travel-data backend | ✅ (seed) | 7 capability contracts, source/freshness/confidence model, trust-ordered registry, TTL cache, strict resolver, readiness assemblers, **JSON-Schema export**, observability, gated admin readiness | **Live vendor adapters** (⛔ egress); UI surfacing (deferred) |
 | Observability & control plane | ✅ | Structured logs, counter metrics, `/api/metrics`, `/api/health`, secure-by-default `/api/admin/{status,readiness}` | Cache stats endpoint; latency histograms (non-blocked queue) |
@@ -123,14 +127,14 @@ data first (honestly labeled), live sources and UI later.
   shipped (seed). ✅ **Photography rules** — shipped (seed). ✅ **UV &
   weather-protection customs** — shipped (seed; UV index from the live weather
   feed remains ⛔ egress-blocked).
-- **More suggested ideas to consider:** accessibility details ·
-  time-zone & business hours · packing/seasonal-clothing guidance.
+- ✅ **Accessibility capability** — shipped (seed). ✅ **Time-zone & business
+  hours** — shipped (seed). ✅ **Packing/seasonal-clothing guidance** — shipped
+  (seed). ✅ **Best-time-to-visit signal** — shipped (seed; tie to real solar +
+  live events/weather later).
 - **Hospital / clinic locations** — extend the essentials with nearest
   hospital/clinic info (live/geo source later; emergency numbers already shipped).
 - **Trip budget / cost estimate** — aggregate seed ticket prices + lodging-tier
   config into a per-trip estimate with confidence.
-- **Best-time-to-visit signal** — seasonality + real solar + (seed) events.
-- **Accessibility capability** — step-free / wheelchair info, seed-backed.
 - **Multi-currency normalization** — seed FX layer over ticket prices (labeled).
 - **"Explain my ranking" endpoint** — expose the scoring contribution breakdown.
 - **Itinerary GeoJSON / route export** — complement the `.ics` export.
