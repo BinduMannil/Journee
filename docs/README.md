@@ -26,6 +26,7 @@ This is the entry point for engineering documentation. It is deliberately
   - [`hosted-enablement.md`](runbooks/hosted-enablement.md) — config-only turn-on for hosted Supabase + LLM + weather.
   - [`supabase-local-setup.md`](runbooks/supabase-local-setup.md) · [`incident-response.md`](runbooks/incident-response.md) · [`recovery.md`](runbooks/recovery.md)
 - **decisions/** — Architecture Decision Records (ADRs). One file per significant choice.
+- **legal/** — **DRAFT** legal & policy documents for global launch (Terms, Privacy, Cookie, Acceptable Use, Moderation/DSA/DMCA, Accessibility, Billing, Sub-processors, Retention) + a [compliance-readiness checklist](legal/compliance-readiness.md). All marked "DRAFT — requires legal review"; see [`legal/README.md`](legal/README.md).
 - **governance/** — how we develop: branching, PRs, change management.
 - **security/** — security posture and the path toward SOC 2 readiness.
 
