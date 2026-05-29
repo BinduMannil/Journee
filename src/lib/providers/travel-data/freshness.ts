@@ -101,6 +101,22 @@ export function rankSources(
   });
 }
 
+/** Quality ordering for threshold comparisons. */
+const QUALITY_RANK: Readonly<Record<ResultQuality, number>> = {
+  none: 0,
+  low: 1,
+  medium: 2,
+  high: 3,
+};
+
+/**
+ * Whether a quality meets or exceeds a threshold. Use to gate routing/display
+ * decisions on a minimum quality bar (e.g. only use `medium` or better).
+ */
+export function meetsQuality(actual: ResultQuality, threshold: ResultQuality): boolean {
+  return QUALITY_RANK[actual] >= QUALITY_RANK[threshold];
+}
+
 /**
  * Classify the quality of a source for downstream routing/display:
  * - `none` — unavailable source (no usable data).
