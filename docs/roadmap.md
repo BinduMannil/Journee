@@ -41,6 +41,9 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | Religion & Places of Worship | ✅ (seed) | Predominant religions + major mosques/temples/churches/synagogues per destination; `getReligionProfile` / `placesOfWorshipByKind`; `RELIGION_DATA_NOTE` | Geo/live listings, expanded coverage, UI |
 | Tipping Norms | ✅ (seed) | Restaurant/taxi/hotel tipping expectations + service-charge norms + `tippingSummaryLine`; `TIPPING_DATA_NOTE` | Expanded coverage, UI |
 | Connectivity & Power | ✅ (seed) | Plug types/voltage, SIM/eSIM options, tap-water potability + `tapWaterAdvice`, coverage notes; `CONNECTIVITY_DATA_NOTE` | Live coverage data, UI |
+| Traveller Inclusion & Safety | ✅ (seed) | LGBTQ+ legal status + same-sex-marriage + social climate, religious-minority & solo-women notes; `getInclusionProfile`; factual, strongly disclaimered (`INCLUSION_DATA_NOTE`) | Tie to live govt advisories, expanded coverage, UI |
+| Cost Index | ✅ (seed) | Approx meal/coffee/beer/taxi prices + affordability band + `dailyBudgetEstimateUsd`; `COSTS_DATA_NOTE` | Live FX, more cities, UI |
+| Scams & Safety Tips | ✅ (seed) | Common scams (how + how-to-avoid) + general safety tips per destination; `getSafetyTips` / `scamNames`; `SAFETY_TIPS_DATA_NOTE` | Expanded coverage, UI |
 | Know-Before-You-Go Essentials | ✅ (seed) | Per-destination emergency numbers (+ flat list), healthcare note, courtesy phrases (hello/thanks/please/yes/no in the local language), etiquette do's/don'ts; `ESSENTIALS_DATA_NOTE` disclaimer | Hospital/clinic locations (live), expanded coverage, UI |
 | Shopping & Essentials | ✅ (seed) | Per-destination malls, markets/souks, online/e-commerce, fuel networks + EV-charging availability, payment norms + derived tips; `SHOPPING_DATA_NOTE` disclaimer | Live directory/geo, expanded coverage, UI |
 | Local Chains | ✅ (seed) | Recognizable chains by category (cinema, coffee, pharmacy, supermarket, fast food, hospital) per destination + `chainsForCategory`; `CHAINS_DATA_NOTE` disclaimer | Live directory/geo, expanded coverage, UI |
@@ -110,12 +113,7 @@ Requested by the product owner; built in roughly this order, seed/estimate
 data first (honestly labeled), live sources and UI later.
 
 **Local-knowledge intelligence (seed/editorial, buildable now):**
-- **Traveller inclusion & safety** — LGBTQ+ legal status & social climate;
-  religious-minority (incl. Jewish) and solo-women safety context. Factual,
-  sourced-where-possible, strongly disclaimered (describes laws/climate, **not**
-  endorsement); high-stakes so flag "verify current advisories". **(Next up.)**
-- **More suggested ideas to consider:** typical costs (meal/coffee/taxi index) ·
-  scams to watch for · dress code by venue · public-transport how-to
+- **More suggested ideas to consider:** dress code by venue · public-transport how-to
   (tickets/passes) · accessibility details · time-zone & business hours ·
   packing/seasonal-clothing guidance · photography rules.
 - **UV & weather-protection customs** — UV index from the live weather feed

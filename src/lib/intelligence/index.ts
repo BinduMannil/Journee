@@ -101,6 +101,27 @@ export {
   type ConnectivityProfile,
 } from "./connectivity";
 export {
+  getInclusionProfile,
+  INCLUSION_DATA_NOTE,
+  type InclusionProfile,
+  type LegalStatus,
+  type Acceptance,
+} from "./inclusion";
+export {
+  getCostProfile,
+  dailyBudgetEstimateUsd,
+  COSTS_DATA_NOTE,
+  type CostProfile,
+  type Affordability,
+} from "./costs";
+export {
+  getSafetyTips,
+  scamNames,
+  SAFETY_TIPS_DATA_NOTE,
+  type SafetyTipsProfile,
+  type ScamTip,
+} from "./safety-tips";
+export {
   getLocalEssentials,
   emergencyNumberList,
   ESSENTIALS_DATA_NOTE,
