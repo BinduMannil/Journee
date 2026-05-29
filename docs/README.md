@@ -6,6 +6,7 @@ This is the entry point for engineering documentation. It is deliberately
 
 ## Map
 
+- [`roadmap.md`](roadmap.md) — **feature & status register**: what's built, scaffolded, inert, blocked, or not started, and what each needs to advance. Start here for "what's left to build".
 - **architecture/** — how the system is structured.
   - [`system-architecture.md`](architecture/system-architecture.md) — the overview; read this first.
   - [`provider-architecture.md`](architecture/provider-architecture.md) — the provider-agnostic adapter pattern.
@@ -39,34 +40,14 @@ This is the entry point for engineering documentation. It is deliberately
 
 ## Roadmap (not yet implemented)
 
-The product vision includes a set of intelligence engines. These are **future
-work**; tracking them here keeps the direction visible without pretending they
-are built:
-
-**Scaffolded (logic/contracts in place; live data feeds still roadmap):**
-Affiliate & monetization (model + resolver) · Destination intelligence ·
-Festival & cultural (events engine) · Political & disruption · shared explainable
-scoring core.
-
-**Backend built, config-only to enable:**
-- **AI planning** — `POST /api/plan/ai` with a server-only LLM provider
-  (Anthropic adapter), strict request/response validation, metering + abuse
-  gates; enable with `LLM_API_KEY` + the `ai-planning` flag. UI wiring deferred.
-- **Live weather** — keyless Open-Meteo `WeatherProvider` (timeout +
-  zod-validated, fail-safe to mock/none); enable with the `live-weather` flag +
-  host egress.
-- **Travel-data backend** — provider-agnostic contracts for places / opening
-  hours / ticket prices+links / reviews / local events / safety advisories, with
-  a source/freshness/confidence model, trust-ordered registry, TTL cache,
-  readiness assemblers, and JSON-Schema export. **Seed adapters only today**;
-  live vendors slot behind the same contract (see `provider-architecture.md`).
-
-See `docs/runbooks/hosted-enablement.md` for the config-only turn-on steps.
-
-**Not yet started:** Real-time conditions · Pathfinder discovery ·
-Travel DNA · Dynamic itinerary · Safety & risk · Social & creator ·
-Memory & reflection · Travel confidence · Visa & entry · Local culture ·
-City energy.
+The full feature & status register — what's built, scaffolded, built-but-inert,
+externally blocked, or not started, and what each needs to advance — lives in
+**[`roadmap.md`](roadmap.md)** (machine-readable per-system status in
+`src/content/systems.ts`, rendered on `/about`). In brief: the affiliate
+vertical, destination/discovery/itinerary surfaces, the travel-data backend
+(seed-fed), AI planning and live weather (built, config-only to enable) are done;
+the remaining intelligence engines are scaffolded awaiting live data feeds; auth
+and UI surfacing are not yet started.
 
 Each not-yet-started system gets its own architecture doc and ADRs **when design
 and implementation begin** — not before.
