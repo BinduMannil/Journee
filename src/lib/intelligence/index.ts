@@ -27,6 +27,19 @@ export {
   type AssembleReadinessInput,
 } from "./destination-readiness";
 export {
+  composeTripReadiness,
+  composeTripReadinessFromSources,
+  assembleTripReadiness,
+  tripReadinessWeights,
+  type TripStop,
+  type ResolvedTripStop,
+  type TripReadiness,
+  type TripStopSummary,
+  type TripSourceProvenance,
+  type TripSourcesByDestination,
+  type AssembleTripReadinessInput,
+} from "./trip-readiness";
+export {
   affinityFor,
   rankByDNA,
   type TravelDNA,
