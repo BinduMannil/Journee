@@ -17,6 +17,12 @@ import {
 } from "./contracts";
 import type { ProviderSourceClass } from "./source";
 import { unavailableSource } from "./source";
+import {
+  classifySourceQuality,
+  isStale,
+  meetsQuality,
+  type ResultQuality,
+} from "./freshness";
 import { log } from "@/lib/observability/logger";
 import { incrementCounter } from "@/lib/observability/metrics";
 
@@ -121,6 +127,56 @@ export async function resolveTravelData<TQuery, TData>(
     `no available provider for "${kind}"`,
     unavailableSource("registry", "Travel Data Registry"),
   );
+}
+
+export interface StrictResolveOptions {
+  /** Minimum acceptable source quality. Default: "low" (anything but `none`). */
+  readonly minQuality?: ResultQuality;
+  /** When true, an ok response with stale source is downgraded to unavailable. */
+  readonly dropStale?: boolean;
+  /** Clock for quality/staleness checks. */
+  readonly now?: Date;
+}
+
+/**
+ * Resolve with a quality floor: an `ok` response whose source quality is below
+ * `minQuality` (or is stale when `dropStale: true`) is downgraded to an
+ * `unavailable` response with a clear reason, preserving the original source
+ * for provenance. Non-ok responses pass through unchanged.
+ *
+ * Use when a caller cannot tolerate weak data (e.g. for advisories surfaced to
+ * users) but still wants the fallback-safe response shape.
+ */
+export async function resolveTravelDataStrict<TQuery, TData>(
+  kind: TravelDataKind,
+  query: TQuery,
+  options: StrictResolveOptions = {},
+): Promise<TravelDataResponse<TData>> {
+  const response = await resolveTravelData<TQuery, TData>(kind, query);
+  if (response.status !== "ok") return response;
+
+  const now = options.now ?? new Date();
+  const minQuality = options.minQuality ?? "low";
+  const quality = classifySourceQuality(response.source, now);
+  if (!meetsQuality(quality, minQuality)) {
+    incrementCounter("travel_data_strict_downgrade", { kind, reason: "below_min_quality" });
+    return unavailableResponse(
+      response.providerId,
+      kind,
+      `source quality ${quality} is below required ${minQuality}`,
+      response.source,
+    );
+  }
+  if (options.dropStale && isStale(response.source, now)) {
+    incrementCounter("travel_data_strict_downgrade", { kind, reason: "stale" });
+    return unavailableResponse(
+      response.providerId,
+      kind,
+      "source is stale and dropStale is set",
+      response.source,
+    );
+  }
+  return response;
 }
 
 // ── Readiness reporting ──────────────────────────────────────────────────────
