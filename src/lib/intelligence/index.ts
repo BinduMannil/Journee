@@ -19,6 +19,14 @@ export {
   type EngineResult,
 } from "./engines/confidence";
 export {
+  composeDestinationReadiness,
+  assembleDestinationReadiness,
+  type DestinationReadiness,
+  type ReadinessSources,
+  type SourceProvenance,
+  type AssembleReadinessInput,
+} from "./destination-readiness";
+export {
   affinityFor,
   rankByDNA,
   type TravelDNA,
