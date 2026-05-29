@@ -4,11 +4,27 @@ import {
   getAttractions,
   attractionsByBestTime,
   freeAttractions,
+  sitesForExperience,
+  experiencesAvailable,
   ATTRACTIONS_DATA_NOTE,
 } from "../src/lib/intelligence/attractions";
 import { attractionsProfiles } from "../src/content/attractions";
 
 const COST_BANDS = ["free", "low", "moderate", "high"];
+const EXPERIENCES = [
+  "scenic",
+  "historic",
+  "cultural",
+  "nature",
+  "adventure",
+  "relaxing",
+  "romantic",
+  "foodie",
+  "nightlife",
+  "family",
+  "spiritual",
+  "photography",
+];
 const TIMES_OF_DAY = [
   "early_morning",
   "morning",
@@ -39,8 +55,26 @@ test("every profile has a summary and well-formed attractions", () => {
       assert.ok(a.bookingNote.length > 0, `${p.destinationId} ${a.name} bookingNote`);
       // Honesty rule: no fabricated URLs in booking notes.
       assert.ok(!/http/i.test(a.bookingNote), `${p.destinationId} ${a.name} bookingNote must not contain a URL`);
+      assert.ok(a.experienceTags.length > 0, `${p.destinationId} ${a.name} experienceTags`);
+      assert.ok(a.experienceTags.every((e) => EXPERIENCES.includes(e)), `${p.destinationId} ${a.name} experience tag`);
     }
   }
+});
+
+test("sitesForExperience returns matching sites; experiencesAvailable lists them", () => {
+  const scenicKyoto = sitesForExperience("kyoto", "scenic");
+  assert.ok(scenicKyoto.length > 0);
+  assert.ok(scenicKyoto.every((a) => a.experienceTags.includes("scenic")));
+
+  const nightlifeMarrakech = sitesForExperience("marrakech", "nightlife");
+  assert.ok(nightlifeMarrakech.some((a) => a.name === "Jemaa el-Fnaa"));
+
+  const avail = experiencesAvailable("santorini");
+  assert.ok(avail.includes("romantic") && avail.includes("historic"));
+  assert.deepEqual([...avail], [...avail].sort()); // sorted
+
+  assert.deepEqual(sitesForExperience("atlantis", "scenic"), []);
+  assert.deepEqual(experiencesAvailable("atlantis"), []);
 });
 
 test("ATTRACTIONS_DATA_NOTE carries an honest 'check the official source' disclaimer", () => {
