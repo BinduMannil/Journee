@@ -48,6 +48,20 @@ export {
 } from "./travel-dna";
 export { pathfind, type PathfinderQuery } from "./pathfinder";
 export {
+  monthSuitability,
+  monthDistance,
+  isInSeason,
+  rankForMonth,
+  type SeasonalLike,
+  type SeasonMatch,
+} from "./seasonality";
+export {
+  similarity,
+  similarDestinations,
+  type SimilarLike,
+  type SimilarMatch,
+} from "./similar";
+export {
   buildItinerary,
   type Itinerary,
   type ItineraryItem,
@@ -91,6 +105,7 @@ export {
 export {
   estimateLeg,
   estimateTripFootprint,
+  estimateStopsFootprint,
   estimateRouteFootprint,
   flightModeFor,
   footprintToTransportSignal,

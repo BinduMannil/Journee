@@ -19,8 +19,14 @@ export interface Destination {
   readonly coordinates?: { readonly lat: number; readonly lon: number };
   /** Editorial paragraph shown on the detail page. */
   readonly description?: string;
-  /** When to go. */
+  /** When to go (editorial prose). */
   readonly bestTime?: string;
+  /**
+   * Structured recommended-travel months (1–12), derived from `bestTime`. Powers
+   * the seasonality model and "where to go this month" without parsing prose.
+   * Optional and backward compatible — absent means "no structured guidance yet".
+   */
+  readonly bestMonths?: readonly number[];
 }
 
 export const featuredDestinations: readonly Destination[] = [
@@ -38,6 +44,7 @@ export const featuredDestinations: readonly Destination[] = [
       + "thousand small rituals — a kettle's whistle in a machiya, moss kept "
       + "like a secret, lantern light pooling on wet stone after rain.",
     bestTime: "Late November for maple fire; early April for cherry blossom.",
+    bestMonths: [4, 11],
   },
   {
     id: "santorini",
@@ -53,6 +60,7 @@ export const featuredDestinations: readonly Destination[] = [
       + "black, the caldera dropping away beneath terraces that seem poured "
       + "rather than built. Come for the light; stay for the long, slow dusk.",
     bestTime: "Late spring or September — past the heat, before the crowds.",
+    bestMonths: [5, 6, 9],
   },
   {
     id: "marrakech",
@@ -68,6 +76,7 @@ export const featuredDestinations: readonly Destination[] = [
       + "call to prayer over the Jemaa el-Fnaa, a medina that folds in on "
       + "itself until a riad's quiet courtyard opens like a held breath.",
     bestTime: "Spring and autumn; high summer is fierce.",
+    bestMonths: [3, 4, 5, 9, 10, 11],
   },
   {
     id: "patagonia",
@@ -83,6 +92,7 @@ export const featuredDestinations: readonly Destination[] = [
       + "calving into milk-blue lakes, and a wind that rewrites the sky by the "
       + "hour. It humbles and clarifies in equal measure.",
     bestTime: "November–March (austral summer) for trekking.",
+    bestMonths: [11, 12, 1, 2, 3],
   },
 ];
 

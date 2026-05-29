@@ -10,6 +10,8 @@ import { AtmosphericScore } from "@/components/AtmosphericScore";
 import { SunSchedule } from "@/components/SunSchedule";
 import { TravelReadiness } from "@/components/TravelReadiness";
 import { SaveButton } from "@/components/SaveButton";
+import { SimilarDestinations } from "@/components/SimilarDestinations";
+import { similarDestinations } from "@/lib/intelligence/similar";
 import { AffiliateCta } from "@/components/AffiliateCta";
 import { isFeatureEnabled } from "@/lib/config/flags";
 import { getSiteUrl } from "@/lib/config/env";
@@ -61,8 +63,14 @@ export default async function DestinationPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const destination = await findDestination(id);
+  const all = await getDestinations();
+  const destination = all.find((d) => d.id === id);
   if (!destination) notFound();
+
+  const similar = similarDestinations(destination, all).map((m) => {
+    const d = all.find((x) => x.id === m.id)!;
+    return { id: d.id, name: d.name, country: d.country, reason: m.reason };
+  });
 
   const jsonLd = destinationJsonLd(
     destination,
@@ -155,6 +163,8 @@ export default async function DestinationPage({
             lon={destination.coordinates.lon}
           />
         )}
+
+        <SimilarDestinations items={similar} />
 
         <div className="mt-12">
           <AffiliateCta category="hotels" label="Plan your stay" />

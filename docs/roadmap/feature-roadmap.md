@@ -217,11 +217,15 @@ mocked-as-done.
 ## Implementation order (live tracking)
 
 - [x] 0.1 Sustainability engine + carbon estimator (+ tests)
+- [x] 0.2 Trip carbon surfacing on `/plan` (`estimateStopsFootprint` + TripBuilder)
 - [x] 0.3 Packing list generator (+ tests)
-- [x] 0.4 .ics itinerary export (already in repo; UI download pending)
-- [ ] 0.2 Trip carbon surfacing on `/plan`
-- [ ] 0.5 Faceted filters + similar destinations
-- [ ] 0.6 Seasonality month model
+- [x] 0.4 .ics itinerary export (engine in repo; `/plan` download button live)
+- [x] 0.5 Similar destinations (`similar.ts` + detail-page surface; mood/search
+      filters already on the homepage)
+- [x] 0.6 Seasonality month model (`seasonality.ts` + structured `bestMonths` +
+      "in season this month" on `/discover`)
+- [ ] 0.3 UI: packing-list panel (waits on a weather feed to avoid fake
+      conditions — engine is ready, surfaced honestly in Phase 2)
 - [ ] Phase 1+ gated on hosted Supabase / vendor keys
 
 Each Phase 0 item ships as: pure module + unit tests + (where user-facing) a

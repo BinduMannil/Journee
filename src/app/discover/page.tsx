@@ -4,6 +4,7 @@ import { resolve } from "@/lib/providers/registry";
 import "@/lib/providers/register";
 import { featuredDestinations, type Destination } from "@/content/destinations";
 import { DiscoverClient } from "@/components/DiscoverClient";
+import { InSeasonNow } from "@/components/InSeasonNow";
 
 export const metadata: Metadata = {
   title: "Discover",
@@ -31,6 +32,14 @@ export default async function DiscoverPage() {
         Pathfinder ranks destinations toward the vibe, away from the rest, and
         tells you why.
       </p>
+      <InSeasonNow
+        destinations={destinations.map((d) => ({
+          id: d.id,
+          name: d.name,
+          country: d.country,
+          bestMonths: d.bestMonths,
+        }))}
+      />
       <DiscoverClient destinations={destinations} />
     </main>
   );

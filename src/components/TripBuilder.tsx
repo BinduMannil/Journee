@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { buildItinerary, type Pacing } from "@/lib/intelligence/itinerary";
 import { itineraryToICS } from "@/lib/intelligence/itinerary-export";
 import { routeDistanceKm } from "@/lib/intelligence/geo";
+import { estimateStopsFootprint } from "@/lib/intelligence/carbon";
 
 export interface PlannableDestination {
   readonly id: string;
@@ -41,15 +42,14 @@ export function TripBuilder({ destinations }: { destinations: readonly Plannable
     return buildItinerary(items, pacing);
   }, [selectedDestinations, pacing]);
 
-  const route = useMemo(
-    () =>
-      routeDistanceKm(
-        selectedDestinations
-          .filter((d) => d.coordinates)
-          .map((d) => d.coordinates!),
-      ),
+  const stopCoords = useMemo(
+    () => selectedDestinations.filter((d) => d.coordinates).map((d) => d.coordinates!),
     [selectedDestinations],
   );
+
+  const route = useMemo(() => routeDistanceKm(stopCoords), [stopCoords]);
+
+  const footprint = useMemo(() => estimateStopsFootprint(stopCoords), [stopCoords]);
 
   const downloadIcs = () => {
     const now = new Date();
@@ -118,9 +118,15 @@ export function TripBuilder({ destinations }: { destinations: readonly Plannable
           )}
         </div>
         {route.totalKm > 0 && (
-          <p className="mb-4 text-xs uppercase tracking-[0.2em] text-stone">
+          <p className="mb-2 text-xs uppercase tracking-[0.2em] text-stone">
             Spans ~{route.totalKm.toLocaleString()} km · longest leg{" "}
             {route.longestLegKm.toLocaleString()} km
+          </p>
+        )}
+        {footprint.totalKgCO2e > 0 && (
+          <p className="mb-4 text-xs uppercase tracking-[0.2em] text-stone">
+            ≈ {footprint.totalKgCO2e.toLocaleString()} kg CO₂e between stops{" "}
+            <span className="text-stone/60">(approx, standard factors)</span>
           </p>
         )}
         {itinerary.days.length === 0 ? (

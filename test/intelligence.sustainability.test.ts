@@ -9,6 +9,7 @@ import { sustainabilityWeights } from "../src/lib/intelligence/weights";
 import {
   estimateLeg,
   estimateTripFootprint,
+  estimateStopsFootprint,
   estimateRouteFootprint,
   flightModeFor,
   footprintToTransportSignal,
@@ -85,6 +86,15 @@ test("carbon: route footprint is round-trip from home and zero with no stops", (
   const oneStop = estimateRouteFootprint(home, [{ lat: 35.01, lon: 135.77 }]); // Kyoto
   assert.equal(oneStop.legs.length, 2); // out and back
   assert.ok(oneStop.totalKgCO2e > 0);
+});
+
+test("carbon: stops footprint needs 2+ stops and sums consecutive legs", () => {
+  const kyoto = { lat: 35.01, lon: 135.77 };
+  const santorini = { lat: 36.39, lon: 25.46 };
+  assert.equal(estimateStopsFootprint([kyoto]).totalKgCO2e, 0);
+  const two = estimateStopsFootprint([kyoto, santorini]);
+  assert.equal(two.legs.length, 1);
+  assert.ok(two.totalKgCO2e > 0);
 });
 
 test("carbon: footprint maps to a 0..1 transport signal (low impact = 1)", () => {

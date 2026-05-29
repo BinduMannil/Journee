@@ -107,6 +107,25 @@ export function estimateRouteFootprint(
 }
 
 /**
+ * Estimate the footprint of travelling between an ordered list of stops (no
+ * return home). Each consecutive pair becomes a leg whose mode defaults to the
+ * realistic flight class for its distance. This is what the `/plan` view uses:
+ * it has the selected stops' coordinates but not yet a home airport (that
+ * arrives with user profiles in Phase 1).
+ */
+export function estimateStopsFootprint(
+  stops: readonly Coord[],
+  mode?: TransportMode,
+): TripFootprint {
+  if (stops.length < 2) return { totalKgCO2e: 0, legs: [], approximate: true };
+  const legs: PlannedLeg[] = [];
+  for (let i = 1; i < stops.length; i++) {
+    legs.push({ distanceKm: haversineKm(stops[i - 1]!, stops[i]!), mode });
+  }
+  return estimateTripFootprint(legs);
+}
+
+/**
  * Map a trip footprint to a 0..1 transport-sustainability signal for the
  * sustainability engine (1 = low impact). Uses a soft reference budget so the
  * signal degrades smoothly rather than as a hard cliff. `referenceKg` is the
