@@ -48,6 +48,11 @@ export {
 } from "./travel-dna";
 export { pathfind, type PathfinderQuery } from "./pathfinder";
 export {
+  parseQuery,
+  MOOD_SYNONYMS,
+  type ParsedQuery,
+} from "./nl-query";
+export {
   monthSuitability,
   monthDistance,
   isInSeason,

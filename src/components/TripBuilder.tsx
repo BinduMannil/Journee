@@ -5,6 +5,7 @@ import { buildItinerary, type Pacing } from "@/lib/intelligence/itinerary";
 import { itineraryToICS } from "@/lib/intelligence/itinerary-export";
 import { routeDistanceKm } from "@/lib/intelligence/geo";
 import { estimateStopsFootprint } from "@/lib/intelligence/carbon";
+import { ConciergePlan } from "./ConciergePlan";
 
 export interface PlannableDestination {
   readonly id: string;
@@ -172,6 +173,15 @@ export function TripBuilder({ destinations }: { destinations: readonly Plannable
             Download .ics
           </button>
         )}
+        <ConciergePlan
+          destinations={selectedDestinations.map((d) => ({
+            id: d.id,
+            name: d.name,
+            mood: d.mood,
+          }))}
+          pacing={pacing}
+          itinerary={itinerary}
+        />
       </div>
     </div>
   );

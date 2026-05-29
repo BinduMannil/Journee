@@ -164,12 +164,16 @@ mocked-as-done.
 
 ## Phase 3 — Engagement
 
-### 3.1 AI travel concierge `[scaffold]`
-- **Plan:** The Anthropic provider (`providers/llm/anthropic.ts`) + `/api/plan/ai`
-  already exist. Add a chat UI; tool-call the intelligence engines so answers
-  cite real scores; conversational itinerary edits. Prompt-cache system context.
-- **Dependency:** `ANTHROPIC_API_KEY` (env-flagged; falls back to deterministic
-  planner when absent).
+### 3.1 AI travel concierge `[scaffold]` ✅ implemented (deterministic-fallback)
+- **Done:** `components/ConciergePlan.tsx` posts to the existing `/api/plan/ai`
+  and renders a narrative day-by-day plan, reusing the route's billing/quota
+  guardrails. When no LLM provider is configured (503), on quota (402/429), or
+  on any error, it falls back to a deterministic narrative from `buildItinerary`
+  and labels the source honestly. Surfaced inside `/plan` (TripBuilder). See
+  ADR-007.
+- **Next (key-gated):** richer LLM output, tool-calling the engines so answers
+  cite real scores, conversational itinerary edits, prompt-cached context.
+- **Dependency for the LLM path:** `ANTHROPIC_API_KEY` + `ai-planning` flag.
 
 ### 3.2 Notifications & alerts `[new] [blocked]`
 - **Plan:** Email digests + push: price drops, advisory changes, trip countdown,
@@ -180,9 +184,11 @@ mocked-as-done.
 - **Plan:** Share a trip, invite collaborators, vote on stops/activities.
   Realtime via Supabase. Depends on Phase 1.
 
-### 3.4 Natural-language search `[scaffold]`
-- **Plan:** Route the homepage search through the LLM provider → Pathfinder
-  query; deterministic keyword fallback when no key.
+### 3.4 Natural-language search `[scaffold]` ✅ implemented (deterministic)
+- **Done:** `intelligence/nl-query.ts` parses free text → `PathfinderQuery`
+  (mood-synonym vocabulary + negation), with zero configuration. Wired into the
+  `/discover` search box (live, client-side) and `/api/pathfinder?q=`. An LLM can
+  later produce the same shape with no consumer changes. See ADR-007.
 
 ---
 
@@ -224,9 +230,18 @@ mocked-as-done.
       filters already on the homepage)
 - [x] 0.6 Seasonality month model (`seasonality.ts` + structured `bestMonths` +
       "in season this month" on `/discover`)
-- [ ] 0.3 UI: packing-list panel (waits on a weather feed to avoid fake
-      conditions — engine is ready, surfaced honestly in Phase 2)
-- [ ] Phase 1+ gated on hosted Supabase / vendor keys
+- [x] 3.4 Natural-language discovery (`nl-query.ts` + `/discover` search +
+      `/api/pathfinder?q=`) — deterministic, no key
+- [x] 3.1 AI concierge UI (`ConciergePlan` on `/plan`) — LLM path key-gated,
+      deterministic narrative fallback; ADR-007
+- [ ] 0.3 UI: packing-list panel (user-provided conditions — next pass)
+- [ ] Phase 2 feeds, Phase 1 auth, Phase 4 billing — gated on hosted Supabase /
+      vendor keys; each is a precise plan above, implementable behind its flag
+
+**Pattern that unblocks the "blocked" phases:** features land as real code,
+flag-gated, with a deterministic/seed fallback (the repo's existing approach —
+ADR-003, ADR-006, ADR-007). The LLM, weather, FX, etc. layers activate on env
+without code changes, so "needs a key" never means "can't build it now".
 
 Each Phase 0 item ships as: pure module + unit tests + (where user-facing) a
 component wired through the provider/registry seam, with `npm run typecheck`,

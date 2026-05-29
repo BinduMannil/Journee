@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { pathfind } from "@/lib/intelligence/pathfinder";
+import { parseQuery } from "@/lib/intelligence/nl-query";
 import { LightBadge } from "./LightBadge";
 import type { Destination } from "@/content/destinations";
 
@@ -19,6 +20,24 @@ export function DiscoverClient({ destinations }: { destinations: readonly Destin
   );
   const [vibe, setVibe] = useState<string | null>(null);
   const [avoid, setAvoid] = useState<readonly string[]>([]);
+  const [query, setQuery] = useState("");
+  const [parseNote, setParseNote] = useState<string | null>(null);
+
+  // Free-text search: parse "warm but not too lively" → vibe/avoid chips. Pure,
+  // deterministic, no LLM — so search works with zero configuration.
+  const runSearch = (text: string) => {
+    const parsed = parseQuery(text);
+    setVibe(parsed.vibe ?? null);
+    setAvoid(parsed.avoid ?? []);
+    if (text.trim().length === 0) setParseNote(null);
+    else if (parsed.matched.length === 0)
+      setParseNote("No vibe recognized — try words like calm, lively, sunny, or wild.");
+    else
+      setParseNote(
+        `Reading: ${parsed.vibe ? `chasing ${parsed.vibe}` : "no clear vibe"}` +
+          (parsed.avoid.length ? ` · avoiding ${parsed.avoid.join(", ")}` : ""),
+      );
+  };
 
   // A mood can't be both chased and avoided — selecting one clears the other.
   const chooseVibe = (v: string) => {
@@ -38,6 +57,35 @@ export function DiscoverClient({ destinations }: { destinations: readonly Destin
 
   return (
     <div>
+      <form
+        className="mb-8"
+        onSubmit={(e) => {
+          e.preventDefault();
+          runSearch(query);
+        }}
+      >
+        <label htmlFor="nl-search" className="mb-3 block text-xs uppercase tracking-[0.3em] text-gold">
+          Describe your trip
+        </label>
+        <div className="flex gap-2">
+          <input
+            id="nl-search"
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="e.g. somewhere calm and sunny, not too lively"
+            className="flex-1 rounded-full border border-sand/20 bg-transparent px-5 py-2.5 text-sand placeholder:text-sand/40 focus:border-gold/60 focus:outline-none"
+          />
+          <button
+            type="submit"
+            className="rounded-full border border-gold/50 px-5 py-2.5 text-xs uppercase tracking-[0.2em] text-gold-bright transition-colors hover:bg-gold/10"
+          >
+            Search
+          </button>
+        </div>
+        {parseNote && <p className="mt-2 text-xs text-stone">{parseNote}</p>}
+      </form>
+
       <fieldset className="mb-8">
         <legend className="mb-3 text-xs uppercase tracking-[0.3em] text-gold">
           Chasing
