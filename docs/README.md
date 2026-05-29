@@ -48,15 +48,25 @@ Affiliate & monetization (model + resolver) · Destination intelligence ·
 Festival & cultural (events engine) · Political & disruption · shared explainable
 scoring core.
 
-**Backend built, config-only to enable:** AI planning — `POST /api/plan/ai` with
-a server-only LLM provider (Anthropic adapter), strict request/response
-validation, metering + abuse gates; enable with `LLM_API_KEY` + the `ai-planning`
-flag (see `docs/runbooks/hosted-enablement.md`). UI wiring is deferred.
+**Backend built, config-only to enable:**
+- **AI planning** — `POST /api/plan/ai` with a server-only LLM provider
+  (Anthropic adapter), strict request/response validation, metering + abuse
+  gates; enable with `LLM_API_KEY` + the `ai-planning` flag. UI wiring deferred.
+- **Live weather** — keyless Open-Meteo `WeatherProvider` (timeout +
+  zod-validated, fail-safe to mock/none); enable with the `live-weather` flag +
+  host egress.
+- **Travel-data backend** — provider-agnostic contracts for places / opening
+  hours / ticket prices+links / reviews / local events / safety advisories, with
+  a source/freshness/confidence model, trust-ordered registry, TTL cache,
+  readiness assemblers, and JSON-Schema export. **Seed adapters only today**;
+  live vendors slot behind the same contract (see `provider-architecture.md`).
+
+See `docs/runbooks/hosted-enablement.md` for the config-only turn-on steps.
 
 **Not yet started:** Real-time conditions · Pathfinder discovery ·
-Travel DNA · Dynamic itinerary · Weather & environmental · Safety & risk ·
-Social & creator · Memory & reflection · Travel confidence · Visa & entry ·
-Local culture · City energy.
+Travel DNA · Dynamic itinerary · Safety & risk · Social & creator ·
+Memory & reflection · Travel confidence · Visa & entry · Local culture ·
+City energy.
 
 Each not-yet-started system gets its own architecture doc and ADRs **when design
 and implementation begin** — not before.
