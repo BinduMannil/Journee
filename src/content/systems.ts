@@ -18,6 +18,7 @@ export const platformSystems: readonly PlatformSystem[] = [
   { name: "Carbon Estimate", status: "live", note: "Per-trip CO2e estimate from route distance (versioned model; an estimate, not measured)." },
   { name: "Food & Drink Customs", status: "scaffold", note: "Editorial dietary/alcohol flags + signature drink per destination; seed data, verify locally." },
   { name: "Know-Before-You-Go Essentials", status: "scaffold", note: "Emergency numbers, healthcare note, courtesy phrases, etiquette do's/don'ts; seed data, verify on arrival." },
+  { name: "Shopping & Essentials", status: "scaffold", note: "Malls, markets/souks, online options, fuel networks + EV note, payment norms; seed data." },
   { name: "Affiliate & Monetization", status: "live", note: "Data-driven routing, A/B, ingestion, analytics." },
   { name: "Travel Confidence", status: "scaffold", note: "Aggregates engine scores; sample inputs." },
   { name: "Event & Cultural", status: "scaffold", note: "Engine + mapping; live calendars roadmap." },
