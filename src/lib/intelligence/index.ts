@@ -80,6 +80,27 @@ export {
   type FestivalKind,
 } from "./festivals";
 export {
+  getReligionProfile,
+  placesOfWorshipByKind,
+  RELIGION_DATA_NOTE,
+  type Religion,
+  type PlaceOfWorship,
+  type PlaceOfWorshipKind,
+} from "./religion";
+export {
+  getTippingProfile,
+  tippingSummaryLine,
+  TIPPING_DATA_NOTE,
+  type TippingProfile,
+  type TippingExpectation,
+} from "./tipping";
+export {
+  getConnectivityProfile,
+  tapWaterAdvice,
+  CONNECTIVITY_DATA_NOTE,
+  type ConnectivityProfile,
+} from "./connectivity";
+export {
   getLocalEssentials,
   emergencyNumberList,
   ESSENTIALS_DATA_NOTE,
