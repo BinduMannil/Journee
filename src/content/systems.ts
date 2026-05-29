@@ -16,6 +16,7 @@ export const platformSystems: readonly PlatformSystem[] = [
   { name: "Pathfinder Discovery", status: "live", note: "Vibe-based ranking with reasons (/discover)." },
   { name: "Dynamic Itinerary", status: "live", note: "Fatigue-aware day pacing (/plan)." },
   { name: "Carbon Estimate", status: "live", note: "Per-trip CO2e estimate from route distance (versioned model; an estimate, not measured)." },
+  { name: "Trip Budget Estimate", status: "scaffold", note: "Per-trip cost estimate: lodging (by area tier) + daily food/transport (cost index) × nights/travelers, in any currency; seed estimates, not live prices." },
   { name: "Food & Drink Customs", status: "scaffold", note: "Editorial dietary/alcohol flags + signature drink per destination; seed data, verify locally." },
   { name: "Local Gems (Eats & Drinks)", status: "scaffold", note: "Curated standout spots with what to order + why; editorial picks, verify before going." },
   { name: "City Vibe & Friendliness", status: "scaffold", note: "Local friendliness, vibe tags, tourist-ease, English-spoken; editorial generalization, not a verdict." },
