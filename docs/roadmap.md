@@ -47,7 +47,8 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | Scams & Safety Tips | ✅ (seed) | Common scams (how + how-to-avoid) + general safety tips per destination; `getSafetyTips` / `scamNames`; `SAFETY_TIPS_DATA_NOTE` | Expanded coverage, UI |
 | Hazards & Advisories | ✅ (seed) | Per-destination natural-hazard exposure (quake/volcano/typhoon/wildfire/etc.), conflict status, typical advisory level (1–4); `getHazardsProfile` / `highRiskHazards`; factual exposure not a forecast (`HAZARDS_DATA_NOTE`) | Tie to live govt advisories + disruption engine; UI |
 | Display Preferences & Units | ✅ (pure) | `UserPreferences` (currency, °C/°F, km/mi) + converters + `formatTemperature`/`formatDistance`/`formatCurrency` (display only, no FX yet); `PREFERENCES_NOTE` | Persistence + profile UI + live FX (⛔) |
-| Know-Before-You-Go Essentials | ✅ (seed) | Per-destination emergency numbers (+ flat list), healthcare note, courtesy phrases (hello/thanks/please/yes/no in the local language), etiquette do's/don'ts; `ESSENTIALS_DATA_NOTE` disclaimer | Hospital/clinic locations (live), expanded coverage, UI |
+| Know-Before-You-Go Essentials | ✅ (seed) | Per-destination emergency numbers (+ flat list), healthcare note, courtesy phrases (hello/thanks/please/yes/no in the local language), etiquette do's/don'ts; `ESSENTIALS_DATA_NOTE` disclaimer | Expanded coverage, UI |
+| Healthcare & Medical Facilities | ✅ (seed) | Notable hospitals/clinics/pharmacies/dental per destination with area + English-spoken + a pharmacy note; `getHealthcareProfile` / `facilitiesByKind` / `hasHospital`; `HEALTHCARE_DATA_NOTE` (not medical advice / not a live directory) | Live/geo directory, expanded coverage, UI |
 | Shopping & Essentials | ✅ (seed) | Per-destination malls, markets/souks, online/e-commerce, fuel networks + EV-charging availability, payment norms + derived tips; `SHOPPING_DATA_NOTE` disclaimer | Live directory/geo, expanded coverage, UI |
 | Local Chains | ✅ (seed) | Recognizable chains by category (cinema, coffee, pharmacy, supermarket, fast food, hospital) per destination + `chainsForCategory`; `CHAINS_DATA_NOTE` disclaimer | Live directory/geo, expanded coverage, UI |
 | Seasonal Fruits | ✅ (seed) | In-season (by local month) + must-try fruits with editorial global taste/production ratings; `inSeasonFruits` / `mustTryFruits`; `FRUITS_DATA_NOTE` disclaimer | Live/expanded coverage, UI |
@@ -132,8 +133,9 @@ data first (honestly labeled), live sources and UI later.
   hours** — shipped (seed). ✅ **Packing/seasonal-clothing guidance** — shipped
   (seed). ✅ **Best-time-to-visit signal** — shipped (seed; tie to real solar +
   live events/weather later).
-- **Hospital / clinic locations** — extend the essentials with nearest
-  hospital/clinic info (live/geo source later; emergency numbers already shipped).
+- ✅ **Hospital / clinic locations** — shipped (seed `healthcare` feature:
+  notable hospitals/clinics/pharmacies with area + English-spoken; live/geo
+  directory later).
 - **Trip budget / cost estimate** — aggregate seed ticket prices + lodging-tier
   config into a per-trip estimate with confidence.
 - ✅ **Multi-currency normalization** — shipped (seed FX layer over the cost

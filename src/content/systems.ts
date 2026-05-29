@@ -30,6 +30,7 @@ export const platformSystems: readonly PlatformSystem[] = [
   { name: "Hazards & Advisories", status: "scaffold", note: "Natural-hazard exposure + conflict status + typical advisory level; factual exposure, not a forecast — verify official advisories." },
   { name: "Display Preferences & Units", status: "scaffold", note: "Currency/°C-°F/km-mi preference model + pure converters/formatters (no FX yet); profile UI deferred." },
   { name: "Know-Before-You-Go Essentials", status: "scaffold", note: "Emergency numbers, healthcare note, courtesy phrases, etiquette do's/don'ts; seed data, verify on arrival." },
+  { name: "Healthcare & Medical Facilities", status: "scaffold", note: "Notable hospitals/clinics/pharmacies per destination with area + English-spoken; editorial orientation, not medical advice or a live directory." },
   { name: "Shopping & Essentials", status: "scaffold", note: "Malls, markets/souks, online options, fuel networks + EV note, payment norms; seed data." },
   { name: "Local Chains", status: "scaffold", note: "Recognizable cinema/coffee/pharmacy/supermarket/fast-food/hospital chains per destination; seed data." },
   { name: "Seasonal Fruits", status: "scaffold", note: "In-season + must-try fruits with editorial global taste/production ratings; seed data." },
