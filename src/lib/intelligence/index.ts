@@ -65,6 +65,16 @@ export {
   type LabeledNumber,
 } from "./essentials";
 export {
+  getShoppingProfile,
+  shoppingTips,
+  SHOPPING_DATA_NOTE,
+  type ShoppingProfile,
+  type FuelInfo,
+  type EvChargingAvailability,
+  type ShoppingTip,
+  type ShoppingTipKind,
+} from "./shopping";
+export {
   estimateTripCarbon,
   inferTravelMode,
   carbonModelV1,
