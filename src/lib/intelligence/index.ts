@@ -64,6 +64,13 @@ export {
   type GemKind,
 } from "./local-gems";
 export {
+  getCityVibe,
+  expectLanguageBarrier,
+  CITY_VIBE_NOTE,
+  type CityVibe,
+  type TouristEase,
+} from "./city-vibe";
+export {
   getLocalEssentials,
   emergencyNumberList,
   ESSENTIALS_DATA_NOTE,

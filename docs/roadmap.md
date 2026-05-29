@@ -36,6 +36,7 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | Carbon Estimate | ✅ | Per-trip CO2e from route distance × versioned emission model (`carbon-v1`); mode inferred per leg; honest "estimate" labeling | Per-mode overrides from real itinerary legs; UI surfacing |
 | Food & Drink Customs | ✅ (seed) | Editorial per-destination profile (popular dishes, signature drink, pork/beef prevalence, veg-friendliness, alcohol-in-supermarkets, public-drinking) + derived honest flags; `CULINARY_DATA_NOTE` disclaimer | Live/expanded coverage; UI surfacing |
 | Local Gems (Eats & Drinks) | ✅ (seed) | Curated standout eats/drinks per destination with area, what-to-order, and why; `getLocalGems` / `gemsByKind`; `GEMS_DATA_NOTE` | User/UGC picks (via ratings core + auth), expanded coverage, UI |
+| City Vibe & Friendliness | ✅ (seed) | Per-destination friendliness (0..5), vibe tags, tourist-ease, English-spoken, summary + `expectLanguageBarrier`; `CITY_VIBE_NOTE` | Fold into City Energy engine as a live signal; UI |
 | Know-Before-You-Go Essentials | ✅ (seed) | Per-destination emergency numbers (+ flat list), healthcare note, courtesy phrases (hello/thanks/please/yes/no in the local language), etiquette do's/don'ts; `ESSENTIALS_DATA_NOTE` disclaimer | Hospital/clinic locations (live), expanded coverage, UI |
 | Shopping & Essentials | ✅ (seed) | Per-destination malls, markets/souks, online/e-commerce, fuel networks + EV-charging availability, payment norms + derived tips; `SHOPPING_DATA_NOTE` disclaimer | Live directory/geo, expanded coverage, UI |
 | Local Chains | ✅ (seed) | Recognizable chains by category (cinema, coffee, pharmacy, supermarket, fast food, hospital) per destination + `chainsForCategory`; `CHAINS_DATA_NOTE` disclaimer | Live directory/geo, expanded coverage, UI |
@@ -110,9 +111,6 @@ data first (honestly labeled), live sources and UI later.
   against the elements (siesta, parasols, layering, hammam, etc.).
 - **Hospital / clinic locations** — extend the essentials with nearest
   hospital/clinic info (live/geo source later; emergency numbers already shipped).
-- **City vibe & local friendliness** — how welcoming/relaxed a city feels;
-  extends the existing **City Energy** engine (calmness/festivity/nightlife/
-  density) with a "friendliness/hospitality" signal, seed-fed.
 - **Trip budget / cost estimate** — aggregate seed ticket prices + lodging-tier
   config into a per-trip estimate with confidence.
 - **Best-time-to-visit signal** — seasonality + real solar + (seed) events.
