@@ -17,6 +17,8 @@ import {
 } from "./contracts";
 import type { ProviderSourceClass } from "./source";
 import { unavailableSource } from "./source";
+import { log } from "@/lib/observability/logger";
+import { incrementCounter } from "@/lib/observability/metrics";
 
 type AnyTravelDataProvider = TravelDataProvider<unknown, unknown>;
 
@@ -55,33 +57,68 @@ export function resetTravelDataRegistry(): void {
  * `TravelDataResponse` (never throws / never null): if every provider is
  * unavailable or non-ok, returns the last non-ok response, or a synthesized
  * `unavailable` when nothing is registered.
+ *
+ * Each outcome is observable via counters (and warnings for non-ok/throw),
+ * mirroring the capability registry — so when a live vendor is wired later it
+ * is monitored from day one without further changes here.
  */
 export async function resolveTravelData<TQuery, TData>(
   kind: TravelDataKind,
   query: TQuery,
 ): Promise<TravelDataResponse<TData>> {
   const providers = listTravelDataProviders(kind);
+  if (providers.length === 0) {
+    incrementCounter("travel_data_kind_no_provider", { kind });
+    return unavailableResponse(
+      "registry",
+      kind,
+      `no provider registered for "${kind}"`,
+      unavailableSource("registry", "Travel Data Registry"),
+    );
+  }
   let lastNonOk: TravelDataResponse<TData> | null = null;
   for (const provider of providers) {
     const typed = provider as TravelDataProvider<TQuery, TData>;
     try {
-      if (!(await typed.isAvailable())) continue;
+      if (!(await typed.isAvailable())) {
+        incrementCounter("travel_data_provider_unavailable", { kind, providerId: provider.id });
+        continue;
+      }
       const response = await typed.fetch(query);
-      if (response.status === "ok") return response;
+      if (response.status === "ok") {
+        incrementCounter("travel_data_resolve_success", { kind, providerId: provider.id });
+        return response;
+      }
+      const counterName =
+        response.status === "unavailable"
+          ? "travel_data_resolve_unavailable"
+          : "travel_data_resolve_error";
+      incrementCounter(counterName, { kind, providerId: provider.id });
+      log.warn("travel_data_provider_non_ok", {
+        kind,
+        providerId: provider.id,
+        status: response.status,
+        reason: response.reason,
+      });
       lastNonOk = response;
-    } catch {
+    } catch (error) {
       // Defensive: a provider should return an error response, not throw, but
       // if it does we fall through to the next without crashing the caller.
+      incrementCounter("travel_data_provider_throw", { kind, providerId: provider.id });
+      log.warn("travel_data_provider_throw", {
+        kind,
+        providerId: provider.id,
+        error: error instanceof Error ? error.message : String(error),
+      });
       continue;
     }
   }
+  incrementCounter("travel_data_kind_exhausted", { kind });
   if (lastNonOk) return lastNonOk;
   return unavailableResponse(
     "registry",
     kind,
-    providers.length === 0
-      ? `no provider registered for "${kind}"`
-      : `no available provider for "${kind}"`,
+    `no available provider for "${kind}"`,
     unavailableSource("registry", "Travel Data Registry"),
   );
 }
