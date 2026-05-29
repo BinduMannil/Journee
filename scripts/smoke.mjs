@@ -27,6 +27,7 @@ const checks = [
   ["/api/admin/readiness?destinationId=kyoto", 503],
   ["/api/admin/cache", 503],
   ["/api/plan/ai", 405], // GET not allowed; POST-only (503 when AI unconfigured)
+  ["/api/explain", 405], // GET not allowed; POST-only
   ["/robots.txt", 200],
   ["/sitemap.xml", 200],
   ["/manifest.webmanifest", 200],
@@ -42,6 +43,11 @@ const postChecks = [
     "/api/plan/ai",
     { destinations: [{ id: "kyoto", name: "Kyoto", mood: "Contemplative" }], pacing: "balanced" },
     503,
+  ],
+  [
+    "/api/explain",
+    { engine: "destination", signals: [{ key: "weather", value: 0.8 }, { key: "crowd", value: 0.4 }] },
+    200,
   ],
 ];
 
