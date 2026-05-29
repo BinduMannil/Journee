@@ -145,12 +145,15 @@ data first (honestly labeled), live sources and UI later.
 - ✅ **Itinerary GeoJSON / route export** — shipped (`itineraryToGeoJSON`,
   pure; complements the `.ics` export).
 
-**Community / UGC & social (needs auth + persistence + UI — ⛔ blocked; build
-the pure cores now):**
-- **Public notes & travel blogs/vlogs** — users author posts/journals to share
-  publicly. Pure content model + validation buildable now; storage/UI blocked.
-- **Follow graph & journey feed** — follow other travellers; a feed of their
-  posts/journeys. Pure feed-composition algorithm buildable now.
+**Community / UGC & social (needs auth + persistence + UI — ⛔ blocked; pure
+cores built now):**
+- ✅ **Public notes & travel blogs/vlogs** — pure core shipped (`src/lib/social/
+  posts.ts`: `TravelPost` note/blog/vlog content model + zod `parsePost`, vlogs
+  require a media URL, http(s)-only). Storage/auth/UI still blocked.
+- ✅ **Follow graph & journey feed** — pure cores shipped (`follow-graph.ts`:
+  `buildFollowGraph`/`following`/`followers`/`isFollowing`/`mutuals`/
+  `suggestFollows`; `journey-feed.ts`: `composeFeed` — followed-author posts,
+  recency-ranked, paged). Storage/auth/UI still blocked.
 - **Ratings & recommendations** — users rate and recommend restaurants, places,
   and each other's posts/profiles. Pure **rating-aggregation** core (mean +
   count + confidence-weighted/Bayesian score to avoid the "1 five-star review =

@@ -57,6 +57,6 @@ export const platformSystems: readonly PlatformSystem[] = [
   { name: "City Energy", status: "scaffold", note: "Vibe signals; live density roadmap." },
   { name: "Memory & Reflection", status: "scaffold", note: "Memorability scoring; capture roadmap." },
   { name: "Travel DNA", status: "scaffold", note: "Mood-affinity model + ranking." },
-  { name: "Social & Creator", status: "scaffold", note: "Saved collections (localStorage)." },
+  { name: "Social & Creator", status: "scaffold", note: "Saved collections (localStorage); pure cores for public posts (note/blog/vlog + zod), follow graph, and journey feed — storage/auth/UI blocked." },
   { name: "AI Planning", status: "roadmap", note: "Needs an LLM provider." },
 ];
