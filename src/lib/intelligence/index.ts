@@ -75,6 +75,13 @@ export {
   type ShoppingTipKind,
 } from "./shopping";
 export {
+  getChainsProfile,
+  chainsForCategory,
+  CHAINS_DATA_NOTE,
+  type ChainsProfile,
+  type ChainCategory,
+} from "./chains";
+export {
   estimateTripCarbon,
   inferTravelMode,
   carbonModelV1,
