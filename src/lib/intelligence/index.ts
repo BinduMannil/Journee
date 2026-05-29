@@ -56,6 +56,14 @@ export {
   type CulinaryFlagKind,
 } from "./culinary";
 export {
+  getLocalGems,
+  gemsByKind,
+  GEMS_DATA_NOTE,
+  type GemsProfile,
+  type LocalGem,
+  type GemKind,
+} from "./local-gems";
+export {
   getLocalEssentials,
   emergencyNumberList,
   ESSENTIALS_DATA_NOTE,
