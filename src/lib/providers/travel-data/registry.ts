@@ -85,14 +85,17 @@ export async function resolveTravelData<TQuery, TData>(
   let lastNonOk: TravelDataResponse<TData> | null = null;
   for (const provider of providers) {
     const typed = provider as TravelDataProvider<TQuery, TData>;
+    const t0 = Date.now();
     try {
       if (!(await typed.isAvailable())) {
         incrementCounter("travel_data_provider_unavailable", { kind, providerId: provider.id });
         continue;
       }
       const response = await typed.fetch(query);
+      const elapsed = Date.now() - t0;
       if (response.status === "ok") {
         incrementCounter("travel_data_resolve_success", { kind, providerId: provider.id });
+        incrementCounter("travel_data_resolve_duration_ms_total", { kind, providerId: provider.id, outcome: "ok" }, elapsed);
         return response;
       }
       const counterName =
@@ -100,21 +103,26 @@ export async function resolveTravelData<TQuery, TData>(
           ? "travel_data_resolve_unavailable"
           : "travel_data_resolve_error";
       incrementCounter(counterName, { kind, providerId: provider.id });
+      incrementCounter("travel_data_resolve_duration_ms_total", { kind, providerId: provider.id, outcome: response.status }, elapsed);
       log.warn("travel_data_provider_non_ok", {
         kind,
         providerId: provider.id,
         status: response.status,
         reason: response.reason,
+        durationMs: elapsed,
       });
       lastNonOk = response;
     } catch (error) {
       // Defensive: a provider should return an error response, not throw, but
       // if it does we fall through to the next without crashing the caller.
+      const elapsed = Date.now() - t0;
       incrementCounter("travel_data_provider_throw", { kind, providerId: provider.id });
+      incrementCounter("travel_data_resolve_duration_ms_total", { kind, providerId: provider.id, outcome: "throw" }, elapsed);
       log.warn("travel_data_provider_throw", {
         kind,
         providerId: provider.id,
         error: error instanceof Error ? error.message : String(error),
+        durationMs: elapsed,
       });
       continue;
     }
