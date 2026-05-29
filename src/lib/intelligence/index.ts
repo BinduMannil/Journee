@@ -115,6 +115,18 @@ export {
   type Affordability,
 } from "./costs";
 export {
+  supportedCurrencies,
+  fxRate,
+  convertUsd,
+  convertCurrency,
+  costPricesIn,
+  FX_DATA_NOTE,
+  FX_MODEL_VERSION,
+  FX_AS_OF,
+  type FxRate,
+  type NormalizedCostPrices,
+} from "./currency";
+export {
   getSafetyTips,
   scamNames,
   SAFETY_TIPS_DATA_NOTE,
