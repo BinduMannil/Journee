@@ -121,6 +121,18 @@ export {
   type Affordability,
 } from "./costs";
 export {
+  getNeighborhoods,
+  neighborhoodsByType,
+  neighborhoodsByCostTier,
+  areasWithinBudget,
+  STAY_COST_ORDER,
+  NEIGHBORHOODS_DATA_NOTE,
+  type NeighborhoodsProfile,
+  type Neighborhood,
+  type AreaType,
+  type StayCostTier,
+} from "./neighborhoods";
+export {
   supportedCurrencies,
   fxRate,
   convertUsd,

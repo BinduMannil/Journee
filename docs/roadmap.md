@@ -43,6 +43,7 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | Connectivity & Power | ✅ (seed) | Plug types/voltage, SIM/eSIM options, tap-water potability + `tapWaterAdvice`, coverage notes; `CONNECTIVITY_DATA_NOTE` | Live coverage data, UI |
 | Traveller Inclusion & Safety | ✅ (seed) | LGBTQ+ legal status + same-sex-marriage + social climate, religious-minority & solo-women notes; `getInclusionProfile`; factual, strongly disclaimered (`INCLUSION_DATA_NOTE`) | Tie to live govt advisories, expanded coverage, UI |
 | Cost Index | ✅ (seed) | Approx meal/coffee/beer/taxi prices + affordability band + `dailyBudgetEstimateUsd`; `COSTS_DATA_NOTE` | Live FX, more cities, UI |
+| Neighborhoods & Where to Stay | ✅ (seed) | Areas within each destination with character tags (historic/beach/nightlife/scenic/…), who each suits, and a *relative* stay-cost tier (budget→luxury); `getNeighborhoods` / `neighborhoodsByType` / `neighborhoodsByCostTier` / `areasWithinBudget`; `NEIGHBORHOODS_DATA_NOTE` (tiers are relative, not live quotes) | Live lodging prices (tie to FX/cost layers), more areas, UI |
 | Multi-Currency Normalization | ✅ (seed) | Indicative, dated SEED FX table (`fx-seed-v1`) + `convertUsd` / `convertCurrency` (cross via USD) / `costPricesIn` (cost anchors in any catalogued currency); `FX_DATA_NOTE` (never a live quote) | Live FX feed behind a provider (⛔ egress); more currencies; UI |
 | Scams & Safety Tips | ✅ (seed) | Common scams (how + how-to-avoid) + general safety tips per destination; `getSafetyTips` / `scamNames`; `SAFETY_TIPS_DATA_NOTE` | Expanded coverage, UI |
 | Hazards & Advisories | ✅ (seed) | Per-destination natural-hazard exposure (quake/volcano/typhoon/wildfire/etc.), conflict status, typical advisory level (1–4); `getHazardsProfile` / `highRiskHazards`; factual exposure not a forecast (`HAZARDS_DATA_NOTE`) | Tie to live govt advisories + disruption engine; UI |
@@ -136,6 +137,9 @@ data first (honestly labeled), live sources and UI later.
 - ✅ **Hospital / clinic locations** — shipped (seed `healthcare` feature:
   notable hospitals/clinics/pharmacies with area + English-spoken; live/geo
   directory later).
+- ✅ **Neighborhoods & where to stay** (product-owner request) — shipped (seed:
+  areas/towns per destination with character tags + a relative stay-cost tier;
+  live lodging prices later).
 - **Trip budget / cost estimate** — aggregate seed ticket prices + lodging-tier
   config into a per-trip estimate with confidence.
 - ✅ **Multi-currency normalization** — shipped (seed FX layer over the cost
