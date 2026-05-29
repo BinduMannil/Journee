@@ -25,6 +25,7 @@ const checks = [
   ["/api/affiliate/analytics", 503],
   ["/api/admin/status", 503],
   ["/api/admin/readiness?destinationId=kyoto", 503],
+  ["/api/admin/cache", 503],
   ["/api/plan/ai", 405], // GET not allowed; POST-only (503 when AI unconfigured)
   ["/robots.txt", 200],
   ["/sitemap.xml", 200],

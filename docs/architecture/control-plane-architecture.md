@@ -5,6 +5,9 @@ _Last updated: 2026-05-26._
 ## Status
 
 - **Read-only status endpoint:** ✅ `GET /api/admin/status`.
+- **Readiness endpoint:** ✅ `GET /api/admin/readiness` (destination/trip pipeline).
+- **Cache ops endpoint:** ✅ `GET /api/admin/cache` (size + `travel_data_cache_*`
+  counters) and `DELETE /api/admin/cache` (clears the default travel-data cache).
 - **Mutating control plane (toggle flags, manage campaigns) + real auth/RBAC:**
   🔜 roadmap (depends on auth, not yet built).
 
