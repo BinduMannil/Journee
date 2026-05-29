@@ -33,6 +33,7 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | Destination Intelligence | ✅ | Explainable score; **real** solar light-phase/golden-hour signal | More live signals (weather/events) as feeds land |
 | Pathfinder Discovery (`/discover`) | ✅ | Vibe-based ranking with reasons + avoid arm | — (tune weights as data grows) |
 | Dynamic Itinerary (`/plan`) | ✅ | Fatigue-aware day pacing; `.ics` export | Wire to AI planning + live readiness (UI) |
+| Carbon Estimate | ✅ | Per-trip CO2e from route distance × versioned emission model (`carbon-v1`); mode inferred per leg; honest "estimate" labeling | Per-mode overrides from real itinerary legs; UI surfacing |
 | Affiliate & Monetization | ✅ | Data-driven routing, A/B, click/conversion ingestion, analytics | Live catalog via hosted Supabase (⛔) |
 | Travel-data backend | ✅ (seed) | 7 capability contracts, source/freshness/confidence model, trust-ordered registry, TTL cache, strict resolver, readiness assemblers, **JSON-Schema export**, observability, gated admin readiness | **Live vendor adapters** (⛔ egress); UI surfacing (deferred) |
 | Observability & control plane | ✅ | Structured logs, counter metrics, `/api/metrics`, `/api/health`, secure-by-default `/api/admin/{status,readiness}` | Cache stats endpoint; latency histograms (non-blocked queue) |
@@ -79,11 +80,32 @@ left is a **live data source** (and eventually UI surfacing). See
 
 Mirrors `continuation-handoff.md` (kept in sync each session):
 
-1. Cache stats / clear admin endpoint (`/api/admin/cache`).
-2. Per-kind latency histograms (`_duration_ms_bucket{le=…}`).
-3. Engine-bridge expansion (reviews → safety; advisory/events → conditions).
-4. Per-destination editorial-confidence signal.
-5. `resolveTravelDataMany([{kind,query},…])` heterogeneous fan-out.
+1. ✅ `resolveTravelDataMany([{kind,query},…])` heterogeneous fan-out — **done**.
+2. ✅ Cache stats / clear admin endpoint (`/api/admin/cache`) — **done**.
+3. ✅ Carbon-footprint estimate (`intelligence/carbon.ts`) — **done**.
+4. Per-kind latency histograms (`_duration_ms_bucket{le=…}`).
+5. Engine-bridge expansion (reviews → safety; advisory/events → conditions).
+6. Per-destination editorial-confidence signal.
+
+## Requested / candidate features (queued — built in order, seed-backed first)
+
+Captured as they're proposed; each is built behind the existing provider/engine
+patterns (seed/estimate data, honestly labeled) until a live source is available.
+
+- **Airport & terminal intelligence** ⭐ (requested) — per-destination airports:
+  terminal count, inter-terminal distance + transfer mode (walk / shuttle bus /
+  inter-terminal train/metro), boarding method (jet bridge vs bus/stairs), and
+  airport→city distance + access mode (metro / rail / taxi / bus). New
+  `airport-info` travel-data capability behind the existing contract + a seed
+  adapter; honest source labeling.
+- **Trip budget / cost estimate** — aggregate seed ticket prices + lodging-tier
+  config into a per-trip estimate with confidence.
+- **Best-time-to-visit signal** — seasonality + real solar + (seed) events.
+- **Accessibility capability** — step-free / wheelchair info as an 8th-style
+  travel-data capability.
+- **Multi-currency normalization** — seed FX layer over ticket prices (labeled).
+- **"Explain my ranking" endpoint** — expose the scoring contribution breakdown.
+- **Itinerary GeoJSON / route export** — complement the `.ics` export.
 
 ## Externally blocked (resume when access is granted)
 

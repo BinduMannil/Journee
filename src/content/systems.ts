@@ -15,6 +15,7 @@ export const platformSystems: readonly PlatformSystem[] = [
   { name: "Destination Intelligence", status: "live", note: "Real live light-phase signal; explainable score." },
   { name: "Pathfinder Discovery", status: "live", note: "Vibe-based ranking with reasons (/discover)." },
   { name: "Dynamic Itinerary", status: "live", note: "Fatigue-aware day pacing (/plan)." },
+  { name: "Carbon Estimate", status: "live", note: "Per-trip CO2e estimate from route distance (versioned model; an estimate, not measured)." },
   { name: "Affiliate & Monetization", status: "live", note: "Data-driven routing, A/B, ingestion, analytics." },
   { name: "Travel Confidence", status: "scaffold", note: "Aggregates engine scores; sample inputs." },
   { name: "Event & Cultural", status: "scaffold", note: "Engine + mapping; live calendars roadmap." },

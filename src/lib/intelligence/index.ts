@@ -48,6 +48,16 @@ export {
 } from "./travel-dna";
 export { pathfind, type PathfinderQuery } from "./pathfinder";
 export {
+  estimateTripCarbon,
+  inferTravelMode,
+  carbonModelV1,
+  type TravelMode,
+  type CarbonModel,
+  type CarbonLeg,
+  type CarbonEstimate,
+  type CarbonOptions,
+} from "./carbon";
+export {
   buildItinerary,
   type Itinerary,
   type ItineraryItem,
