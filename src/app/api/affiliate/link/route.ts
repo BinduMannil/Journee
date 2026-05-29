@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { getAffiliateCatalog } from "@/lib/affiliate/catalog";
 import { resolveAffiliateLink } from "@/lib/affiliate/routing";
 import { renderAffiliateUrl, AffiliateUrlError } from "@/lib/affiliate/url";
-import type { AffiliateCategory } from "@/lib/affiliate/types";
+import { AFFILIATE_CATEGORIES, type AffiliateCategory } from "@/lib/affiliate/types";
 import { log } from "@/lib/observability/logger";
 
 /**
@@ -13,18 +13,8 @@ import { log } from "@/lib/observability/logger";
  */
 export const dynamic = "force-dynamic";
 
-const CATEGORIES = new Set<AffiliateCategory>([
-  "flights",
-  "hotels",
-  "experiences",
-  "tours",
-  "restaurants",
-  "insurance",
-  "esim",
-  "ticketing",
-  "luxury",
-  "transportation",
-]);
+// Runtime guard derived from the canonical list — cannot drift from the type.
+const CATEGORIES = new Set<AffiliateCategory>(AFFILIATE_CATEGORIES);
 
 export async function GET(request: Request): Promise<Response> {
   const category = new URL(request.url).searchParams.get("category");
