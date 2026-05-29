@@ -1,6 +1,7 @@
 import { getAdminToken } from "@/lib/config/env";
 import { assembleDestinationReadiness } from "@/lib/intelligence/destination-readiness";
 import { assembleTripReadiness } from "@/lib/intelligence/trip-readiness";
+import { defaultTravelDataCache } from "@/lib/providers/travel-data/cache";
 import "@/lib/providers/travel-data/register";
 
 /**
@@ -51,7 +52,7 @@ export async function GET(request: Request): Promise<Response> {
   const stops = parseStops(url);
 
   if (stops.length > 0) {
-    const trip = await assembleTripReadiness({ stops });
+    const trip = await assembleTripReadiness({ stops, cache: defaultTravelDataCache });
     return Response.json({ mode: "trip", time: new Date().toISOString(), result: trip });
   }
 
@@ -63,6 +64,10 @@ export async function GET(request: Request): Promise<Response> {
     );
   }
   const primaryPlaceId = url.searchParams.get("primaryPlaceId") ?? undefined;
-  const readiness = await assembleDestinationReadiness({ destinationId, primaryPlaceId });
+  const readiness = await assembleDestinationReadiness({
+    destinationId,
+    primaryPlaceId,
+    cache: defaultTravelDataCache,
+  });
   return Response.json({ mode: "destination", time: new Date().toISOString(), result: readiness });
 }

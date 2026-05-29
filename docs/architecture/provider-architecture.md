@@ -123,6 +123,43 @@ destinations provider); ticket links use a neutral `example.com` placeholder
 host so no real ticketing vendor is implied. Honesty is preserved by the `seed`
 label on every response — seed data is never presentable as a live observation.
 
+### Caching (`cache.ts`)
+
+`cachedResolveTravelData(kind, query, cache?)` wraps `resolveTravelData` with
+an in-process TTL cache. Only `ok` responses are cached; entry TTL prefers the
+response's own `source.expiresAt` (so seed/mock/live TTLs all flow through) and
+falls back to `defaultTtlMs`. Concurrent identical requests **coalesce** onto
+a single in-flight promise (`travel_data_cache_coalesced`) — so fan-out from
+the assemblers does not race the cache. The default cache instance is used
+under `/api/admin/readiness`; assemblers accept an injected cache.
+
+### Strict resolution (`registry.ts`)
+
+`resolveTravelDataStrict(kind, query, { minQuality, dropStale })` downgrades an
+`ok` response whose source quality is below a threshold (or whose source is
+stale when `dropStale: true`) to `unavailable` with a clear reason. Use when a
+caller cannot tolerate weak data but still wants the fallback-safe shape.
+
+### Adding a LIVE travel-data adapter (worked example)
+
+Live adapters slot in behind the same contract — no changes at call sites:
+
+1. Implement `TravelDataProvider<TQuery, TData>` in
+   `src/lib/providers/travel-data/live/<vendor>.ts`. `fetch` must always
+   resolve to a `TravelDataResponse` (return `errorResponse(...)` rather than
+   throw on failure) and always carry `SourceMetadata` with `sourceType: "live"`.
+2. Gate `isAvailable()` on both env config (parsed in
+   `src/lib/config/env.ts`) and a feature flag (`KNOWN_FLAGS` in
+   `src/lib/config/flags.ts`) so it cleanly yields to the seed fallback when
+   not ready.
+3. Pick a `confidence` for the source honestly and set `expiresAt` from the
+   vendor's freshness guarantee (the cache will respect it).
+4. Add the import to `src/lib/providers/travel-data/register.ts`. The registry
+   sorts by trust (live > seed > mock), so the live adapter is preferred
+   automatically — no caller changes needed.
+5. The observability counters (`travel_data_resolve_*`, `travel_data_cache_*`)
+   start emitting for the new `providerId` from day one.
+
 ## Roadmap
 
 Affiliate and the live travel-data vendors are declared/contracted but have no
