@@ -23,6 +23,7 @@ export const platformSystems: readonly PlatformSystem[] = [
   { name: "Seasonal Fruits", status: "scaffold", note: "In-season + must-try fruits with editorial global taste/production ratings; seed data." },
   { name: "Airport & Terminal Intel", status: "scaffold", note: "Terminals, inter-terminal transfer, boarding method, airport→city distance + access modes; seed data." },
   { name: "Ratings & Recommendations", status: "scaffold", note: "Confidence-weighted (Bayesian) rating core for places/restaurants/users; persistence + UI roadmap." },
+  { name: "Airport & Airline Ratings", status: "scaffold", note: "Editorial service ratings (staff/cleanliness/comfort/value) for airports + airlines by cabin class; seed data." },
   { name: "Affiliate & Monetization", status: "live", note: "Data-driven routing, A/B, ingestion, analytics." },
   { name: "Travel Confidence", status: "scaffold", note: "Aggregates engine scores; sample inputs." },
   { name: "Event & Cultural", status: "scaffold", note: "Engine + mapping; live calendars roadmap." },
