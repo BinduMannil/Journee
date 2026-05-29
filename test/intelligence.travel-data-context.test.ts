@@ -63,6 +63,29 @@ test("isOpenNow: handles overnight spans (22:00–02:00)", () => {
   assert.equal(isOpenNow(hours, new Date("2026-07-01T16:00:00Z")), true); // 01:00 JST next day
 });
 
+// Regression: an overnight span belongs to the day it STARTS, so its
+// early-morning tail must be attributed to the previous day's record — not to
+// today's. Uniform schedules mask this; differing weekday schedules expose it.
+test("isOpenNow: overnight tail uses the previous day's record (open Fri 22:00→02:00, Sat closed)", () => {
+  const FRI = 5;
+  const hours: OpeningHours = {
+    placeId: "p",
+    timezone: "Asia/Tokyo",
+    weekly: Array.from({ length: 7 }, (_, day) => ({
+      day,
+      closed: day !== FRI,
+      open: day === FRI ? "22:00" : undefined,
+      close: day === FRI ? "02:00" : undefined,
+    })),
+  };
+  // Sat 01:00 JST: Saturday's record is closed, but Friday's span still runs → OPEN.
+  assert.equal(isOpenNow(hours, new Date("2026-07-03T16:00:00Z")), true);
+  // Fri 01:00 JST: Friday's own span hasn't started and Thursday is closed → CLOSED.
+  assert.equal(isOpenNow(hours, new Date("2026-07-02T16:00:00Z")), false);
+  // Fri 23:00 JST: inside Friday's evening span → OPEN.
+  assert.equal(isOpenNow(hours, new Date("2026-07-03T14:00:00Z")), true);
+});
+
 // ── advisory mapping ─────────────────────────────────────────────────────────
 
 test("advisoryLevelToConfidence maps 1..4 and clamps", () => {

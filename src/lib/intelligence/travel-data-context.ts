@@ -75,17 +75,40 @@ function localDayMinutes(now: Date, timeZone: string): { day: number; minutes: n
   return { day: day < 0 ? 0 : day, minutes: hour * 60 + minute };
 }
 
-/** Whether a place is open at `now`, honoring its timezone and overnight spans. */
+/**
+ * Whether the given day-record covers `minutes`.
+ * - `tail: false` — evaluate the day's own span: a normal span covers
+ *   `[open, close)`; an overnight span (close <= open) contributes only its
+ *   evening portion `[open, midnight)` here.
+ * - `tail: true` — evaluate only the post-midnight tail `[midnight, close)` of
+ *   an overnight span. Used for the *previous* day's record, whose overnight
+ *   span runs into the current morning.
+ */
+function recordCovers(rec: OpeningHours["weekly"][number] | undefined, minutes: number, tail: boolean): boolean {
+  if (!rec || rec.closed || !rec.open || !rec.close) return false;
+  const open = hhmmToMinutes(rec.open);
+  const close = hhmmToMinutes(rec.close);
+  if (open === null || close === null) return false;
+  const overnight = close <= open;
+  if (tail) return overnight && minutes < close;
+  if (overnight) return minutes >= open;
+  return minutes >= open && minutes < close;
+}
+
+/**
+ * Whether a place is open at `now`, honoring its timezone and overnight spans.
+ *
+ * Overnight spans (e.g. 22:00–02:00) are attributed to the day they *start*: the
+ * early-morning portion belongs to the previous day's record, not today's. This
+ * matters once weekday schedules differ (uniform seed data masks it).
+ */
 export function isOpenNow(hours: OpeningHours, now: Date = new Date()): boolean {
   const { day, minutes } = localDayMinutes(now, hours.timezone);
   const today = hours.weekly.find((d) => d.day === day);
-  if (!today || today.closed || !today.open || !today.close) return false;
-  const open = hhmmToMinutes(today.open);
-  const close = hhmmToMinutes(today.close);
-  if (open === null || close === null) return false;
-  // Overnight span (e.g. 22:00–02:00): open if after open OR before close.
-  if (close <= open) return minutes >= open || minutes < close;
-  return minutes >= open && minutes < close;
+  if (recordCovers(today, minutes, false)) return true;
+  // Post-midnight tail of an overnight span that started yesterday.
+  const yesterday = hours.weekly.find((d) => d.day === (day + 6) % 7);
+  return recordCovers(yesterday, minutes, true);
 }
 
 export function openingHoursToDestinationContext(
