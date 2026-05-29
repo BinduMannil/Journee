@@ -43,9 +43,15 @@ export const openMeteoWeatherProvider: WeatherProvider = {
   id: "open-meteo",
   isAvailable: () => isFeatureEnabled("live-weather"),
   fetchCurrent: async (lat: number, lon: number): Promise<ComfortInput> => {
-    const url =
-      `${ENDPOINT}?latitude=${lat}&longitude=${lon}` +
-      `&current=temperature_2m,relative_humidity_2m,wind_speed_10m`;
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+      throw new Error(`Open-Meteo: non-finite coordinates (${lat}, ${lon})`);
+    }
+    const params = new URLSearchParams({
+      latitude: String(lat),
+      longitude: String(lon),
+      current: "temperature_2m,relative_humidity_2m,wind_speed_10m",
+    });
+    const url = `${ENDPOINT}?${params.toString()}`;
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
     try {
