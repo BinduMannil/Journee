@@ -34,6 +34,7 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | Pathfinder Discovery (`/discover`) | ✅ | Vibe-based ranking with reasons + avoid arm | — (tune weights as data grows) |
 | Dynamic Itinerary (`/plan`) | ✅ | Fatigue-aware day pacing; `.ics` export | Wire to AI planning + live readiness (UI) |
 | Carbon Estimate | ✅ | Per-trip CO2e from route distance × versioned emission model (`carbon-v1`); mode inferred per leg; honest "estimate" labeling | Per-mode overrides from real itinerary legs; UI surfacing |
+| Food & Drink Customs | ✅ (seed) | Editorial per-destination profile (popular dishes, signature drink, pork/beef prevalence, veg-friendliness, alcohol-in-supermarkets, public-drinking) + derived honest flags; `CULINARY_DATA_NOTE` disclaimer | Live/expanded coverage; UI surfacing |
 | Affiliate & Monetization | ✅ | Data-driven routing, A/B, click/conversion ingestion, analytics | Live catalog via hosted Supabase (⛔) |
 | Travel-data backend | ✅ (seed) | 7 capability contracts, source/freshness/confidence model, trust-ordered registry, TTL cache, strict resolver, readiness assemblers, **JSON-Schema export**, observability, gated admin readiness | **Live vendor adapters** (⛔ egress); UI surfacing (deferred) |
 | Observability & control plane | ✅ | Structured logs, counter metrics, `/api/metrics`, `/api/health`, secure-by-default `/api/admin/{status,readiness}` | Cache stats endpoint; latency histograms (non-blocked queue) |
@@ -92,20 +93,40 @@ Mirrors `continuation-handoff.md` (kept in sync each session):
 Captured as they're proposed; each is built behind the existing provider/engine
 patterns (seed/estimate data, honestly labeled) until a live source is available.
 
-- **Airport & terminal intelligence** ⭐ (requested) — per-destination airports:
-  terminal count, inter-terminal distance + transfer mode (walk / shuttle bus /
-  inter-terminal train/metro), boarding method (jet bridge vs bus/stairs), and
+Requested by the product owner; built in roughly this order, seed/estimate
+data first (honestly labeled), live sources and UI later.
+
+**Local-knowledge intelligence (seed/editorial, buildable now):**
+- **Airport & terminal intelligence** ⭐ — per-destination airports: terminal
+  count, inter-terminal distance + transfer mode (walk / shuttle bus / inter-
+  terminal train/metro), boarding method (jet bridge vs bus/stairs), and
   airport→city distance + access mode (metro / rail / taxi / bus). New
-  `airport-info` travel-data capability behind the existing contract + a seed
-  adapter; honest source labeling.
+  `airport-info` capability behind the existing contract + seed adapter.
+- **City vibe & local friendliness** — how welcoming/relaxed a city feels;
+  extends the existing **City Energy** engine (calmness/festivity/nightlife/
+  density) with a "friendliness/hospitality" signal, seed-fed.
+- **Local essentials & shopping** — where to fuel up (petrol/charging), and
+  where to buy things: malls, traditional markets/souks, and online/e-commerce
+  options per destination. Seed/editorial dataset + pure accessor + flags
+  (like culinary).
 - **Trip budget / cost estimate** — aggregate seed ticket prices + lodging-tier
   config into a per-trip estimate with confidence.
 - **Best-time-to-visit signal** — seasonality + real solar + (seed) events.
-- **Accessibility capability** — step-free / wheelchair info as an 8th-style
-  travel-data capability.
+- **Accessibility capability** — step-free / wheelchair info, seed-backed.
 - **Multi-currency normalization** — seed FX layer over ticket prices (labeled).
 - **"Explain my ranking" endpoint** — expose the scoring contribution breakdown.
 - **Itinerary GeoJSON / route export** — complement the `.ics` export.
+
+**Community / UGC & social (needs auth + persistence + UI — ⛔ blocked; build
+the pure cores now):**
+- **Public notes & travel blogs/vlogs** — users author posts/journals to share
+  publicly. Pure content model + validation buildable now; storage/UI blocked.
+- **Follow graph & journey feed** — follow other travellers; a feed of their
+  posts/journeys. Pure feed-composition algorithm buildable now.
+- **Ratings & recommendations** — users rate and recommend restaurants, places,
+  and each other's posts/profiles. Pure **rating-aggregation** core (mean +
+  count + confidence-weighted/Bayesian score to avoid the "1 five-star review =
+  best" trap) buildable now; persistence/auth/UI blocked.
 
 ## Externally blocked (resume when access is granted)
 

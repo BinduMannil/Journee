@@ -48,6 +48,14 @@ export {
 } from "./travel-dna";
 export { pathfind, type PathfinderQuery } from "./pathfinder";
 export {
+  getCulinaryProfile,
+  culinaryFlags,
+  CULINARY_DATA_NOTE,
+  type CulinaryProfile,
+  type CulinaryFlag,
+  type CulinaryFlagKind,
+} from "./culinary";
+export {
   estimateTripCarbon,
   inferTravelMode,
   carbonModelV1,
