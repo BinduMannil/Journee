@@ -62,6 +62,9 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | Dress Code by Venue | ✅ (seed) | Respectful-dress guidance by venue kind (religious site/fine dining/beach-pool/nightlife/general) with strictness; `getDressCode` / `dressGuidanceFor` / `venuesNeedingModesty`; `DRESS_CODE_NOTE` | Expanded coverage, UI |
 | Photography Rules & Etiquette | ✅ (seed) | Per-destination photo/drone rules by subject kind (people/religious/government/museum/drone) with permission level; `getPhotographyProfile` / `photoRuleFor` / `prohibitedSubjects`; `PHOTOGRAPHY_DATA_NOTE` | Live/expanded regulations, UI |
 | Public-Transport How-To | ✅ (seed) | Modes, ticketing/passes, payment methods + practical tip per destination; `getTransitHowTo` / `transitOptionFor` / `acceptsContactless`; `TRANSIT_HOWTO_NOTE` | Live operator/route/fare data, expanded coverage, UI |
+| Transport Modes | ✅ (seed) | Comprehensive per-destination catalog of every transport mode (metro/bus/tram/train/taxi/rideshare/tuk-tuk/ferry/funicular/cable-car/scooter/ATV/caleche/bike-share/walk) with availability + a note; `getTransportModes` / `isModeAvailable` / `modesByAvailability`; `TRANSPORT_MODES_NOTE` | Live availability/fare feed, expanded coverage, UI |
+| Tourist Item Base Prices | ✅ (seed) | Fair/typical USD price ranges for common tourist buys by category + a bargaining-expected flag + anti-overcharging notes; `getTouristPrices` / `pricesByCategory` / `fairPriceRange`; `TOURIST_PRICES_NOTE` (approximate, not live quotes) | Live price signals, more items, UI |
+| Tourist Sites & Attractions | ✅ (seed) | Top sites per destination with cost band/approx USD, best time of day + why (light/weather/heat/crowds), typical busyness, typical hours, and an honest booking note (no fabricated/affiliate URLs); `getAttractions` / `attractionsByBestTime` / `freeAttractions`; `ATTRACTIONS_DATA_NOTE` | Live hours/ticketing/crowd feeds, real booking integration, more sites, UI |
 | Accessibility Capability | ✅ (seed) | Step-free/wheelchair access + mobility realities by facet (getting around/attractions/lodging/terrain) with a level; `getAccessibilityProfile` / `accessAspectFor` / `challengingFacets`; `ACCESSIBILITY_DATA_NOTE` | Per-venue live data, expanded coverage, UI |
 | Timezone & Business Hours | ✅ (seed) | IANA timezone + UTC offset, typical shop/restaurant/bank/government/market hours, weekend days, siesta notes; `getTimezoneProfile` / `businessHoursFor` / `currentTimeAt` (live local time via the zone); `TIMEZONE_DATA_NOTE` | Live/expanded hours, holiday calendars, UI |
 | Packing Guidance | ✅ (seed) | Year-round + seasonal packing items with priority + reason, climate/customs-aware; `getPackingProfile` / `packingForSeason` / `essentialItems`; `PACKING_DATA_NOTE` | Tie to live forecast + itinerary activities, UI |
@@ -144,6 +147,10 @@ data first (honestly labeled), live sources and UI later.
 - ✅ **Neighborhoods & where to stay** (product-owner request) — shipped (seed:
   areas/towns per destination with character tags + a relative stay-cost tier;
   live lodging prices later).
+- ✅ **All transport modes / tourist base prices / tourist sites with best
+  time-of-day** (product-owner requests) — shipped (seed `transport-modes`,
+  `tourist-prices`, `attractions`). Anti-scam is served by the existing
+  **Scams & Safety Tips** feature plus tourist base prices.
 - ✅ **Trip budget / cost estimate** — shipped (`estimateTripBudget`: lodging by
   area tier + cost-index daily spend × nights/travelers, in any currency, with a
   per-stop breakdown + confidence; seed estimates, not live prices).
