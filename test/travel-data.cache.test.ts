@@ -103,6 +103,38 @@ test("entry expires past its TTL → re-resolves", async () => {
   assert.equal(c.n, 2);
 });
 
+test("ok response with an already-past expiresAt is not served as fresh (re-resolves)", async () => {
+  // Regression: an `ok` source whose own freshness window is already past must
+  // NOT be granted a fresh default TTL — that would serve stale data as fresh.
+  const c = { n: 0 };
+  const NOW = new Date("2026-05-29T00:00:00Z").getTime();
+  const provider: TravelDataProvider<Q, D> = {
+    id: "live-stale",
+    name: "live-stale",
+    kind: "places",
+    sourceType: "live",
+    isAvailable: () => true,
+    async fetch(query) {
+      c.n += 1;
+      // expiresAt = NOW - 9s (already in the past relative to the cache clock).
+      const source = makeSourceMetadata({
+        sourceName: "live-stale",
+        sourceType: "live",
+        providerId: "live-stale",
+        confidence: 0.5,
+        fetchedAt: new Date(NOW - 10_000),
+        ttlMs: 1_000,
+      });
+      return okResponse<D>("live-stale", "places", { v: query.id.length }, source);
+    },
+  };
+  registerTravelDataProvider(provider);
+  const cache = createTravelDataCache({ now: () => new Date(NOW), defaultTtlMs: 5 * 60_000 });
+  await cachedResolveTravelData<Q, D>("places", { id: "abc" }, cache);
+  await cachedResolveTravelData<Q, D>("places", { id: "abc" }, cache);
+  assert.equal(c.n, 2, "an already-expired ok source must not be memoized as fresh");
+});
+
 test("non-ok responses bypass the cache (failures are not memoized)", async () => {
   const c = { n: 0 };
   registerTravelDataProvider(counting({ id: "live-x", sourceType: "live", behavior: "error", ttlMs: 60_000, counter: c }));

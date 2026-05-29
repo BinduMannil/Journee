@@ -109,7 +109,12 @@ function entryExpiry(
 ): number {
   if (response.source.expiresAt) {
     const t = new Date(response.source.expiresAt).getTime();
-    if (!Number.isNaN(t) && t > nowMs) return t;
+    // Respect the source's own freshness window even when it is already past:
+    // an already-expired `ok` source must NOT be granted a fresh default TTL
+    // (that would serve stale data as fresh, violating the honesty rule). The
+    // entry is stored already-expired and dropped on the next read. Only an
+    // unparseable (NaN) expiry falls back to the default TTL.
+    if (!Number.isNaN(t)) return t;
   }
   return nowMs + defaultTtlMs;
 }
