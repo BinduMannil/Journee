@@ -1,6 +1,6 @@
 # Continuation Handoff
 
-_Last updated: 2026-05-27. Snapshot for the next engineer/agent to resume
+_Last updated: 2026-05-29. Snapshot for the next engineer/agent to resume
 without context loss._
 
 ## Where things stand
@@ -66,21 +66,71 @@ routes verified via `npm start` + curl, and a 19+ check e2e smoke
 21. Trip planner UI (`/plan`) surfacing the dynamic-itinerary engine
     (config-driven mood→intensity).
 
-Done (session 3 — this branch `claude/travel-provider-contracts-*`): **Travel-data
-provider contracts** (backend-only). New `src/lib/providers/travel-data` layer:
-seven capability contracts (places, opening hours, ticket prices, ticket links,
-reviews, local events, safety advisories); a shared **source-attribution model**
-(`source.ts` — sourceName/type/providerId/confidence/fetchedAt/expiresAt/
-attributionURL, sourceType ∈ seed|mock|live|stale|unavailable); pure
-**freshness/confidence** helpers (`freshness.ts` — freshness state, stale
-detection, confidence normalization + banding, source ranking, result-quality
-classification); a fallback-safe discriminated `TravelDataResponse`
-(ok|unavailable|error, `data` always present); a parameterized **registry** with
-trust-ordered resolution + `reportTravelDataReadiness()`; **SEED adapters only**
-(one per kind, deterministic, ticket links use a neutral `example.com`
-placeholder). Readiness is surfaced read-only under `/api/admin/status`. Tests:
-**194 total** (added contracts, source, freshness, confidence, registry/readiness,
-fallback). **No live vendor wired; no Supabase; no UI; no LLM change.**
+Done (session 3 — this branch `claude/travel-provider-contracts-*`): **Full
+backend travel-data architecture**, contract-ready, seed-fed end-to-end. All
+work merged through PRs #14–#23 into `claude/quirky-keller-2S10c`. **No live
+vendor wired; no Supabase; no UI; no LLM change.**
+
+Layers shipped this session (all in `src/lib/providers/travel-data` and
+`src/lib/intelligence` unless noted):
+
+1. **Provider contracts (#14)** — 7 capabilities (places, opening hours,
+   ticket prices, ticket links, reviews, local events, safety advisories);
+   shared `SourceMetadata` (sourceName/type/providerId/confidence/fetchedAt/
+   expiresAt/attributionUrl); pure freshness/confidence helpers (state, stale,
+   normalize, band, rank, quality classify); fallback-safe discriminated
+   `TravelDataResponse` (ok|unavailable|error, `data` always present);
+   parameterized registry with trust-ordered resolution +
+   `reportTravelDataReadiness()`; **seed-only adapters** (deterministic;
+   ticket links use a neutral `example.com` placeholder); readiness surfaced
+   read-only under `/api/admin/status`.
+2. **Engine bridge (#15)** — `travel-data-context.ts`: opening hours →
+   `isOpenNow` (timezone-aware, overnight-safe); advisory level →
+   `advisoryConfidence`; active events → `festivalIntensity`. Honest gating:
+   only `ok` responses yield fragments; unavailable/error/dropped sources
+   produce empty fragments, lowering engine coverage-confidence rather than
+   fabricating values.
+3. **Destination assembler (#16)** — `destination-readiness.ts`:
+   `composeDestinationReadiness` (pure) + `assembleDestinationReadiness`
+   (registry-walking). Per-source provenance (status / sourceType / quality /
+   contributed) on every response. Real (seed-fed) server-side counterpart to
+   the UI's mock-fed `TravelReadiness` preview. Never throws.
+4. **Observability (#17)** — counters + warn logs in `resolveTravelData`
+   mirroring the capability registry: `travel_data_resolve_{success,
+   unavailable,error}`, `travel_data_provider_{unavailable,throw}`,
+   `travel_data_kind_{exhausted,no_provider}`, labeled `{kind, providerId}`.
+5. **Trip assembler (#18)** — `trip-readiness.ts`: composes per-stop
+   `DestinationReadiness` into a trip aggregate via the existing scoring core
+   + `trip-readiness-v1` weights (equal-weighted across stops). Confidence is
+   mean of per-stop confidences; flattened destination-tagged provenance;
+   best/worst stop summaries. Never throws.
+6. **In-process TTL cache (#19)** — `cache.ts`:
+   `cachedResolveTravelData`/`createTravelDataCache`. Only `ok` responses are
+   cached; TTL prefers `source.expiresAt` then `defaultTtlMs`. Counters
+   `travel_data_cache_{hit,miss,bypass}`.
+7. **Gated admin readiness endpoint (#20)** — `GET /api/admin/readiness` with
+   single-destination (`?destinationId=&primaryPlaceId=`) and trip
+   (`?stop=destinationId[:placeId]` repeated) modes. Secure-by-default 503;
+   401 on bad token; 400 on missing params. Smoke covers it.
+8. **Quality-aware strict resolver (#21)** — `meetsQuality` (pure) +
+   `resolveTravelDataStrict({ minQuality, dropStale })`: downgrades an `ok`
+   response below quality threshold (or stale when `dropStale`) to
+   `unavailable` with a reason, preserving source for provenance. Counter
+   `travel_data_strict_downgrade{kind, reason}`.
+9. **Cache wired through assemblers + in-flight dedupe (#22)** — destination
+   + trip assemblers accept an optional `cache`; trip-level threads a single
+   shared cache across stops. Cache coalesces concurrent identical requests
+   onto a single in-flight promise (counter
+   `travel_data_cache_coalesced{kind}`) so fan-out doesn't race the cache.
+10. **Admin route uses default cache + doc closure (#23)** — admin readiness
+    endpoint uses `defaultTravelDataCache`. Provider-architecture doc adds a
+    worked example for "how to add a LIVE travel-data adapter". Continuation
+    handoff (this file) updated.
+
+Test count this session: **194 → 246+** (each layer added focused coverage).
+All checks green per PR: typecheck, lint, test, build, smoke. Every PR audit:
+no UI files, no Supabase work, no hosted migrations, no LLM-planning files
+changed, no secrets, no fake live-data claims.
 
 ### Honesty notes for this session (must stay true)
 
