@@ -1,189 +1,176 @@
 # Continuation Handoff
 
-_Last updated: 2026-05-27. Snapshot for the next engineer/agent to resume
+_Last updated: 2026-05-29. Snapshot for the next engineer/agent to resume
 without context loss._
 
-## Latest session (2026-05-27) — AI planning backend finalized
+## Where things stand (read first)
 
-The AI trip-planning **backend** is now complete, audited, and fully tested —
-**config-only to enable** (no further code needed). What changed this session:
+This session **unified two divergent tracks onto `main`** after a full
+read-only audit:
 
-- **Server-only LLM seam confirmed:** the Anthropic adapter reads the non-public
-  `LLM_API_KEY` (never `NEXT_PUBLIC_`, so never bundled client-side) and is
-  imported only by the server route. `isAvailable()` is a strict AND of the key
-  **and** the `ai-planning` flag — inert until both are set.
-- **Hardened request validation:** `POST /api/plan/ai` now bounds the payload
-  (1–20 destinations, per-field length caps, ≤500-char notes) as a cost/abuse
-  guard.
-- **Hardened response-shape validation:** the model's JSON is validated with a
-  strict zod schema (`parsePlanResponse`) before return; a truncated/off-shape
-  completion throws → `502` (never a malformed `200`).
-- **Clean failure contract:** `502 ai_planning_failed` on LLM error or bad shape;
-  quota is **not** consumed on failure. Full status table in
-  `docs/runbooks/hosted-enablement.md`.
-- **Testable handler:** the metering subject now derives from the `jid` cookie
-  parsed off the request headers (`getVisitorId`) instead of `next/headers`
-  `cookies()`, so the route is a pure function of the `Request` (same value in
-  production).
-- **Tests (+10, suite now 161):** provider availability; missing-key and
-  flag-disabled gating; invalid body / over-large payload; quota exhausted (402);
-  per-IP free limit (429); LLM failure (502); malformed response (502);
-  successful structured parse (200, quota consumed). Smoke now also POSTs
-  `/api/plan/ai` and asserts the inert `503`.
+- **AI-planning + live-weather track** — previously developed directly on
+  `main` (merge-PRs through #13): server-only Anthropic LLM seam (inert until
+  `LLM_API_KEY` + `ai-planning` flag), hardened `POST /api/plan/ai` (bounded
+  input, zod-validated response, clean `502`/`402`/`429` contract, quota not
+  consumed on failure), a **keyless Open-Meteo live weather provider** (inert
+  behind the `live-weather` flag), AI readiness on `/api/health`.
+- **Travel-data backend architecture** — previously developed on
+  `claude/quirky-keller-2S10c` (PRs #14–#28): contract-ready, seed-fed,
+  provider-gated travel intelligence end-to-end (see the layer list below).
 
-**Explicitly out of scope / unchanged this session:** no UI work (the `/plan`
-page is untouched; wiring it to this endpoint is deferred); **hosted Supabase
-remains blocked** and **no hosted DB migrations were applied**; no secrets
-committed; no live LLM call was made (no key in this environment — the network
-boundary is covered by mocked-`fetch` tests, not fabricated operational claims).
+Both tracks branched from common base `4c18430` and never shared a tip until
+now. They were merged cleanly (only the handoff doc conflicted) and the unified
+tree passes `typecheck`, `lint`, `test`, `build`, and the e2e `smoke`.
 
-## Where things stand
-
-Greenfield repo bootstrapped into a **runnable, runtime-verified** platform with
-a complete affiliate vertical, live (network-free) intelligence signals, a
-working browsable UI (incl. a trip planner), an observability + control-plane
-layer, operational runbooks, and a full public surface (`/`, `/discover`,
-`/plan`, `/saved`, `/about`, `/destinations/[id]`, plus JSON/health/metrics/
-affiliate/admin APIs, OG images, manifest, security headers). ~14 product-vision
-intelligence engines are scaffolded on one explainable, versioned scoring core.
-Every increment passes `typecheck`, `lint`, `test` (**112**), and `build`; key
-routes verified via `npm start` + curl, and a 19+ check e2e smoke
-(`scripts/smoke.mjs`) runs in CI (now also asserting the security headers).
-
-### Branches & PR
+### Branches & PRs
 
 | Ref | State |
 | --- | --- |
-| `main` | Baseline = foundation commit. |
-| `claude/quirky-keller-2S10c` | Active feature branch; all increments below. |
-| **PR #1** (`claude/quirky-keller-2S10c` → `main`) | **Open**, awaiting human review/merge. CI runs install→typecheck→lint→test→build + dependency audit. |
+| `main` | **Unified this session** — contains both the AI/weather track and the full travel-data architecture (#14–#28) + session-4 work. |
+| `claude/quirky-keller-2S10c` | Travel-data integration branch (PRs #14–#28). Should be re-synced to `main` for future work (or branch fresh from `main`). |
+| PR #1 | Merged 2026-05-27 (foundation only — predates the travel-data work). |
 
-### Workstreams completed on the feature branch (all merge-ready)
+### Session 4 (2026-05-29) — what shipped
 
-1. Foundation — Next.js 15 / React 19 / TS strict / Tailwind v4 design system;
-   provider registry + seed; config boundary; ADRs 001–004; CI; PR template.
-2. Config validation (zod env) + feature flags; Supabase destinations adapter +
-   RLS migration; service-role client.
-3. **Affiliate vertical (complete):** model + pure resolver (ADR-005); Supabase
-   catalog loader; safe URL rendering; gated UI CTA; click + conversion
-   ingestion endpoints; revenue analytics with time-windowing.
-4. Intelligence scoring core + destination/events/disruption engines + Travel
-   Confidence aggregate; versioned weights (ADR-006).
-5. Observability — structured logger, registry failover instrumentation,
-   `/api/health`.
-6. Experiments — deterministic A/B assignment seam (`src/lib/experiments`).
-7. App resilience (loading/error/404) + SEO (robots/sitemap/OG).
-8. Local Supabase stack (config + seed + runbook) + end-to-end failover test.
-9. Governance — dependency map, AI audit trail, Dependabot, CODEOWNERS,
-   CONTRIBUTING, SECURITY, issue templates.
-10. Live product UI — landing with mood filter + search; detail pages
-    (`/destinations/[id]`, true 404 on unknown); live light-phase badge
-    (real solar math); explainable atmosphere score (honest confidence);
-    JSON `/api/destinations`; environmental comfort scorer (weather-feed ready).
-11. Provider hardening — contract tests; mock weather dev-provider; mock
-    event/disruption contexts exercising those engines.
-12. Observability — counter metrics scaffold + `/api/metrics`; registry counts
-    resolve/failover/exhaustion.
-13. Control plane — secure-by-default `/api/admin/status` (provider availability,
-    flags, counters).
-14. Ops + DB — incident-response + recovery runbooks; analytics indexes
-    (`0003`); migrations README.
-15. Architecture docs + diagrams — failure/recovery, data-flow, auth,
-    deployment/environment, request-lifecycle (mermaid).
-16. CI/CD — concurrency cancellation; Node pinning (`engines` + `.nvmrc`).
-17. Self-hosted fonts (`@fontsource-variable`) — no build-time font fetch.
-18. Discovery — Travel DNA (`rankByDNA`), Pathfinder (`/api/pathfinder`),
-    dynamic itinerary (fatigue-aware pacing); postmortem template.
-19. More engines — safety/risk, visa/entry, local-culture scaffolds (versioned
-    weights, tested).
-20. Affiliate analytics pagination (`?limit=&offset=`).
-21. Trip planner UI (`/plan`) surfacing the dynamic-itinerary engine
-    (config-driven mood→intensity).
+Merged into `claude/quirky-keller-2S10c`, then unified to `main`:
+
+- **#26 — JSON-schema export for the travel-data contracts.** `travel-data/
+  schemas.ts` (zod **v4** via `zod/v4`, shipped inside `zod@3.25`) mirrors every
+  contract — `SourceMetadata`, domain payloads, per-kind query payloads, the
+  fallback-safe discriminated response. Compile-time `Mirrors<>` assertions keep
+  schemas in lock-step with `contracts.ts` (drift breaks `typecheck`).
+  `travel-data/json-schema.ts` emits pure JSON Schema (`travelDataJsonSchema` /
+  `travelDataJsonSchemas`, draft-2020-12 or draft-7) for OpenAPI / SDK / runtime
+  validation. Per-kind query schemas (`travelDataQuerySchemasByKind`) ready a
+  request boundary to `safeParse`.
+- **#27 — Two latent travel-data correctness fixes (found by the audit).**
+  (HIGH) `isOpenNow` overnight spans were attributed to today's record instead
+  of the previous day's span (only correct under uniform weekday hours). (MEDIUM)
+  cache `entryExpiry` granted a fresh default TTL to an `ok` source whose
+  `expiresAt` was already past (serving stale-as-fresh). Both latent under seed
+  data; both break once a live provider is wired. Regression-tested.
+- **#28 — Affiliate categories single source of truth (found by the audit).**
+  `/api/affiliate/link`'s `CATEGORIES` Set duplicated the `AffiliateCategory`
+  union; derived the type from a canonical `AFFILIATE_CATEGORIES` array (same
+  pattern as `KNOWN_FLAGS`). No behavior change.
+- **Unification PR — merge travel-data → `main` + weather audit follow-ups.**
+  Merged the travel-data branch into `main`; applied the 3 non-blocking
+  Open-Meteo follow-ups from the audit (honest "fixed host" comment instead of
+  the unimplemented "allow-listed host" claim; `getDestinationComfort` wraps the
+  throwing live `fetchCurrent` in try/catch → `null`; lat/lon via
+  `URLSearchParams` + finite guards).
+
+### Pre-merge full-codebase audit (this session)
+
+Four read-only agents covered **both** tracks. **Verdict: safe to merge.**
+
+- **Security & honesty — clean.** No committed secrets (env boundary is the only
+  reader; keys never logged); admin + LLM + weather paths are secure/inert by
+  default; inputs `safeParse`d; SourceMetadata makes seed data structurally
+  unpresentable as live. LOW documented roadmap items only (phased CSP; in-memory
+  quota store).
+- **Correctness — 2 travel-data bugs found and fixed (#27);** AI/weather/LLM
+  track correct (timeouts, zod validation, honest failure contract).
+- **Code quality / provenance — clean; NO foreign/"codex" drift detected.**
+  Uniform house style across both tracks. Mediums fixed (#28 + weather
+  follow-ups); remaining are optional LOW hygiene (below).
+
+### Travel-data layers (PRs #14–#25, recap)
+
+All under `src/lib/providers/travel-data` + `src/lib/intelligence`:
+
+1. **#14 Provider contracts** — 7 capabilities (places, opening-hours,
+   ticket-prices, ticket-links, reviews, local-events, safety-advisories);
+   shared `SourceMetadata` (type ∈ seed|mock|live|stale|unavailable); pure
+   freshness/confidence/quality helpers; fallback-safe discriminated
+   `TravelDataResponse` (`data` always present); trust-ordered registry +
+   `reportTravelDataReadiness()` under `/api/admin/status`; seed-only adapters
+   (ticket links use a neutral `example.com` placeholder).
+2. **#15 Engine bridge** (`travel-data-context.ts`) — opening hours →
+   `isOpenNow` (tz-aware, overnight-safe after #27); advisory → confidence;
+   active events → festival intensity. Only `ok` responses yield fragments.
+3. **#16 Destination assembler** (`destination-readiness.ts`) — pure compose +
+   registry-walking assemble, per-source provenance. Never throws.
+4. **#17 Observability counters** — `travel_data_resolve_*`, `_provider_*`,
+   `_kind_*`, labeled `{kind, providerId}`.
+5. **#18 Trip assembler** (`trip-readiness.ts`) — per-stop compose via scoring
+   core + `trip-readiness-v1` weights; mean-of-stops confidence.
+6. **#19 In-process TTL cache** (`cache.ts`) — only `ok` cached; TTL prefers
+   `source.expiresAt`; `travel_data_cache_{hit,miss,bypass}`.
+7. **#20 Gated admin readiness** — `GET /api/admin/readiness` (503/401/400),
+   destination + trip modes; smoke-covered.
+8. **#21 Quality-aware strict resolver** — `resolveTravelDataStrict({minQuality,
+   dropStale})` downgrades weak/stale `ok` → `unavailable` with reason.
+9. **#22 Cache through assemblers + in-flight dedupe** — shared cache across
+   stops; `travel_data_cache_coalesced`.
+10. **#23 Admin route uses default cache + docs** (live-adapter worked example).
+11. **#24 Latency instrumentation** — `travel_data_resolve_duration_ms_total
+    {kind,providerId,outcome}`.
+12. **#25 Live-adapter TEMPLATE** (`live/TEMPLATE.ts`) — compilable, **NOT
+    registered**, codifies the live-adapter pattern.
 
 ## What is real vs. roadmap (read before extending)
 
-- **Real & tested (77 tests):** provider registry + fallback + contract tests;
-  config/flag/env boundary; full affiliate vertical (resolver incl. A/B, URL
-  render, ingestion validation/rows, analytics aggregation + time-window);
-  intelligence scoring core + engine mappings + confidence aggregate + real
-  solar signal; deterministic mocks (weather/event/disruption); structured
-  logging + counter metrics; admin status endpoint (secure-by-default).
-- **Scaffold (logic/contracts real, data NOT wired):** intelligence engines have
-  no live weather/events/advisory feeds (mock providers stand in); Supabase
-  providers + migrations are not applied to any *hosted* project (local-only
-  verified).
-- **EXTERNALLY BLOCKED (cannot proceed without access):**
-  - Hosted Supabase (staging/prod) — needs real project secrets.
-  - Live weather feed — the keyless **Open-Meteo adapter is built + tested**
-    (inert behind the `live-weather` flag); egress to `api.open-meteo.com` is
-    still blocked by the network allowlist, so it can't be run live here.
-  - Branch protection / org settings — needs repo-admin access.
-- **Backend built, config-only to enable:** AI planning (`POST /api/plan/ai`) —
-  provider + adapter + route + metering + abuse gates complete and tested; needs
-  only `LLM_API_KEY` + the `ai-planning` flag (and UI wiring, deferred).
-- **Not started (no external block, just scope):** auth/RLS user sessions,
-  Travel DNA, dynamic itinerary, real-time conditions, safety/risk, visa, local
-  culture, city energy, memory/reflection, social/creator.
+- **Real & tested:** all 12 travel-data layers + #26 JSON-schema export; the
+  AI-planning backend (config-only to enable) and Open-Meteo live weather
+  provider (flag-gated, inert); affiliate vertical; intelligence scoring core +
+  engines + solar/moon/geo; observability + admin control plane.
+- **Contract-ready only:** travel-data **live vendors** — only seed adapters
+  wired; live adapters slot behind the same contract (`provider-architecture.md`
+  worked example + `live/TEMPLATE.ts`). Open-Meteo weather + Anthropic LLM are
+  built and inert until their flags/keys are set.
+- **Externally blocked (need access):** hosted Supabase; live weather egress
+  (Open-Meteo host) and a live LLM key (no network in this env); branch
+  protection / org settings.
+- **UI deferred** — the existing UI is unchanged; no `.tsx`/page files touched
+  this session. The gated `TravelReadiness` mock preview was NOT modified.
 
 No operational claims are made for unbuilt systems — keep it that way.
 
-## Next autonomous execution queue (non-blocked first)
+## Non-blocked next steps (pick in order)
 
-Done (session 1): self-hosted fonts; Travel DNA + Pathfinder + dynamic itinerary;
-postmortem template; safety/visa/culture + conditions/city-energy/memory engines;
-analytics pagination; trip planner UI; **per-visitor A/B** (jid cookie + client
-CTA + `/api/affiliate/link`, without forcing pages dynamic); reusable provider
-contract harness; engine-roster doc parity; Report-Only CSP + report endpoint;
-e2e smoke + CI step.
+1. **Cache stats / clear admin endpoint** — `/api/admin/cache` (gated): GET shows
+   `size()` + `travel_data_cache_*` counters; DELETE clears
+   `defaultTravelDataCache`.
+2. **Per-kind latency histograms** — extend `_duration_ms_total` with bucketed
+   counts (`_bucket{le=…}`) for honest P50/P95.
+3. **Engine-bridge expansion** — feed the safety engine from review highlights
+   (crowd text → `crowd_safety`), or conditions from advisory/events. Pure.
+4. **Per-destination editorial-confidence signal** — seed-readiness × editorial
+   coverage % → per-destination "data confidence" under admin readiness.
+5. **`resolveTravelDataMany([{kind,query},…])`** — heterogeneous fan-out, aligned
+   responses, one shared cache.
+6. **Re-sync `claude/quirky-keller-2S10c` to `main`** (or branch fresh from
+   `main`) so future work starts from the unified tip.
 
-Done (session 2 — this branch): Travel Readiness aggregate extended to 5
-sub-engines (added safety + conditions; weights `travel-confidence-v2`);
-`/discover` now exposes the Pathfinder **avoid** arm + a live light badge per
-result; **CSP phase 2** — structural directives (`base-uri`, `object-src`,
-`frame-ancestors`, `form-action`) promoted to **enforcing** while script/style/
-content stay Report-Only; smoke asserts the CSP headers; `/plan` shows the
-fatigue budget + a per-day load meter; `/saved` gained inline remove + a count;
-`/api/csp-report` unit-tested.
+### Optional LOW hygiene backlog (from the audit — non-blocking)
 
-**Remaining non-blocked work is genuinely thin** — what's left is blocked:
-- **Hosted Supabase** (staging/prod) — real secrets.
-- **Live weather feed** — Open-Meteo egress still `403` from the allowlist
-  (re-verified). The keyless `OpenMeteoWeatherProvider` is now **built + tested**
-  (inert behind `live-weather`); going live needs only the host allow-listed +
-  the flag. No UI consumer yet (deferred).
-- **AI planning backend** — **done + tested**; config-only to enable (set
-  `LLM_API_KEY` + flag). Only the UI wiring remains and is intentionally deferred.
-- **Branch protection** — repo-admin access.
-- **Full nonce-based CSP enforcement** — needs a real-browser hydration check
-  (Next.js injects inline bootstrap scripts/styles) and would force dynamic
-  rendering; flip the script/style/default directives from Report-Only to
-  enforcing once `/api/metrics` shows `csp_violation` at zero after browsing.
+- `isAiPlanningEnabled` (`llm/index.ts`) exported "for status surfaces" but
+  unused — wire into `/api/admin/status` or remove.
+- `travelDataStatusSchema` (`schemas.ts`) — public schema export not yet
+  referenced (intentional API surface).
+- Affiliate scaffold domain types overlap snake_case row types in `events.ts` —
+  unify when the DB write path lands.
+- Comfort-band constants (`comfort.ts`) and `max_tokens` (`anthropic.ts`) are
+  inline — consider moving to config.
+- FNV-1a hash duplicated in `intelligence/mock.ts` + `experiments/assignment.ts`
+  (different return contracts) — extract a shared helper if touched again.
 
-Optional marginal polish: DB-side group-by analytics at scale; extracting the
-home search/filter into a pure tested helper.
+## Hard constraints (do NOT violate — copy verbatim into the next handoff)
 
-## Blocked queue (resume when access is granted)
+- No UI work. No `.tsx` components, no Next.js page files. The only `src/app`
+  changes allowed are API routes.
+- No Supabase work. No `supabase/` files. No hosted DB migrations applied or
+  attempted. Supabase remains externally blocked.
+- No LLM-planning changes. `src/lib/providers/llm/*` and `src/app/api/plan/ai/*`
+  stay untouched unless shared types force a change.
+- No secrets in commits. No real API keys, no environment values.
+- No fake live-data claims. Every external-data response must carry
+  `SourceMetadata` labeling it seed, mock, or live honestly. Seed data is never
+  presentable as live.
+- Provider-gated, config-driven, tested, honestly documented for every change.
 
-The seams are now **config-only to enable** — see
-`docs/runbooks/hosted-enablement.md` for exact steps.
-
-- Hosted Supabase: set env + `supabase db push` (migrations `0001`–`0004`) +
-  enable flags. Detail pages are already DB-ready — `generateStaticParams` is
-  async and resolves through the provider, so DB destinations get pages at build
-  (kept `dynamicParams=false` for true 404s; rows added post-build appear on the
-  next build, or wire ISR later if desired).
-- LLM / AI planning: **backend complete + tested — config-only to enable.** Set
-  `LLM_API_KEY` (+ optional `LLM_MODEL`) and enable the `ai-planning` flag.
-  `PlanningProvider` contract, Anthropic adapter (inert until configured, strict
-  response-shape validation), and `POST /api/plan/ai` (bounded request, metering
-  + abuse gates, `503` until enabled, `502` on failure). UI wiring is the only
-  remaining (deferred) step.
-- Live weather: `OpenMeteoWeatherProvider` is **built + registered** ahead of the
-  mock and tested (keyless). To go live: allow-list `api.open-meteo.com` and add
-  `live-weather` to `JOURNEE_ENABLED_FEATURES` — no code change.
-- Branch protection: enable required PR review + status checks on `main`.
-
-## Conventions to keep
+## Conventions to keep (copy verbatim into the next handoff)
 
 - New external integrations go **behind a provider adapter**, gated by
   `isAvailable()` so fallback holds.
@@ -191,3 +178,33 @@ The seams are now **config-only to enable** — see
 - Every architecture-changing PR updates the relevant `docs/` file in the same
   PR; add an ADR for significant decisions; append to the AI audit trail for
   autonomous changes.
+- Do NOT ask for approval mid-task. Implement → audit → test → open PR → merge if
+  clean. Only stop to ask if something is genuinely ambiguous, architecturally
+  significant, or destructive.
+- Each PR scope: ONE focused layer. Squash-merge. Rebase onto the latest base
+  before opening the PR so the diff shows only the new layer.
+- For every PR: run `npm run typecheck && npm run lint && npm test && npm run
+  build && npm run smoke` locally before pushing; subscribe to PR activity and
+  merge when CI is green.
+
+## Session-end handoff requirement (propagate forward — do not drop)
+
+You must keep going across multiple PRs until you run out of context tokens.
+When tokens get low (or whenever the user explicitly says to stop), produce a
+detailed handoff prompt for the session after you, following the same format as
+the originating prompt:
+
+1. The hard constraints (copy them verbatim).
+2. A "What was shipped last session" section listing every PR you merged with PR
+   number, title, and a one-paragraph summary.
+3. Updated "real vs. roadmap" and branch/PR state.
+4. Updated non-blocked next-steps list (remove what you completed, add what you
+   discovered).
+5. The conventions (copy verbatim).
+6. This "Session-end handoff requirement" section, verbatim, so the chain
+   continues across every future session until the architecture is genuinely
+   done or the user stops it.
+
+Mirror what was done here in this file (`docs/governance/continuation-handoff.md`)
+in your last PR of the session. The goal is that any new session can pick up
+cold with no context loss.

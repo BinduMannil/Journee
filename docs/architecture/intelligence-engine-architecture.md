@@ -1,15 +1,18 @@
 # Intelligence Engine Architecture
 
-_Last updated: 2026-05-26._
+_Last updated: 2026-05-27._
 
 ## Status
 
 - **Shared scoring core + signal model:** ✅ implemented (`src/lib/intelligence`).
 - **Engine scaffolds (destination, events, disruption):** ✅ input→signal mapping implemented & testable.
+- **Travel-data provider contracts (places, hours, prices, links, reviews, events, advisories):** ✅ contracts + source/freshness/confidence model + SEED adapters implemented & tested (`src/lib/providers/travel-data`).
 - **Live data feeds (weather, events, advisories) + persistence + UI surfacing:** 🔜 roadmap.
 
 No live-data or accuracy claims are made for unbuilt feeds. Engines accept
-injected inputs so the logic is exercisable now.
+injected inputs so the logic is exercisable now. The travel-data layer is
+**contract-ready only**: just SEED adapters are wired, every response is labeled
+with its source type (`seed`), and no live vendor is integrated.
 
 ## The pattern
 
@@ -87,6 +90,53 @@ no-hardcoding/auditability policy, not an add-on.
 `confidence` = (expected signal keys present) / (expected keys). A score built
 from partial data is still returned, but flagged as lower confidence rather than
 silently treated as authoritative.
+
+## Travel-data sources (the inputs that populate engine signals)
+
+The engines above map **inputs** to signals; the **travel-data provider layer**
+(`src/lib/providers/travel-data`, see provider-architecture.md) is the seam that
+will eventually produce those inputs from the real world — places, opening
+hours, ticket prices/links, reviews, local events and safety advisories.
+
+Two design points keep this honest and composable:
+
+- **Shared confidence/freshness vocabulary.** Travel-data sources carry
+  `SourceMetadata` with a normalized `confidence` (0..1) and a freshness state
+  (`computeFreshness`/`classifySourceQuality`). This is the same 0..1 confidence
+  the scoring core already speaks, so a source's confidence/quality can later
+  flow straight into an engine's per-signal confidence — a stale or seed source
+  yields a lower-confidence signal rather than being silently treated as
+  authoritative.
+- **Pure bridge, honest by construction.** `travel-data-context.ts` maps
+  travel-data responses to engine input fragments (opening hours → `isOpenNow`;
+  safety advisory level → `advisoryConfidence`; active local events →
+  `festivalIntensity`). A fragment is produced **only** from an `ok` response
+  (optionally only from non-stale data); an unavailable/error/dropped source
+  yields an **empty** fragment, so the engine simply lacks that input — lowering
+  its coverage-based `confidence` rather than fabricating a value. Pure + unit
+  tested.
+- **Contract-ready only, today.** Only SEED adapters exist; no live vendor is
+  wired. The bridge is exercised end-to-end by the seed adapters, not by any
+  live feed — so no fake operational claims are introduced. A live source slots
+  in behind the same contract without touching the bridge or the engines.
+- **Backend assembler (`destination-readiness.ts`).** Composes a destination's
+  Travel Confidence aggregate from the travel-data layer via the bridge:
+  `composeDestinationReadiness(...)` is pure (takes resolved responses);
+  `assembleDestinationReadiness(...)` resolves through the registry first. A
+  sub-engine is included **only** when its source yields a usable fragment, and
+  every source's `provenance` (status / source type / quality / whether it
+  contributed) is returned — so callers can show what was seed vs live vs stale.
+  This is the REAL (seed-fed) server-side counterpart to the gated UI preview
+  (`TravelReadiness`), which uses mock contexts. Never throws: with no providers
+  registered, sources resolve `unavailable` and the aggregate just has zero
+  coverage.
+- **Trip-level assembler (`trip-readiness.ts`).** Composes multiple stops'
+  `DestinationReadiness` into a single trip aggregate via the same scoring core
+  (weights `trip-readiness-v1`, equal-weighted across stops). Confidence is the
+  mean of per-stop confidences, so a confident trip requires confident stops.
+  Returns best/worst stop summaries and flattened, destination-tagged source
+  provenance. Pure composer + an async assembler that walks the registry per
+  stop. Never throws (empty trip → zero-confidence empty aggregate).
 
 ## Roadmap (per the product vision)
 

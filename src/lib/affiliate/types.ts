@@ -10,17 +10,27 @@
  * logic (routing.ts) is pure and operates over an injected catalog, so it is
  * fully testable today even though the data source is not yet wired.
  */
-export type AffiliateCategory =
-  | "flights"
-  | "hotels"
-  | "experiences"
-  | "tours"
-  | "restaurants"
-  | "insurance"
-  | "esim"
-  | "ticketing"
-  | "luxury"
-  | "transportation";
+/**
+ * The canonical affiliate categories. Single source of truth: the
+ * `AffiliateCategory` type is derived from this list, and runtime guards (e.g.
+ * the `/api/affiliate/link` category check) iterate it — so adding a category
+ * here updates both the type and the validation, with no second list to keep in
+ * sync. Same pattern as `KNOWN_FLAGS` in `config/flags.ts`.
+ */
+export const AFFILIATE_CATEGORIES = [
+  "flights",
+  "hotels",
+  "experiences",
+  "tours",
+  "restaurants",
+  "insurance",
+  "esim",
+  "ticketing",
+  "luxury",
+  "transportation",
+] as const;
+
+export type AffiliateCategory = (typeof AFFILIATE_CATEGORIES)[number];
 
 export interface AffiliateProvider {
   readonly id: string;
