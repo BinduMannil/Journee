@@ -85,6 +85,15 @@ applied, and the weighted result — plus `weightsVersion`. Any score can be
 fully reconstructed and audited. This is a hard requirement of the
 no-hardcoding/auditability policy, not an add-on.
 
+`explainScore()` (`intelligence/explain.ts`) is the human-readable view over
+that breakdown: it ranks contributions by their **share of the weighted total**,
+classifies each as boosting/neutral/dragging, surfaces the top driver and the
+weakest signal, and produces a one-line summary. It is exposed at
+**`POST /api/explain`** — send `{ engine, signals[] }` (engine ∈ destination |
+events | disruption | safety | conditions; signals are normalized 0..1 values)
+and receive the `score` plus its `explanation`. The caller supplies the signals;
+weights are the versioned server-side config, so nothing is fabricated.
+
 ## Confidence
 
 `confidence` = (expected signal keys present) / (expected keys). A score built

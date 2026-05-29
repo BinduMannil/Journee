@@ -138,7 +138,8 @@ data first (honestly labeled), live sources and UI later.
   config into a per-trip estimate with confidence.
 - ✅ **Multi-currency normalization** — shipped (seed FX layer over the cost
   anchors, indicative-only, behind a provider-ready accessor).
-- **"Explain my ranking" endpoint** — expose the scoring contribution breakdown.
+- ✅ **"Explain my ranking" endpoint** — shipped (`explainScore` +
+  `POST /api/explain`; ranks contribution shares, top driver vs. weakest signal).
 - ✅ **Itinerary GeoJSON / route export** — shipped (`itineraryToGeoJSON`,
   pure; complements the `.ics` export).
 

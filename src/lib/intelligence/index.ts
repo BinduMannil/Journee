@@ -7,6 +7,12 @@
  */
 export * from "./types";
 export { score } from "./scoring";
+export {
+  explainScore,
+  type ScoreExplanation,
+  type ExplainedContribution,
+  type DriverImpact,
+} from "./explain";
 export { comfortScore, type ComfortInput } from "./comfort";
 export {
   destinationWeights,
