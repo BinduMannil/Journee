@@ -22,6 +22,12 @@ patterns the rest of the platform will build on.
 | Affiliate vertical: catalog → resolver → safe URL → gated CTA | ✅ Built (no hardcoded links) |
 | Affiliate ingestion (click + conversion) + revenue analytics | ✅ Built (server-only writes, time-windowed) |
 | Explainable intelligence scoring core + engines + Travel Confidence | ✅ Core + destination/events/disruption + aggregate (data feeds roadmap) |
+| Sustainability/Eco engine + trip carbon estimator | ✅ Built (pure, explainable; surfaced on `/plan`) |
+| Seasonality model + "in season this month" | ✅ Built (structured `bestMonths`; surfaced on `/discover`) |
+| Similar destinations ("you might also love") | ✅ Built (mood/country/season; on detail pages) |
+| Natural-language discovery (no LLM key needed) | ✅ Built (deterministic parser → Pathfinder; ADR-007) |
+| AI concierge (narrative plans) | ✅ Built (key-gated LLM + deterministic fallback; ADR-007) |
+| Packing planner + currency converter | ✅ Built (pure engine / seed FX provider; on `/plan`) |
 | Experiments: deterministic A/B assignment | ✅ Built |
 | Structured logging + failover instrumentation + `/api/health` | ✅ Built |
 | App resilience (loading/error/404) + SEO (robots/sitemap/OG) | ✅ Built |
@@ -39,7 +45,7 @@ npm run dev      # http://localhost:3000
 npm run build    # production build
 npm run typecheck
 npm run lint
-npm test         # 101 unit tests (node:test)
+npm test         # 302 unit tests (node:test)
 ```
 
 ## Live surface (runtime-verified)
@@ -47,12 +53,13 @@ npm test         # 101 unit tests (node:test)
 | Route | What |
 | --- | --- |
 | `/` | Cinematic landing; mood filter + search over destinations |
-| `/destinations/[id]` | Editorial detail page; live light phase + explainable atmosphere score (unknown id → 404) |
-| `/plan` | Trip planner — fatigue-aware day-by-day itinerary (dynamic-itinerary engine) |
-| `/discover` | Vibe-based discovery ranking (Pathfinder engine, explainable) |
+| `/destinations/[id]` | Editorial detail page; live light phase + explainable atmosphere score + "you might also love" (unknown id → 404) |
+| `/plan` | Trip planner — fatigue-aware itinerary, trip carbon estimate, `.ics` export, AI concierge, packing planner, currency converter |
+| `/discover` | Vibe-based discovery (Pathfinder) + natural-language search ("calm and sunny, not too lively") + "in season this month" |
 | `/saved` | Saved collection (localStorage, no account needed) |
 | `/api/destinations` | Registry-resolved catalog (JSON) |
-| `/api/pathfinder` | Mood-based discovery ranking (`?vibe=&avoid=`) |
+| `/api/pathfinder` | Discovery ranking (`?vibe=&avoid=` or natural-language `?q=`) |
+| `/api/plan/ai` | AI narrative planner (503 when no LLM key → client uses deterministic fallback) |
 | `/api/health`, `/api/metrics` | Liveness/config + counter metrics |
 | `/api/admin/status` | Control-plane snapshot (secure-by-default) |
 | `/api/affiliate/click`, `/conversion` | Server-only ingestion (400/503/202) |
@@ -85,5 +92,6 @@ docs/                  # Architecture, decisions (ADRs), governance, security
 Start at [`docs/README.md`](docs/README.md). Key entry points:
 
 - Architecture overview → [`docs/architecture/system-architecture.md`](docs/architecture/system-architecture.md)
+- Feature roadmap (phased, concrete plans) → [`docs/roadmap/feature-roadmap.md`](docs/roadmap/feature-roadmap.md)
 - Why the big decisions → [`docs/decisions/`](docs/decisions)
 - How we work (branches, PRs) → [`docs/governance/branch-and-pr-governance.md`](docs/governance/branch-and-pr-governance.md)
