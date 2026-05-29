@@ -20,9 +20,9 @@ routes verified via `npm start` + curl, and a 19+ check e2e smoke
 
 | Ref | State |
 | --- | --- |
-| `main` | Baseline = foundation commit. |
-| `claude/quirky-keller-2S10c` | Active feature branch; all increments below. |
-| **PR #1** (`claude/quirky-keller-2S10c` → `main`) | **Open**, awaiting human review/merge. CI runs install→typecheck→lint→test→build + dependency audit. |
+| `main` | Updated this session via PR #1 after a clean full-codebase audit (was: baseline foundation commit). |
+| `claude/quirky-keller-2S10c` | Active feature/integration branch; all increments below + session-4 PRs #26–#28. |
+| **PR #1** (`claude/quirky-keller-2S10c` → `main`) | **Merged** this session (post-audit, CI green). |
 
 ### Workstreams completed on the feature branch (all merge-ready)
 
@@ -132,6 +132,63 @@ All checks green per PR: typecheck, lint, test, build, smoke. Every PR audit:
 no UI files, no Supabase work, no hosted migrations, no LLM-planning files
 changed, no secrets, no fake live-data claims.
 
+## Session 4 (this session) — JSON-schema export, full-codebase audit, merge to main
+
+Continued on `claude/quirky-keller-2S10c`. Picked the next non-blocked item, then
+ran a full pre-merge audit at the user's request and merged the clean branch to
+`main`. **No UI, no Supabase, no LLM-planning change, no secrets, no fake
+live-data.** Test count **258 → 260**.
+
+PRs merged this session (squash, CI `verify` green each):
+
+- **#26 — JSON-schema export for the travel-data contracts.** New
+  `travel-data/schemas.ts` (zod **v4** schemas, via `zod/v4` shipped inside
+  `zod@3.25`) mirroring every contract shape — `SourceMetadata`, all domain
+  payloads, per-kind query payloads, and the fallback-safe discriminated
+  response. Compile-time `Mirrors<>` assertions keep the schemas in lock-step
+  with `contracts.ts` (`readonly` normalized away); drift breaks `typecheck`.
+  New `travel-data/json-schema.ts` exports pure JSON Schema documents
+  (`travelDataJsonSchema(name,{target})` / `travelDataJsonSchemas()`,
+  draft-2020-12 or draft-7) for OpenAPI / client-SDK / runtime validation.
+  Per-kind query schemas (`travelDataQuerySchemasByKind`) ready a request
+  boundary to `safeParse`. 8 new tests. Docs: provider-architecture.md.
+- **#27 — Fix two latent travel-data correctness bugs (found by the audit).**
+  (HIGH) `isOpenNow` overnight spans (e.g. 22:00→02:00) were attributed to
+  *today's* record; the post-midnight tail belongs to the *previous* day's span
+  — only correct under uniform weekday hours (which the seed data has). Split
+  into today-evening + yesterday-tail (`recordCovers`). (MEDIUM) cache
+  `entryExpiry` granted a fresh `defaultTtlMs` to an `ok` source whose
+  `expiresAt` was already past (serving stale-as-fresh); now the source's own
+  past window is respected (entry stored already-expired, dropped on next read).
+  Both were latent under seed data; both break once a live provider is wired. 2
+  regression tests.
+- **#28 — Affiliate categories single source of truth (found by the audit).**
+  `/api/affiliate/link`'s `CATEGORIES` Set duplicated the `AffiliateCategory`
+  union, so adding a category to the type left the runtime guard silently stale.
+  Derived the type from a canonical `AFFILIATE_CATEGORIES` array and built the
+  guard from it (same pattern as `KNOWN_FLAGS`). No behavior change.
+
+### Pre-merge full-codebase audit (3 parallel read-only agents)
+
+Run before merging to `main`. **Verdict: safe to merge** after PRs #27/#28.
+
+- **Security & honesty — clean.** No committed secrets (all 222 tracked files
+  scanned); `env.ts` is the single env boundary; admin endpoints are
+  secure-by-default (503 unset → 401 bad token → work); inputs `safeParse`d;
+  affiliate URL renderer rejects non-http(s) schemes; JSON-LD is escaped; CSP has
+  no `unsafe-eval` and enforces structural directives; SourceMetadata makes seed
+  data structurally unpresentable as live. Two LOW *documented* roadmap items
+  only: phased CSP (script/style still Report-Only), in-memory quota store.
+- **Correctness — 2 bugs found, both fixed (#27).** Rest of the engine/scoring/
+  cache/freshness/assembler/itinerary/solar/moon/geo code verified correct
+  (pure, NaN/divide-by-zero guarded, domain-clamped).
+- **Code quality / provenance — clean; NO Codex/foreign-code drift detected.**
+  Uniform naming, doc-voice, error handling, hash idiom throughout. One medium
+  fixed (#28). Remaining are optional LOW hygiene (see next-steps).
+
+`main` was updated by merging PR #1 (`claude/quirky-keller-2S10c` → `main`) once
+the audit was clean and CI green.
+
 ### Honesty notes for this session (must stay true)
 
 - **Supabase remains blocked** (hosted) — no hosted DB migrations were applied;
@@ -187,7 +244,30 @@ content stay Report-Only; smoke asserts the CSP headers; `/plan` shows the
 fatigue budget + a per-day load meter; `/saved` gained inline remove + a count;
 `/api/csp-report` unit-tested.
 
-**Remaining non-blocked work is genuinely thin** — what's left is blocked:
+Done (session 4 — this branch): JSON-schema export for the travel-data contracts
+(#26); two latent travel-data correctness bug fixes from the audit (#27);
+affiliate-category single-source-of-truth (#28); full pre-merge audit; merged the
+clean branch to `main` (PR #1).
+
+**Non-blocked next steps (session-4 audit-refreshed; pick in order):**
+
+1. **Cache stats / clear admin endpoint** — `/api/admin/cache` (gated): GET shows
+   `size()` + the `travel_data_cache_*` counters; DELETE clears
+   `defaultTravelDataCache`. Operational tooling.
+2. **Per-kind latency histograms** — extend `travel_data_resolve_duration_ms_total`
+   with bucketed counts (`_bucket{le=50,100,500,…}`) for honest P50/P95.
+3. **Engine-bridge expansion** — feed the safety engine from review highlights
+   (crowd-related text → `crowd_safety` signal), or the conditions engine from
+   advisory/events. Pure, testable.
+4. **Per-destination editorial-confidence signal** — combine seed-readiness with
+   editorial coverage % into a per-destination "data confidence" under admin
+   readiness.
+5. **`resolveTravelDataMany([{kind,query},…])`** — heterogeneous fan-out
+   returning an aligned responses array (shares one cache).
+6. **Optional LOW hygiene backlog** (see section below) — only if touching those
+   files anyway.
+
+**Blocked (unchanged) — what's left needs external access:**
 - **Hosted Supabase** (staging/prod) — real secrets.
 - **Live weather feed** — Open-Meteo egress still 403 from the allowlist
   (re-verified); `WeatherProvider` + `comfortScore` ready to receive it.
@@ -226,12 +306,46 @@ The seams are now **config-only to enable** — see
 - Every architecture-changing PR updates the relevant `docs/` file in the same
   PR; add an ADR for significant decisions; append to the AI audit trail for
   autonomous changes.
+- **ONE focused layer per PR**; squash-merge; rebase onto the latest base before
+  opening so the diff shows only the new layer. Run `typecheck && lint && test
+  && build && smoke` locally before pushing; merge when CI `verify` is green.
 
-## Conventions to keep
+## Optional LOW hygiene backlog (from the session-4 audit — non-blocking)
 
-- New external integrations go **behind a provider adapter**, gated by
-  `isAvailable()` so fallback holds.
-- No hardcoded copy/links/thresholds — use `config`/`content`/versioned weights.
-- Every architecture-changing PR updates the relevant `docs/` file in the same
-  PR; add an ADR for significant decisions; append to the AI audit trail for
-  autonomous changes.
+None affect correctness/security/honesty; pre-existing, deferred to avoid churn
+right before the main merge:
+
+- `getDestinationComfort` / `ComfortResult` (`weather/index.ts`) — orphaned
+  forward-looking wrapper (no caller); wire into a weather signal or remove.
+- `isAiPlanningEnabled` (`llm/index.ts`) — exported "for status surfaces" but
+  unused; wire into `/api/admin/status` or remove.
+- `travelDataStatusSchema` (`travel-data/schemas.ts`) — public schema export not
+  yet referenced (intentional API surface).
+- Affiliate scaffold domain types (`affiliate/types.ts`) overlap the snake_case
+  row types in `events.ts` — unify when the DB write path lands.
+- Comfort-band tuning constants (`comfort.ts`) and `max_tokens` (`anthropic.ts`)
+  are inline; consider moving to config.
+- FNV-1a hash duplicated in `intelligence/mock.ts` and `experiments/assignment.ts`
+  (different return contracts) — extract a shared helper if touched again.
+
+## Session-end handoff requirement (propagate forward — do not drop)
+
+You must keep going across multiple PRs until you run out of context tokens.
+When tokens get low (or whenever the user explicitly says to stop), produce a
+detailed handoff prompt for the session after you, following the same format as
+the originating prompt:
+
+1. The hard constraints (copy them verbatim).
+2. A "What was shipped last session" section listing every PR you merged with PR
+   number, title, and a one-paragraph summary.
+3. Updated "real vs. roadmap" and branch/PR state.
+4. Updated non-blocked next-steps list (remove what you completed, add what you
+   discovered).
+5. The conventions (copy verbatim).
+6. This "Session-end handoff requirement" section, verbatim, so the chain
+   continues across every future session until the architecture is genuinely
+   done or the user stops it.
+
+Mirror what was done here in this file (`docs/governance/continuation-handoff.md`)
+in your last PR of the session. The goal is that any new session can pick up
+cold with no context loss.
