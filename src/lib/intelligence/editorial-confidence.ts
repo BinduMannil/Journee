@@ -37,6 +37,9 @@ import { getBestTimeProfile } from "./best-time";
 import { getHealthcareProfile } from "./healthcare";
 import { getNeighborhoods } from "./neighborhoods";
 import { getDayTrips } from "./day-trips";
+import { getTransportModes } from "./transport-modes";
+import { getTouristPrices } from "./tourist-prices";
+import { getAttractions } from "./attractions";
 
 /** The seed features whose coverage is tallied. Add a row when a feature ships. */
 const FEATURE_CHECKS: Readonly<Record<string, (id: string) => unknown>> = {
@@ -67,6 +70,9 @@ const FEATURE_CHECKS: Readonly<Record<string, (id: string) => unknown>> = {
   healthcare: getHealthcareProfile,
   neighborhoods: getNeighborhoods,
   dayTrips: getDayTrips,
+  transportModes: getTransportModes,
+  touristPrices: getTouristPrices,
+  attractions: getAttractions,
 };
 
 /** The full set of feature keys coverage is measured against (sorted). */

@@ -147,6 +147,36 @@ export {
   type DayTripType,
 } from "./day-trips";
 export {
+  getTransportModes,
+  isModeAvailable,
+  modesByAvailability,
+  TRANSPORT_MODES_NOTE,
+  type TransportModesProfile,
+  type TransportOption,
+  type TransportMode,
+  type Availability,
+} from "./transport-modes";
+export {
+  getTouristPrices,
+  pricesByCategory,
+  fairPriceRange,
+  TOURIST_PRICES_NOTE,
+  type TouristPricesProfile,
+  type TouristItemPrice,
+  type ItemCategory,
+} from "./tourist-prices";
+export {
+  getAttractions,
+  attractionsByBestTime,
+  freeAttractions,
+  ATTRACTIONS_DATA_NOTE,
+  type AttractionsProfile,
+  type Attraction,
+  type CostBand,
+  type TimeOfDay,
+  type Busyness,
+} from "./attractions";
+export {
   supportedCurrencies,
   fxRate,
   convertUsd,
