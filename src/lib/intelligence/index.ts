@@ -169,12 +169,15 @@ export {
   getAttractions,
   attractionsByBestTime,
   freeAttractions,
+  sitesForExperience,
+  experiencesAvailable,
   ATTRACTIONS_DATA_NOTE,
   type AttractionsProfile,
   type Attraction,
   type CostBand,
   type TimeOfDay,
   type Busyness,
+  type Experience,
 } from "./attractions";
 export {
   getIntercityOptions,

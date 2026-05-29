@@ -12,6 +12,7 @@ import {
   attractionsProfiles,
   type Attraction,
   type AttractionsProfile,
+  type Experience,
   type TimeOfDay,
 } from "@/content/attractions";
 
@@ -22,6 +23,7 @@ export type {
   CostBand,
   TimeOfDay,
   Busyness,
+  Experience,
 } from "@/content/attractions";
 
 /** The attractions profile for a destination, or null when none is catalogued. */
@@ -48,4 +50,30 @@ export function freeAttractions(destinationId: string): readonly Attraction[] {
       (a) => a.costBand === "free",
     ) ?? []
   );
+}
+
+/**
+ * Best sites for a chosen experience: attractions tagged with the given
+ * experience, ordered by how prominently they match (an exact-experience match
+ * keeps catalogue order; ties broken by name). [] for an unknown destination or
+ * a destination with no matching sites.
+ */
+export function sitesForExperience(
+  destinationId: string,
+  experience: Experience,
+): readonly Attraction[] {
+  return (
+    getAttractions(destinationId)?.attractions.filter((a) =>
+      a.experienceTags.includes(experience),
+    ) ?? []
+  );
+}
+
+/** The set of experiences offered across a destination's sites ([] for unknown). */
+export function experiencesAvailable(destinationId: string): readonly Experience[] {
+  const profile = getAttractions(destinationId);
+  if (profile === null) return [];
+  const seen = new Set<Experience>();
+  for (const a of profile.attractions) for (const e of a.experienceTags) seen.add(e);
+  return [...seen].sort();
 }

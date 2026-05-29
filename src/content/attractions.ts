@@ -24,6 +24,21 @@ export type TimeOfDay =
 
 export type Busyness = "quiet" | "moderate" | "busy" | "very_busy";
 
+/** The kind of experience a site offers, for experience-based recommendations. */
+export type Experience =
+  | "scenic"
+  | "historic"
+  | "cultural"
+  | "nature"
+  | "adventure"
+  | "relaxing"
+  | "romantic"
+  | "foodie"
+  | "nightlife"
+  | "family"
+  | "spiritual"
+  | "photography";
+
 export interface Attraction {
   readonly name: string;
   readonly costBand: CostBand;
@@ -37,6 +52,8 @@ export interface Attraction {
   readonly typicalHours: string;
   /** How to book — plain guidance, never a URL or affiliate link. */
   readonly bookingNote: string;
+  /** Experiences this site offers, for "best sites for X" recommendations. */
+  readonly experienceTags: readonly Experience[];
 }
 
 export interface AttractionsProfile {
@@ -68,6 +85,7 @@ export const attractionsProfiles: readonly AttractionsProfile[] = [
         typicalHours: "Open 24 hours (shrine grounds always accessible)",
         bookingNote:
           "No ticket or booking needed — entry is free and open at all hours; simply walk in.",
+        experienceTags: ["spiritual", "scenic", "photography", "nature"],
       },
       {
         name: "Kinkaku-ji (Golden Pavilion)",
@@ -80,6 +98,7 @@ export const attractionsProfiles: readonly AttractionsProfile[] = [
         typicalHours: "09:00–17:00 daily",
         bookingNote:
           "Buy a paper admission ticket at the gate on arrival; no advance booking is offered.",
+        experienceTags: ["historic", "scenic", "cultural", "photography"],
       },
       {
         name: "Arashiyama Bamboo Grove",
@@ -91,6 +110,7 @@ export const attractionsProfiles: readonly AttractionsProfile[] = [
         typicalHours: "Open 24 hours (public path)",
         bookingNote:
           "Free public walkway — no ticket required; go early as it cannot be reserved.",
+        experienceTags: ["nature", "scenic", "photography", "relaxing"],
       },
     ],
   },
@@ -109,6 +129,7 @@ export const attractionsProfiles: readonly AttractionsProfile[] = [
         typicalHours: "Open access; busiest in the hour before sunset",
         bookingNote:
           "No booking for the public viewpoint; arrive early for space, or reserve a table at a view restaurant directly with the venue.",
+        experienceTags: ["romantic", "scenic", "photography"],
       },
       {
         name: "Akrotiri Archaeological Site",
@@ -121,6 +142,7 @@ export const attractionsProfiles: readonly AttractionsProfile[] = [
         typicalHours: "08:00–20:00 in summer (shorter in winter)",
         bookingNote:
           "Buy at the entrance, or skip the queue with a timed e-ticket from the official Greek heritage ticketing system.",
+        experienceTags: ["historic", "cultural", "family"],
       },
       {
         name: "Ancient Thera",
@@ -133,6 +155,7 @@ export const attractionsProfiles: readonly AttractionsProfile[] = [
         typicalHours: "08:00–15:00, typically closed Mondays",
         bookingNote:
           "Pay at the gate on arrival; reaching the site needs a steep hike, taxi or shuttle arranged locally.",
+        experienceTags: ["historic", "scenic", "adventure"],
       },
     ],
   },
@@ -152,6 +175,7 @@ export const attractionsProfiles: readonly AttractionsProfile[] = [
         typicalHours: "08:00–18:00 daily (last entry ~17:30)",
         bookingNote:
           "Reserve a timed-entry ticket online via the official garden site — slots sell out in peak season; some same-day tickets are sold at the gate.",
+        experienceTags: ["relaxing", "scenic", "photography", "cultural"],
       },
       {
         name: "Bahia Palace",
@@ -164,6 +188,7 @@ export const attractionsProfiles: readonly AttractionsProfile[] = [
         typicalHours: "09:00–17:00 daily",
         bookingNote:
           "Buy a ticket at the entrance on the day; advance booking is not generally required.",
+        experienceTags: ["historic", "cultural", "photography"],
       },
       {
         name: "Jemaa el-Fnaa",
@@ -175,6 +200,7 @@ export const attractionsProfiles: readonly AttractionsProfile[] = [
         typicalHours: "Open square; liveliest from early evening until late",
         bookingNote:
           "No entry fee or booking — wander in; agree any prices with stalls or performers before engaging.",
+        experienceTags: ["foodie", "nightlife", "cultural"],
       },
     ],
   },
@@ -194,6 +220,7 @@ export const attractionsProfiles: readonly AttractionsProfile[] = [
         typicalHours: "08:00–18:00 (Los Glaciares National Park access hours)",
         bookingNote:
           "Pay the national park entrance fee at the gate; boat trips and ice-trek add-ons should be booked ahead with licensed operators.",
+        experienceTags: ["nature", "scenic", "adventure", "photography"],
       },
       {
         name: "Laguna de los Tres Trail",
@@ -205,6 +232,7 @@ export const attractionsProfiles: readonly AttractionsProfile[] = [
         typicalHours: "Daylight hours; allow a full day for the round trip",
         bookingNote:
           "Free public trail with no ticket; no booking needed, but check trail and weather conditions at the local ranger office first.",
+        experienceTags: ["adventure", "nature", "scenic"],
       },
       {
         name: "Torres Base Viewpoint",
@@ -217,6 +245,7 @@ export const attractionsProfiles: readonly AttractionsProfile[] = [
         typicalHours: "Daylight hike; full-day round trip from the trailhead",
         bookingNote:
           "Pay the Torres del Paine park entrance fee — buy it online in advance via the official park system, as on-site sales are limited.",
+        experienceTags: ["adventure", "nature", "scenic", "photography"],
       },
     ],
   },
