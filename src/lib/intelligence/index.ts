@@ -139,6 +139,14 @@ export {
   type StayCostTier,
 } from "./neighborhoods";
 export {
+  getDayTrips,
+  dayTripsByType,
+  DAY_TRIPS_DATA_NOTE,
+  type DayTripsProfile,
+  type DayTrip,
+  type DayTripType,
+} from "./day-trips";
+export {
   supportedCurrencies,
   fxRate,
   convertUsd,

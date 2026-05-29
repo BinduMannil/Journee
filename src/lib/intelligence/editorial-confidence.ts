@@ -36,6 +36,7 @@ import { getPackingProfile } from "./packing";
 import { getBestTimeProfile } from "./best-time";
 import { getHealthcareProfile } from "./healthcare";
 import { getNeighborhoods } from "./neighborhoods";
+import { getDayTrips } from "./day-trips";
 
 /** The seed features whose coverage is tallied. Add a row when a feature ships. */
 const FEATURE_CHECKS: Readonly<Record<string, (id: string) => unknown>> = {
@@ -65,6 +66,7 @@ const FEATURE_CHECKS: Readonly<Record<string, (id: string) => unknown>> = {
   bestTime: getBestTimeProfile,
   healthcare: getHealthcareProfile,
   neighborhoods: getNeighborhoods,
+  dayTrips: getDayTrips,
 };
 
 /** The full set of feature keys coverage is measured against (sorted). */
