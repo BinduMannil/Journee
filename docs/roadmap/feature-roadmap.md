@@ -63,7 +63,7 @@ mocked-as-done.
 - **Acceptance:** estimate updates as stops change; clearly labelled as an
   approximation; comparison vs flying baseline shown.
 
-### 0.3 Packing list generator `[new]`
+### 0.3 Packing list generator `[new]` ✅ implemented
 - **Intent:** Generate a packing checklist from destination comfort signals +
   trip pacing/activities.
 - **Seam:** Pure `intelligence/packing.ts` mapping comfort band (temp/precip/AQI
@@ -71,12 +71,11 @@ mocked-as-done.
 - **Acceptance:** deterministic output per input; unit-tested bands (cold/hot/
   wet/sun); empty input yields the universal baseline only.
 
-### 0.4 Itinerary calendar (.ics) + share export `[scaffold]`
-- **Intent:** Export a built itinerary to a calendar file / shareable link.
-- **Seam:** Extend `intelligence/itinerary-export.ts` (already exists) with an
-  RFC-5545 `.ics` serializer (pure string builder, no deps).
-- **Acceptance:** valid VCALENDAR/VEVENT per day; round-trip unit test parses
-  back the day count; escaping of text fields tested.
+### 0.4 Itinerary calendar (.ics) export ✅ already in repo
+- **State:** `intelligence/itinerary-export.ts` already serializes an itinerary
+  to a standards-compliant RFC-5545 VCALENDAR (one all-day VEVENT per day, text
+  escaping, stable UIDs). Remaining work is only the user-facing download
+  button + an optional public share link (a UI/Phase-1 task, not engine work).
 
 ### 0.5 Faceted filtering + "similar destinations" `[scaffold]`
 - **Intent:** Filter the catalog (mood, country, best-time) and show "if you
@@ -218,8 +217,8 @@ mocked-as-done.
 ## Implementation order (live tracking)
 
 - [x] 0.1 Sustainability engine + carbon estimator (+ tests)
-- [ ] 0.3 Packing list generator
-- [ ] 0.4 .ics itinerary export
+- [x] 0.3 Packing list generator (+ tests)
+- [x] 0.4 .ics itinerary export (already in repo; UI download pending)
 - [ ] 0.2 Trip carbon surfacing on `/plan`
 - [ ] 0.5 Faceted filters + similar destinations
 - [ ] 0.6 Seasonality month model

@@ -81,6 +81,14 @@ export {
   type SustainabilityContext,
 } from "./engines/sustainability";
 export {
+  generatePackingList,
+  tempBand,
+  type Activity,
+  type PackingInput,
+  type PackingCategory,
+  type TempBand,
+} from "./packing";
+export {
   estimateLeg,
   estimateTripFootprint,
   estimateRouteFootprint,
