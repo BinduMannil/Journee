@@ -130,6 +130,13 @@ Two design points keep this honest and composable:
   (`TravelReadiness`), which uses mock contexts. Never throws: with no providers
   registered, sources resolve `unavailable` and the aggregate just has zero
   coverage.
+- **Trip-level assembler (`trip-readiness.ts`).** Composes multiple stops'
+  `DestinationReadiness` into a single trip aggregate via the same scoring core
+  (weights `trip-readiness-v1`, equal-weighted across stops). Confidence is the
+  mean of per-stop confidences, so a confident trip requires confident stops.
+  Returns best/worst stop summaries and flattened, destination-tagged source
+  provenance. Pure composer + an async assembler that walks the registry per
+  stop. Never throws (empty trip → zero-confidence empty aggregate).
 
 ## Roadmap (per the product vision)
 
