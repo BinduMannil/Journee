@@ -8,6 +8,12 @@
 export * from "./types";
 export { score } from "./scoring";
 export {
+  editorialCoverage,
+  editorialConfidence,
+  EDITORIAL_FEATURE_KEYS,
+  type EditorialCoverage,
+} from "./editorial-confidence";
+export {
   explainScore,
   type ScoreExplanation,
   type ExplainedContribution,

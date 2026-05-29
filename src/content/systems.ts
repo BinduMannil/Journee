@@ -48,6 +48,7 @@ export const platformSystems: readonly PlatformSystem[] = [
   { name: "Packing Guidance", status: "scaffold", note: "Year-round + seasonal packing items with priority and reason, climate/customs-aware; editorial, pack for the live forecast." },
   { name: "Best Time to Visit", status: "scaffold", note: "Per-month visit rating (weather/crowds/prices) with reasons; editorial seasonality, verify live forecast + events." },
   { name: "Affiliate & Monetization", status: "live", note: "Data-driven routing, A/B, ingestion, analytics." },
+  { name: "Editorial Confidence", status: "live", note: "Per-destination meta-signal: how complete our seed coverage is (present/missing features + 0..1 coverage). Honest data-completeness, not a destination claim." },
   { name: "Travel Confidence", status: "scaffold", note: "Aggregates engine scores; sample inputs." },
   { name: "Event & Cultural", status: "scaffold", note: "Engine + mapping; live calendars roadmap." },
   { name: "Political & Disruption", status: "scaffold", note: "Engine + mapping; advisories roadmap." },

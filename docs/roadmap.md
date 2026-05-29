@@ -116,7 +116,9 @@ Mirrors `continuation-handoff.md` (kept in sync each session):
 3. ✅ Carbon-footprint estimate (`intelligence/carbon.ts`) — **done**.
 4. Per-kind latency histograms (`_duration_ms_bucket{le=…}`).
 5. Engine-bridge expansion (reviews → safety; advisory/events → conditions).
-6. Per-destination editorial-confidence signal.
+6. ✅ Per-destination editorial-confidence signal — **done**
+   (`editorialCoverage` / `editorialConfidence`: present/missing seed features +
+   0..1 coverage, an honest data-completeness meta-signal).
 
 ## Requested / candidate features (queued — built in order, seed-backed first)
 
