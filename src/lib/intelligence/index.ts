@@ -160,6 +160,15 @@ export {
   type LabeledNumber,
 } from "./essentials";
 export {
+  getHealthcareProfile,
+  facilitiesByKind,
+  hasHospital,
+  HEALTHCARE_DATA_NOTE,
+  type HealthcareProfile,
+  type MedicalFacility,
+  type FacilityKind,
+} from "./healthcare";
+export {
   getShoppingProfile,
   shoppingTips,
   SHOPPING_DATA_NOTE,
