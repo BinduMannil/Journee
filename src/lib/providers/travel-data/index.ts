@@ -15,6 +15,8 @@ export * from "./source";
 export * from "./freshness";
 export * from "./contracts";
 export * from "./registry";
+export * from "./schemas";
+export * from "./json-schema";
 export {
   cachedResolveTravelData,
   createTravelDataCache,

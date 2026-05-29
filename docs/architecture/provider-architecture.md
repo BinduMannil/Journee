@@ -140,6 +140,29 @@ under `/api/admin/readiness`; assemblers accept an injected cache.
 stale when `dropStale: true`) to `unavailable` with a clear reason. Use when a
 caller cannot tolerate weak data but still wants the fallback-safe shape.
 
+### Runtime schemas & JSON-Schema export (`schemas.ts`, `json-schema.ts`)
+
+`contracts.ts` is the compile-time source of truth. `schemas.ts` mirrors those
+shapes as zod schemas so the same contracts can be **validated at runtime** and
+**exported as JSON Schema**. The two are kept in lock-step by compile-time
+`Mirrors<>` assertions: if a contract interface and its schema drift (a
+renamed/added/removed/retyped field on either side), `npm run typecheck` fails.
+`readonly` is normalized away in the assertion because it is invisible in JSON.
+
+- **Request validation.** Each travel-data kind has a query schema, exposed as
+  `travelDataQuerySchemasByKind` plus per-kind exports
+  (`placesQuerySchema`, …). Use `schema.safeParse(input)` at a request boundary
+  (e.g. an admin endpoint) to reject malformed queries before resolution.
+- **JSON Schema.** `travelDataJsonSchema(name, { target })` exports one named
+  contract; `travelDataJsonSchemas()` exports the whole map (keyed by contract
+  name) for an OpenAPI `components.schemas` block or a client-SDK generator.
+  `target` is `"draft-2020-12"` (default) or `"draft-7"`. Output is pure,
+  side-effect-free, and JSON-serializable.
+
+These use zod's v4 API (`zod/v4`, shipped inside the installed `zod@3.25`
+package) because `z.toJSONSchema` lives there; the rest of the app uses the
+classic `zod` entrypoint and both share one install.
+
 ### Adding a LIVE travel-data adapter (worked example)
 
 Live adapters slot in behind the same contract — no changes at call sites:
