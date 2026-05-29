@@ -56,6 +56,15 @@ export {
   type CulinaryFlagKind,
 } from "./culinary";
 export {
+  getLocalEssentials,
+  emergencyNumberList,
+  ESSENTIALS_DATA_NOTE,
+  type LocalEssentials,
+  type EmergencyNumbers,
+  type KeyPhrase,
+  type LabeledNumber,
+} from "./essentials";
+export {
   estimateTripCarbon,
   inferTravelMode,
   carbonModelV1,
