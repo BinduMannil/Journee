@@ -451,6 +451,12 @@ export {
   type RouteFeatureCollection,
 } from "./itinerary-geojson";
 export {
+  planSmartDay,
+  type SmartDayPlan,
+  type PlannedStop,
+  type DayPlanOptions,
+} from "./day-planner";
+export {
   destinationEngine,
   DESTINATION_SIGNAL_KEYS,
   type DestinationContext,
