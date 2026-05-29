@@ -210,6 +210,46 @@ export {
   type CarbonOptions,
 } from "./carbon";
 export {
+  getUvProtectionProfile,
+  protectionFor,
+  isHighUv,
+  UV_PROTECTION_NOTE,
+  type UvProtectionProfile,
+  type ProtectionCustom,
+  type ProtectionElement,
+  type UvBand,
+} from "./uv-protection";
+export {
+  getDressCode,
+  dressGuidanceFor,
+  venuesNeedingModesty,
+  DRESS_CODE_NOTE,
+  type DressCodeProfile,
+  type DressGuidance,
+  type VenueKind,
+  type Strictness,
+} from "./dress-code";
+export {
+  getPhotographyProfile,
+  photoRuleFor,
+  prohibitedSubjects,
+  PHOTOGRAPHY_DATA_NOTE,
+  type PhotographyProfile,
+  type PhotoRule,
+  type PhotoRuleKind,
+  type Permission,
+} from "./photography";
+export {
+  getTransitHowTo,
+  transitOptionFor,
+  acceptsContactless,
+  TRANSIT_HOWTO_NOTE,
+  type TransitHowToProfile,
+  type TransitOption,
+  type TransitMode,
+  type FarePayment,
+} from "./transit-howto";
+export {
   buildItinerary,
   type Itinerary,
   type ItineraryItem,
