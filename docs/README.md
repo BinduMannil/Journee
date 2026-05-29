@@ -7,6 +7,7 @@ This is the entry point for engineering documentation. It is deliberately
 ## Map
 
 - [`roadmap.md`](roadmap.md) — **feature & status register**: what's built, scaffolded, inert, blocked, or not started, and what each needs to advance. Start here for "what's left to build".
+- [`ui-backlog.md`](ui-backlog.md) — **UI backlog**: the screens to build once the information architecture is complete (UI is deferred this phase).
 - **architecture/** — how the system is structured.
   - [`system-architecture.md`](architecture/system-architecture.md) — the overview; read this first.
   - [`provider-architecture.md`](architecture/provider-architecture.md) — the provider-agnostic adapter pattern.

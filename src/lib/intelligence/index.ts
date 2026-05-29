@@ -71,6 +71,15 @@ export {
   type TouristEase,
 } from "./city-vibe";
 export {
+  getFestivals,
+  festivalsInMonth,
+  joinableFestivals,
+  FESTIVALS_DATA_NOTE,
+  type FestivalsProfile,
+  type Festival,
+  type FestivalKind,
+} from "./festivals";
+export {
   getLocalEssentials,
   emergencyNumberList,
   ESSENTIALS_DATA_NOTE,

@@ -19,6 +19,7 @@ export const platformSystems: readonly PlatformSystem[] = [
   { name: "Food & Drink Customs", status: "scaffold", note: "Editorial dietary/alcohol flags + signature drink per destination; seed data, verify locally." },
   { name: "Local Gems (Eats & Drinks)", status: "scaffold", note: "Curated standout spots with what to order + why; editorial picks, verify before going." },
   { name: "City Vibe & Friendliness", status: "scaffold", note: "Local friendliness, vibe tags, tourist-ease, English-spoken; editorial generalization, not a verdict." },
+  { name: "Festivals & Holidays", status: "scaffold", note: "Notable festivals/holidays with significance, what-to-expect, can-visitors-join; typical months, seed data." },
   { name: "Know-Before-You-Go Essentials", status: "scaffold", note: "Emergency numbers, healthcare note, courtesy phrases, etiquette do's/don'ts; seed data, verify on arrival." },
   { name: "Shopping & Essentials", status: "scaffold", note: "Malls, markets/souks, online options, fuel networks + EV note, payment norms; seed data." },
   { name: "Local Chains", status: "scaffold", note: "Recognizable cinema/coffee/pharmacy/supermarket/fast-food/hospital chains per destination; seed data." },

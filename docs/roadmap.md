@@ -37,6 +37,7 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | Food & Drink Customs | ✅ (seed) | Editorial per-destination profile (popular dishes, signature drink, pork/beef prevalence, veg-friendliness, alcohol-in-supermarkets, public-drinking) + derived honest flags; `CULINARY_DATA_NOTE` disclaimer | Live/expanded coverage; UI surfacing |
 | Local Gems (Eats & Drinks) | ✅ (seed) | Curated standout eats/drinks per destination with area, what-to-order, and why; `getLocalGems` / `gemsByKind`; `GEMS_DATA_NOTE` | User/UGC picks (via ratings core + auth), expanded coverage, UI |
 | City Vibe & Friendliness | ✅ (seed) | Per-destination friendliness (0..5), vibe tags, tourist-ease, English-spoken, summary + `expectLanguageBarrier`; `CITY_VIBE_NOTE` | Fold into City Energy engine as a live signal; UI |
+| Festivals & Holidays | ✅ (seed) | Notable festivals/holidays per destination with significance, what-to-expect, and whether visitors can join; `festivalsInMonth` / `joinableFestivals`; typical months; `FESTIVALS_DATA_NOTE` | Live calendar + exact dates; tie to events engine; UI |
 | Know-Before-You-Go Essentials | ✅ (seed) | Per-destination emergency numbers (+ flat list), healthcare note, courtesy phrases (hello/thanks/please/yes/no in the local language), etiquette do's/don'ts; `ESSENTIALS_DATA_NOTE` disclaimer | Hospital/clinic locations (live), expanded coverage, UI |
 | Shopping & Essentials | ✅ (seed) | Per-destination malls, markets/souks, online/e-commerce, fuel networks + EV-charging availability, payment norms + derived tips; `SHOPPING_DATA_NOTE` disclaimer | Live directory/geo, expanded coverage, UI |
 | Local Chains | ✅ (seed) | Recognizable chains by category (cinema, coffee, pharmacy, supermarket, fast food, hospital) per destination + `chainsForCategory`; `CHAINS_DATA_NOTE` disclaimer | Live directory/geo, expanded coverage, UI |
@@ -106,6 +107,18 @@ Requested by the product owner; built in roughly this order, seed/estimate
 data first (honestly labeled), live sources and UI later.
 
 **Local-knowledge intelligence (seed/editorial, buildable now):**
+- **Religious orientation & places of worship** — predominant religion(s) per
+  country/city + where to find major mosques / temples / churches / synagogues.
+  Seed dataset + accessor (handle respectfully; "verify" disclaimer).
+- **Traveller inclusion & safety** — LGBTQ+ legal status & social climate;
+  religious-minority (incl. Jewish) and solo-women safety context. Factual,
+  sourced-where-possible, strongly disclaimered (describes laws/climate, **not**
+  endorsement); high-stakes so flag "verify current advisories".
+- **More suggested ideas to consider:** tipping norms & service charges · power
+  sockets/voltage & SIM/eSIM options · tap-water potability · typical costs
+  (meal/coffee/taxi index) · scams to watch for · dress code by venue · public-
+  transport how-to (tickets/passes) · accessibility details · time-zone & business
+  hours · packing/seasonal-clothing guidance · photography rules.
 - **UV & weather-protection customs** — UV index from the live weather feed
   (Open-Meteo supports it, ⛔ egress) + an editorial seed of how locals protect
   against the elements (siesta, parasols, layering, hammam, etc.).
