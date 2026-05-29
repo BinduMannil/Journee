@@ -80,6 +80,21 @@ export const memoryWeights: ScoringWeights = {
   weights: { emotional_peak: 2, novelty: 1.5, connection: 1.5, sensory: 1 },
 };
 
+export const sustainabilityWeights: ScoringWeights = {
+  version: "sustainability-v1",
+  defaultWeight: 1,
+  // Transport and overtourism dominate measurable traveller impact, so they
+  // carry the most weight; conservation and local benefit shape responsible
+  // choice; resource resilience is a softer contextual factor.
+  weights: {
+    transport: 2.5,
+    overtourism: 2,
+    conservation: 1.5,
+    local_benefit: 1.5,
+    resource_resilience: 1,
+  },
+};
+
 /**
  * Weights for the Travel Confidence aggregate; keys are sub-engine ids.
  * v2 brings in safety (weighted as heavily as disruption — both gate whether a

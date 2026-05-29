@@ -76,10 +76,29 @@ export { conditionsEngine, CONDITIONS_SIGNAL_KEYS, type ConditionsContext } from
 export { cityEnergyEngine, CITY_ENERGY_SIGNAL_KEYS, type CityEnergyContext } from "./engines/city-energy";
 export { memoryEngine, MEMORY_SIGNAL_KEYS, type MemoryContext } from "./engines/memory";
 export {
+  sustainabilityEngine,
+  SUSTAINABILITY_SIGNAL_KEYS,
+  type SustainabilityContext,
+} from "./engines/sustainability";
+export {
+  estimateLeg,
+  estimateTripFootprint,
+  estimateRouteFootprint,
+  flightModeFor,
+  footprintToTransportSignal,
+  EMISSION_FACTORS_KG_PER_KM,
+  SHORT_HAUL_THRESHOLD_KM,
+  type TransportMode,
+  type PlannedLeg,
+  type FootprintLeg,
+  type TripFootprint,
+} from "./carbon";
+export {
   safetyWeights,
   visaWeights,
   cultureWeights,
   conditionsWeights,
   cityEnergyWeights,
   memoryWeights,
+  sustainabilityWeights,
 } from "./weights";
