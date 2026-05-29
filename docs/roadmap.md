@@ -35,6 +35,7 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | Dynamic Itinerary (`/plan`) | ✅ | Fatigue-aware day pacing; `.ics` export | Wire to AI planning + live readiness (UI) |
 | Carbon Estimate | ✅ | Per-trip CO2e from route distance × versioned emission model (`carbon-v1`); mode inferred per leg; honest "estimate" labeling | Per-mode overrides from real itinerary legs; UI surfacing |
 | Food & Drink Customs | ✅ (seed) | Editorial per-destination profile (popular dishes, signature drink, pork/beef prevalence, veg-friendliness, alcohol-in-supermarkets, public-drinking) + derived honest flags; `CULINARY_DATA_NOTE` disclaimer | Live/expanded coverage; UI surfacing |
+| Know-Before-You-Go Essentials | ✅ (seed) | Per-destination emergency numbers (+ flat list), healthcare note, courtesy phrases (hello/thanks/please/yes/no in the local language), etiquette do's/don'ts; `ESSENTIALS_DATA_NOTE` disclaimer | Hospital/clinic locations (live), expanded coverage, UI |
 | Affiliate & Monetization | ✅ | Data-driven routing, A/B, click/conversion ingestion, analytics | Live catalog via hosted Supabase (⛔) |
 | Travel-data backend | ✅ (seed) | 7 capability contracts, source/freshness/confidence model, trust-ordered registry, TTL cache, strict resolver, readiness assemblers, **JSON-Schema export**, observability, gated admin readiness | **Live vendor adapters** (⛔ egress); UI surfacing (deferred) |
 | Observability & control plane | ✅ | Structured logs, counter metrics, `/api/metrics`, `/api/health`, secure-by-default `/api/admin/{status,readiness}` | Cache stats endpoint; latency histograms (non-blocked queue) |
@@ -102,6 +103,11 @@ data first (honestly labeled), live sources and UI later.
   terminal train/metro), boarding method (jet bridge vs bus/stairs), and
   airport→city distance + access mode (metro / rail / taxi / bus). New
   `airport-info` capability behind the existing contract + seed adapter.
+- **UV & weather-protection customs** — UV index from the live weather feed
+  (Open-Meteo supports it, ⛔ egress) + an editorial seed of how locals protect
+  against the elements (siesta, parasols, layering, hammam, etc.).
+- **Hospital / clinic locations** — extend the essentials with nearest
+  hospital/clinic info (live/geo source later; emergency numbers already shipped).
 - **City vibe & local friendliness** — how welcoming/relaxed a city feels;
   extends the existing **City Energy** engine (calmness/festivity/nightlife/
   density) with a "friendliness/hospitality" signal, seed-fed.
