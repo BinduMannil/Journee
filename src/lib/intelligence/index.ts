@@ -109,6 +109,20 @@ export {
   type RankedItem,
 } from "./ratings";
 export {
+  overallScore,
+  getAirportServiceRating,
+  airportRatingsForDestination,
+  getAirlineRating,
+  airlineClassRatings,
+  TRANSIT_RATINGS_NOTE,
+  type AirportServiceRating,
+  type AirlineRating,
+  type AirlineClassRating,
+  type DimensionRatings,
+  type ServiceDimension,
+  type CabinClass,
+} from "./transit-ratings";
+export {
   estimateTripCarbon,
   inferTravelMode,
   carbonModelV1,
