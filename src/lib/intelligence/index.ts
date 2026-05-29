@@ -249,6 +249,15 @@ export {
   type CarbonOptions,
 } from "./carbon";
 export {
+  estimateTripBudget,
+  LODGING_DATA_NOTE,
+  LODGING_MODEL_VERSION,
+  type TripBudget,
+  type TripBudgetStop,
+  type TripBudgetOptions,
+  type StopBudget,
+} from "./trip-budget";
+export {
   getUvProtectionProfile,
   protectionFor,
   isHighUv,
