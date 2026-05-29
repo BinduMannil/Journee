@@ -171,40 +171,35 @@ No operational claims are made for unbuilt systems — keep it that way.
 **Product-owner requested feature backlog (build next, in this order — same
 seed-backed pattern as session 5; `docs/roadmap.md` is the live register):**
 
-1. **Airport & terminal intelligence** — per-destination airports: terminal
-   count, inter-terminal distance + transfer mode (walk/shuttle/train), boarding
-   method (jet bridge vs bus), airport→city distance + access mode. Either a new
-   `airport-info` travel-data capability or (lower-risk) a `content/airports.ts`
-   seed + accessor.
-2. **City vibe & local friendliness** — add a "friendliness/hospitality" signal
+1. **City vibe & local friendliness** — add a "friendliness/hospitality" signal
    to the existing **City Energy** engine (`engines/city-energy.ts`), seed-fed.
-3. **Ratings & recommendations core** — pure `aggregateRatings` (mean + count +
-   confidence-weighted/Bayesian to avoid "1 five-star = best"); supports
-   restaurant/place/user ratings. Persistence/auth/UI blocked; the core isn't.
-4. **Follow graph & journey feed** — pure feed-composition over a follow set +
-   posts. (Storage/auth/UI blocked.)
-5. **Public notes & travel blogs/vlogs** — pure content model + zod validation
+2. **Follow graph & journey feed** — pure feed-composition over a follow set +
+   posts. (Storage/auth/UI blocked; build the pure core now.)
+3. **Public notes & travel blogs/vlogs** — pure content model + zod validation
    (scaffold like `affiliate/types.ts`). (Storage/auth/UI blocked.)
-6. **UV & weather-protection customs** — editorial seed of local protections
+4. **UV & weather-protection customs** — editorial seed of local protections
    (siesta, parasols, layering, hammam); UV index from the live weather feed
    later (⛔ egress).
-7. **Hospital / clinic locations** — extend essentials (live/geo later).
-8. **Trip budget / cost estimate**, **best-time-to-visit**, **accessibility
+5. **Hospital / clinic locations** — extend essentials (live/geo later).
+6. **Trip budget / cost estimate**, **best-time-to-visit**, **accessibility
    capability**, **multi-currency normalization**, **"explain my ranking"
    endpoint**, **itinerary GeoJSON export** — see `docs/roadmap.md` backlog.
 
 **Engineering hardening (non-blocked):**
 
-9. **Per-kind latency histograms** — extend `_duration_ms_total` with bucketed
+7. **Per-kind latency histograms** — extend `_duration_ms_total` with bucketed
    counts (`_bucket{le=…}`) for honest P50/P95.
-10. **Engine-bridge expansion** — feed the safety engine from review highlights
-    (crowd text → `crowd_safety`), or conditions from advisory/events. Pure.
-11. **Per-destination editorial-confidence signal** — seed-readiness × editorial
-    coverage % → per-destination "data confidence" under admin readiness.
+8. **Engine-bridge expansion** — feed the safety engine from review highlights
+   (crowd text → `crowd_safety`), or conditions from advisory/events. Pure.
+9. **Per-destination editorial-confidence signal** — seed-readiness × editorial
+   coverage % → per-destination "data confidence" under admin readiness.
 
 Done in session 5: `resolveTravelDataMany` (#33), `/api/admin/cache` (#34),
 carbon (#35), culinary (#36), essentials (#37), shopping (#38), chains (#39),
-seasonal fruits (#40).
+seasonal fruits (#40), session-5 handoff (#41), **airport & terminal intel
+(#42)**, **ratings aggregation core (#43)**, **airport & airline ratings (#44)**.
+Test count **279 → 327**. (Build order above reflects what's left — airport,
+ratings core, and airport/airline ratings are now done.)
 
 > Branch note: session-4/5 work went to `main` directly via PRs branched off
 > `main`. `claude/quirky-keller-2S10c` is stale — branch fresh from `main`.
