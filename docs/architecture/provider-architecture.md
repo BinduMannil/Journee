@@ -140,6 +140,16 @@ under `/api/admin/readiness`; assemblers accept an injected cache.
 stale when `dropStale: true`) to `unavailable` with a clear reason. Use when a
 caller cannot tolerate weak data but still wants the fallback-safe shape.
 
+### Batch fan-out (`registry.ts`)
+
+`resolveTravelDataMany(requests, resolve?)` resolves a heterogeneous batch of
+`{ kind, query }` entries concurrently, returning responses **aligned by index**.
+Each entry is independent, so one unavailable/error kind never fails the others.
+`resolve` defaults to the plain registry resolver; pass a cache-backed resolver
+(`(k, q) => cachedResolveTravelData(k, q, cache)`) to share one cache across the
+batch and coalesce duplicates — done this way to avoid a registry→cache import
+cycle.
+
 ### Runtime schemas & JSON-Schema export (`schemas.ts`, `json-schema.ts`)
 
 `contracts.ts` is the compile-time source of truth. `schemas.ts` mirrors those

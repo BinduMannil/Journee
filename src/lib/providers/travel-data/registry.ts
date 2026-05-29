@@ -187,6 +187,37 @@ export async function resolveTravelDataStrict<TQuery, TData>(
   return response;
 }
 
+// ── Heterogeneous fan-out ────────────────────────────────────────────────────
+
+/** One entry in a `resolveTravelDataMany` batch: a kind paired with its query. */
+export interface TravelDataRequest<TQuery = unknown> {
+  readonly kind: TravelDataKind;
+  readonly query: TQuery;
+}
+
+/** A resolver function compatible with `resolveTravelData`. */
+export type TravelDataResolver = <TQuery, TData>(
+  kind: TravelDataKind,
+  query: TQuery,
+) => Promise<TravelDataResponse<TData>>;
+
+/**
+ * Resolve a heterogeneous batch of `{ kind, query }` requests concurrently,
+ * returning responses **aligned by index** with the input. Each request is
+ * resolved independently, so one unavailable/error kind never fails the others
+ * (every entry is a fallback-safe `TravelDataResponse`).
+ *
+ * `resolve` defaults to the plain registry resolver; pass a cache-backed
+ * resolver (e.g. `(k, q) => cachedResolveTravelData(k, q, cache)`) to share a
+ * single cache across the whole batch and coalesce duplicate requests within it.
+ */
+export async function resolveTravelDataMany(
+  requests: readonly TravelDataRequest[],
+  resolve: TravelDataResolver = resolveTravelData,
+): Promise<readonly TravelDataResponse<unknown>[]> {
+  return Promise.all(requests.map((r) => resolve(r.kind, r.query)));
+}
+
 // ── Readiness reporting ──────────────────────────────────────────────────────
 
 export interface TravelDataProviderReadiness {
