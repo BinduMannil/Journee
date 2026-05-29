@@ -32,7 +32,7 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | --- | --- | --- | --- |
 | Destination Intelligence | ✅ | Explainable score; **real** solar light-phase/golden-hour signal | More live signals (weather/events) as feeds land |
 | Pathfinder Discovery (`/discover`) | ✅ | Vibe-based ranking with reasons + avoid arm | — (tune weights as data grows) |
-| Dynamic Itinerary (`/plan`) | ✅ | Fatigue-aware day pacing; `.ics` export | Wire to AI planning + live readiness (UI) |
+| Dynamic Itinerary (`/plan`) | ✅ | Fatigue-aware day pacing; `.ics` calendar export + **GeoJSON route export** (`itineraryToGeoJSON`: ordered `Point`s + a route `LineString` with great-circle length, RFC 7946 `[lon,lat]`) | Wire to AI planning + live readiness (UI); waypoint coords from the catalog at the surface layer |
 | Carbon Estimate | ✅ | Per-trip CO2e from route distance × versioned emission model (`carbon-v1`); mode inferred per leg; honest "estimate" labeling | Per-mode overrides from real itinerary legs; UI surfacing |
 | Food & Drink Customs | ✅ (seed) | Editorial per-destination profile (popular dishes, signature drink, pork/beef prevalence, veg-friendliness, alcohol-in-supermarkets, public-drinking) + derived honest flags; `CULINARY_DATA_NOTE` disclaimer | Live/expanded coverage; UI surfacing |
 | Local Gems (Eats & Drinks) | ✅ (seed) | Curated standout eats/drinks per destination with area, what-to-order, and why; `getLocalGems` / `gemsByKind`; `GEMS_DATA_NOTE` | User/UGC picks (via ratings core + auth), expanded coverage, UI |
@@ -137,7 +137,8 @@ data first (honestly labeled), live sources and UI later.
   config into a per-trip estimate with confidence.
 - **Multi-currency normalization** — seed FX layer over ticket prices (labeled).
 - **"Explain my ranking" endpoint** — expose the scoring contribution breakdown.
-- **Itinerary GeoJSON / route export** — complement the `.ics` export.
+- ✅ **Itinerary GeoJSON / route export** — shipped (`itineraryToGeoJSON`,
+  pure; complements the `.ics` export).
 
 **Community / UGC & social (needs auth + persistence + UI — ⛔ blocked; build
 the pure cores now):**
