@@ -8,6 +8,9 @@ import {
   type Destination,
 } from "@/content/destinations";
 import { TripBuilder } from "@/components/TripBuilder";
+import { PackingPlanner } from "@/components/PackingPlanner";
+import { CurrencyConverter } from "@/components/CurrencyConverter";
+import { getFxRates } from "@/lib/providers/fx";
 
 export const metadata: Metadata = {
   title: "Plan a trip",
@@ -26,6 +29,8 @@ export default async function PlanPage() {
     coordinates: d.coordinates,
   }));
 
+  const fxRates = await getFxRates("USD");
+
   return (
     <main className="mx-auto max-w-5xl px-6 py-20 sm:px-12">
       <Link
@@ -42,6 +47,25 @@ export default async function PlanPage() {
         intensity budget — fewer days when relaxed, denser when packed.
       </p>
       <TripBuilder destinations={plannable} />
+
+      <section className="mt-24 border-t border-sand/10 pt-16">
+        <h2 className="mb-3 font-display text-3xl font-semibold text-sand">Pack smart</h2>
+        <p className="mb-10 max-w-2xl text-sand/70">
+          Tell us the climate you expect and what you&rsquo;ll be doing; we&rsquo;ll
+          build a checklist. (When live weather lands, this pre-fills from your
+          destinations and dates.)
+        </p>
+        <PackingPlanner />
+      </section>
+
+      <section className="mt-24 border-t border-sand/10 pt-16">
+        <h2 className="mb-3 font-display text-3xl font-semibold text-sand">Currency</h2>
+        <p className="mb-10 max-w-2xl text-sand/70">
+          Quick conversions for budgeting. Rates are indicative reference values,
+          not live quotes.
+        </p>
+        <CurrencyConverter rates={fxRates} />
+      </section>
     </main>
   );
 }

@@ -234,7 +234,11 @@ mocked-as-done.
       `/api/pathfinder?q=`) — deterministic, no key
 - [x] 3.1 AI concierge UI (`ConciergePlan` on `/plan`) — LLM path key-gated,
       deterministic narrative fallback; ADR-007
-- [ ] 0.3 UI: packing-list panel (user-provided conditions — next pass)
+- [x] 0.3 UI: packing-list panel on `/plan` (`PackingPlanner`, user-provided
+      climate — honest; pre-fills from weather feed in Phase 2)
+- [x] FX converter: `providers/fx` (contract + seed adapter + pure `convert`) +
+      `CurrencyConverter` on `/plan`; rates labelled indicative/seed (Phase 2
+      live-feed-ready)
 - [ ] Phase 2 feeds, Phase 1 auth, Phase 4 billing — gated on hosted Supabase /
       vendor keys; each is a precise plan above, implementable behind its flag
 
