@@ -28,6 +28,8 @@ export const platformSystems: readonly PlatformSystem[] = [
   { name: "Cost Index", status: "scaffold", note: "Typical meal/coffee/beer/taxi prices + daily-budget estimate; approximate USD, verify FX." },
   { name: "Neighborhoods & Where to Stay", status: "scaffold", note: "Areas within each destination — character tags, who they suit, and a relative stay-cost tier; editorial, tiers are relative not live quotes." },
   { name: "Day Trips & Excursions", status: "scaffold", note: "Popular trips within reach of each base with type, approx travel time + why; editorial, times approximate not a live transit/tour feed." },
+  { name: "Intercity Options", status: "scaffold", note: "Best onward travel to key cities/hubs (flight/train/bus/ferry) with duration, frequency + a recommended pick; seed, not a live schedule/fare feed." },
+  { name: "Itinerary Combos", status: "scaffold", note: "Best cities/sites to club together with each destination, why they pair + suggested days; editorial planning starting point." },
   { name: "Multi-Currency Normalization", status: "scaffold", note: "Indicative SEED FX table + convertUsd/convertCurrency/costPricesIn over the cost anchors; not a live quote — live FX feed is roadmap." },
   { name: "Scams & Safety Tips", status: "scaffold", note: "Common local scams (how + avoid) and practical safety tips per destination; seed data." },
   { name: "Hazards & Advisories", status: "scaffold", note: "Natural-hazard exposure + conflict status + typical advisory level; factual exposure, not a forecast — verify official advisories." },

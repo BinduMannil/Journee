@@ -46,6 +46,8 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | Cost Index | ✅ (seed) | Approx meal/coffee/beer/taxi prices + affordability band + `dailyBudgetEstimateUsd`; `COSTS_DATA_NOTE` | Live FX, more cities, UI |
 | Neighborhoods & Where to Stay | ✅ (seed) | Areas within each destination with character tags (historic/beach/nightlife/scenic/…), who each suits, and a *relative* stay-cost tier (budget→luxury); `getNeighborhoods` / `neighborhoodsByType` / `neighborhoodsByCostTier` / `areasWithinBudget`; `NEIGHBORHOODS_DATA_NOTE` (tiers are relative, not live quotes) | Live lodging prices (tie to FX/cost layers), more areas, UI |
 | Day Trips & Excursions | ✅ (seed) | Popular trips within reach of each base with type tags, approximate travel time + mode, and why; `getDayTrips` / `dayTripsByType`; `DAY_TRIPS_DATA_NOTE` (approximate, not a live transit/tour feed) | Live transit/tour data, more trips, UI |
+| Intercity Options | ✅ (seed) | Best onward travel to key cities/hubs per destination — mode (flight/train/HSR/bus/ferry/car/van), approx duration, frequency + a recommended pick & why; `getIntercityOptions` / `recommendedRoutes` / `routesByMode`; `INTERCITY_DATA_NOTE` (not a live schedule/fare feed) | Live schedules/fares, more routes, UI |
+| Itinerary Combos | ✅ (seed) | Best cities/sites to club together with each destination, reasons they pair (same-region/easy-transport/complementary-vibe/common-route/logical-extension) + suggested days + total trip length; `getCombos` / `pairsForReason` / `suggestedTripLength`; `COMBOS_DATA_NOTE` | Tie to geo + real routing, more combos, UI |
 | Multi-Currency Normalization | ✅ (seed) | Indicative, dated SEED FX table (`fx-seed-v1`) + `convertUsd` / `convertCurrency` (cross via USD) / `costPricesIn` (cost anchors in any catalogued currency); `FX_DATA_NOTE` (never a live quote) | Live FX feed behind a provider (⛔ egress); more currencies; UI |
 | Scams & Safety Tips | ✅ (seed) | Common scams (how + how-to-avoid) + general safety tips per destination; `getSafetyTips` / `scamNames`; `SAFETY_TIPS_DATA_NOTE` | Expanded coverage, UI |
 | Hazards & Advisories | ✅ (seed) | Per-destination natural-hazard exposure (quake/volcano/typhoon/wildfire/etc.), conflict status, typical advisory level (1–4); `getHazardsProfile` / `highRiskHazards`; factual exposure not a forecast (`HAZARDS_DATA_NOTE`) | Tie to live govt advisories + disruption engine; UI |
@@ -151,6 +153,10 @@ data first (honestly labeled), live sources and UI later.
   time-of-day** (product-owner requests) — shipped (seed `transport-modes`,
   `tourist-prices`, `attractions`). Anti-scam is served by the existing
   **Scams & Safety Tips** feature plus tourist base prices.
+- ✅ **Best intercity options / best cities & sites to club together**
+  (product-owner requests) — shipped (seed `intercity`, `itinerary-combos`).
+  **Best sites by chosen experience** — next: experience tags on attractions +
+  a recommender.
 - ✅ **Trip budget / cost estimate** — shipped (`estimateTripBudget`: lodging by
   area tier + cost-index daily spend × nights/travelers, in any currency, with a
   per-stop breakdown + confidence; seed estimates, not live prices).
