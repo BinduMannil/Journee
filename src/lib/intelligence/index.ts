@@ -250,6 +250,45 @@ export {
   type FarePayment,
 } from "./transit-howto";
 export {
+  getAccessibilityProfile,
+  accessAspectFor,
+  challengingFacets,
+  ACCESSIBILITY_DATA_NOTE,
+  type AccessibilityProfile,
+  type AccessAspect,
+  type AccessFacet,
+  type AccessLevel,
+} from "./accessibility";
+export {
+  getTimezoneProfile,
+  businessHoursFor,
+  currentTimeAt,
+  TIMEZONE_DATA_NOTE,
+  type TimezoneProfile,
+  type BusinessHours,
+  type HoursCategory,
+} from "./timezone";
+export {
+  getPackingProfile,
+  packingForSeason,
+  essentialItems,
+  PACKING_DATA_NOTE,
+  type PackingProfile,
+  type PackingItem,
+  type SeasonalPacking,
+  type Season,
+  type PackingPriority,
+} from "./packing";
+export {
+  getBestTimeProfile,
+  monthAssessment,
+  idealMonths,
+  BEST_TIME_DATA_NOTE,
+  type BestTimeProfile,
+  type MonthAssessment,
+  type SeasonRating,
+} from "./best-time";
+export {
   buildItinerary,
   type Itinerary,
   type ItineraryItem,
