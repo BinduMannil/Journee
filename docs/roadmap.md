@@ -53,6 +53,10 @@ UI) · **🔌 built-inert** (adapter built; enabled by config only) · **⛔ blo
 | Airport & Terminal Intel | ✅ (seed) | Per-destination airports: terminals, inter-terminal transfer mode, boarding method, airport→city distance + access modes; `getAirportsProfile` / `primaryAirport`; `AIRPORTS_DATA_NOTE` | Live/geo source, more airports, UI |
 | Ratings core | ✅ (pure) | `aggregateRatings` (count, mean, confidence-weighted/Bayesian score, confidence) + `rankByRating`, versioned (`rating-v1`) — the shared core for rating restaurants/places/users | Persistence + auth + UI (⛔) |
 | Airport & Airline Ratings | ✅ (seed) | Editorial service ratings (staff/cleanliness/comfort/value) for catalogued airports + airlines **by cabin class**; `overallScore`, accessors by code/destination/name/class; `TRANSIT_RATINGS_NOTE` | User-submitted ratings (via ratings core + auth/persistence), more airlines, UI |
+| UV & Weather-Protection Customs | ✅ (seed) | Typical peak-UV band + months per destination + how locals protect against sun/heat/wind/cold/rain; `getUvProtectionProfile` / `protectionFor` / `isHighUv`; `UV_PROTECTION_NOTE` | Live UV index from the weather feed (⛔ Open-Meteo egress); expanded coverage; UI |
+| Dress Code by Venue | ✅ (seed) | Respectful-dress guidance by venue kind (religious site/fine dining/beach-pool/nightlife/general) with strictness; `getDressCode` / `dressGuidanceFor` / `venuesNeedingModesty`; `DRESS_CODE_NOTE` | Expanded coverage, UI |
+| Photography Rules & Etiquette | ✅ (seed) | Per-destination photo/drone rules by subject kind (people/religious/government/museum/drone) with permission level; `getPhotographyProfile` / `photoRuleFor` / `prohibitedSubjects`; `PHOTOGRAPHY_DATA_NOTE` | Live/expanded regulations, UI |
+| Public-Transport How-To | ✅ (seed) | Modes, ticketing/passes, payment methods + practical tip per destination; `getTransitHowTo` / `transitOptionFor` / `acceptsContactless`; `TRANSIT_HOWTO_NOTE` | Live operator/route/fare data, expanded coverage, UI |
 | Affiliate & Monetization | ✅ | Data-driven routing, A/B, click/conversion ingestion, analytics | Live catalog via hosted Supabase (⛔) |
 | Travel-data backend | ✅ (seed) | 7 capability contracts, source/freshness/confidence model, trust-ordered registry, TTL cache, strict resolver, readiness assemblers, **JSON-Schema export**, observability, gated admin readiness | **Live vendor adapters** (⛔ egress); UI surfacing (deferred) |
 | Observability & control plane | ✅ | Structured logs, counter metrics, `/api/metrics`, `/api/health`, secure-by-default `/api/admin/{status,readiness}` | Cache stats endpoint; latency histograms (non-blocked queue) |
@@ -115,12 +119,12 @@ Requested by the product owner; built in roughly this order, seed/estimate
 data first (honestly labeled), live sources and UI later.
 
 **Local-knowledge intelligence (seed/editorial, buildable now):**
-- **More suggested ideas to consider:** dress code by venue · public-transport how-to
-  (tickets/passes) · accessibility details · time-zone & business hours ·
-  packing/seasonal-clothing guidance · photography rules.
-- **UV & weather-protection customs** — UV index from the live weather feed
-  (Open-Meteo supports it, ⛔ egress) + an editorial seed of how locals protect
-  against the elements (siesta, parasols, layering, hammam, etc.).
+- ✅ **Dress code by venue** — shipped (seed). ✅ **Public-transport how-to** —
+  shipped (seed). ✅ **Photography rules** — shipped (seed). ✅ **UV &
+  weather-protection customs** — shipped (seed; UV index from the live weather
+  feed remains ⛔ egress-blocked).
+- **More suggested ideas to consider:** accessibility details ·
+  time-zone & business hours · packing/seasonal-clothing guidance.
 - **Hospital / clinic locations** — extend the essentials with nearest
   hospital/clinic info (live/geo source later; emergency numbers already shipped).
 - **Trip budget / cost estimate** — aggregate seed ticket prices + lodging-tier
