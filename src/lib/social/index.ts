@@ -27,3 +27,12 @@ export {
   type FeedOptions,
   type FeedResult,
 } from "./journey-feed";
+export {
+  groupRatingsByTarget,
+  aggregateTarget,
+  rankTargets,
+  recommendTargets,
+  type Rating,
+  type RatingTargetKind,
+  type RecommendOptions,
+} from "./recommendations";

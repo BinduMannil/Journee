@@ -158,10 +158,12 @@ cores built now):**
   `buildFollowGraph`/`following`/`followers`/`isFollowing`/`mutuals`/
   `suggestFollows`; `journey-feed.ts`: `composeFeed` — followed-author posts,
   recency-ranked, paged). Storage/auth/UI still blocked.
-- **Ratings & recommendations** — users rate and recommend restaurants, places,
-  and each other's posts/profiles. Pure **rating-aggregation** core (mean +
-  count + confidence-weighted/Bayesian score to avoid the "1 five-star review =
-  best" trap) buildable now; persistence/auth/UI blocked.
+- ✅ **Ratings & recommendations** — pure cores shipped. The Bayesian
+  rating-aggregation core (`intelligence/ratings.ts`, `rating-v1`) plus the
+  social glue (`social/recommendations.ts`: `groupRatingsByTarget` de-dupes per
+  rater (latest wins), `aggregateTarget`, `rankTargets`, `recommendTargets` with
+  min count/confidence + limit) let posts/places/users be rated and recommended.
+  Persistence/auth/UI still blocked.
 
 ## Externally blocked (resume when access is granted)
 
