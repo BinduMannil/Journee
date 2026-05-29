@@ -122,6 +122,17 @@ export {
   type ScamTip,
 } from "./safety-tips";
 export {
+  getHazardsProfile,
+  highRiskHazards,
+  HAZARDS_DATA_NOTE,
+  type HazardsProfile,
+  type HazardExposure,
+  type HazardType,
+  type RiskLevel,
+  type ConflictStatus,
+  type AdvisoryLevel,
+} from "./hazards";
+export {
   getLocalEssentials,
   emergencyNumberList,
   ESSENTIALS_DATA_NOTE,
