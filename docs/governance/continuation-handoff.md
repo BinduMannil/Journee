@@ -109,6 +109,45 @@ All under `src/lib/providers/travel-data` + `src/lib/intelligence`:
 12. **#25 Live-adapter TEMPLATE** (`live/TEMPLATE.ts`) — compilable, **NOT
     registered**, codifies the live-adapter pattern.
 
+## Session 5 (2026-05-29) — feature build sprint (all merged to `main`)
+
+Autonomous build-out of product-owner feature requests. **Each is a focused PR,
+seed/estimate-backed and honestly labeled (a `*_DATA_NOTE` disclaimer), no UI, no
+Supabase, no secrets, no live claims.** All merged to `main`, CI `verify` green.
+
+- **#33 `resolveTravelDataMany`** — heterogeneous fan-out over the registry;
+  responses aligned by index; optional injected (cache-backed) resolver.
+- **#34 `/api/admin/cache`** — gated cache stats (size + `travel_data_cache_*`)
+  + DELETE clears the default cache.
+- **#35 Trip carbon estimate** (`intelligence/carbon.ts`) — per-passenger CO2e
+  from route distance × versioned emission model (`carbon-v1`), mode inferred
+  per leg; honest "estimate" basis.
+- **#36 Food & drink customs** (`content/culinary.ts` + `intelligence/culinary.ts`)
+  — popular dishes, signature drink, pork/beef prevalence, veg-friendliness,
+  alcohol-in-supermarkets + public-drinking; derived honest flags.
+- **#37 Know-before-you-go essentials** (`content/essentials.ts` +
+  `intelligence/essentials.ts`) — emergency numbers (+flat list), healthcare
+  note, courtesy phrases (local language), etiquette do's/don'ts.
+- **#38 Shopping & essentials** (`content/shopping.ts` + `…/shopping.ts`) —
+  malls, markets/souks, online/e-commerce, fuel networks + EV-charging, payment
+  norms + tips.
+- **#39 Local chains** (`content/chains.ts` + `…/chains.ts`) — recognizable
+  cinema/coffee/pharmacy/supermarket/fast-food/hospital chains per destination.
+- **#40 Seasonal fruits** (`content/fruits.ts` + `…/fruits.ts`) — in-season (by
+  local month) + must-try fruits with editorial global taste/production ratings.
+
+All new content modules cover the 4 seed destinations (kyoto, santorini,
+marrakech, patagonia) and are registered on `/about` via `src/content/systems.ts`.
+Test count **279 → 314**. Each lib accessor is exported from the
+`src/lib/intelligence` barrel and unit-tested directly.
+
+**Pattern for new local-knowledge features (follow this):** `src/content/<x>.ts`
+(editorial seed data + a `<X>_DATA_NOTE` disclaimer) + `src/lib/intelligence/<x>.ts`
+(pure accessor + small derived helpers) + barrel export + `test/intelligence.<x>.test.ts`
++ a `systems.ts` row + a `docs/roadmap.md` row. Branch off `main`, ONE feature per
+PR, run the full gate (`rm -rf .next` before typecheck to avoid stale route
+types), squash-merge at green.
+
 ## What is real vs. roadmap (read before extending)
 
 - **Real & tested:** all 12 travel-data layers + #26 JSON-schema export; the
@@ -129,19 +168,46 @@ No operational claims are made for unbuilt systems — keep it that way.
 
 ## Non-blocked next steps (pick in order)
 
-1. **Cache stats / clear admin endpoint** — `/api/admin/cache` (gated): GET shows
-   `size()` + `travel_data_cache_*` counters; DELETE clears
-   `defaultTravelDataCache`.
-2. **Per-kind latency histograms** — extend `_duration_ms_total` with bucketed
+**Product-owner requested feature backlog (build next, in this order — same
+seed-backed pattern as session 5; `docs/roadmap.md` is the live register):**
+
+1. **Airport & terminal intelligence** — per-destination airports: terminal
+   count, inter-terminal distance + transfer mode (walk/shuttle/train), boarding
+   method (jet bridge vs bus), airport→city distance + access mode. Either a new
+   `airport-info` travel-data capability or (lower-risk) a `content/airports.ts`
+   seed + accessor.
+2. **City vibe & local friendliness** — add a "friendliness/hospitality" signal
+   to the existing **City Energy** engine (`engines/city-energy.ts`), seed-fed.
+3. **Ratings & recommendations core** — pure `aggregateRatings` (mean + count +
+   confidence-weighted/Bayesian to avoid "1 five-star = best"); supports
+   restaurant/place/user ratings. Persistence/auth/UI blocked; the core isn't.
+4. **Follow graph & journey feed** — pure feed-composition over a follow set +
+   posts. (Storage/auth/UI blocked.)
+5. **Public notes & travel blogs/vlogs** — pure content model + zod validation
+   (scaffold like `affiliate/types.ts`). (Storage/auth/UI blocked.)
+6. **UV & weather-protection customs** — editorial seed of local protections
+   (siesta, parasols, layering, hammam); UV index from the live weather feed
+   later (⛔ egress).
+7. **Hospital / clinic locations** — extend essentials (live/geo later).
+8. **Trip budget / cost estimate**, **best-time-to-visit**, **accessibility
+   capability**, **multi-currency normalization**, **"explain my ranking"
+   endpoint**, **itinerary GeoJSON export** — see `docs/roadmap.md` backlog.
+
+**Engineering hardening (non-blocked):**
+
+9. **Per-kind latency histograms** — extend `_duration_ms_total` with bucketed
    counts (`_bucket{le=…}`) for honest P50/P95.
-3. **Engine-bridge expansion** — feed the safety engine from review highlights
-   (crowd text → `crowd_safety`), or conditions from advisory/events. Pure.
-4. **Per-destination editorial-confidence signal** — seed-readiness × editorial
-   coverage % → per-destination "data confidence" under admin readiness.
-5. **`resolveTravelDataMany([{kind,query},…])`** — heterogeneous fan-out, aligned
-   responses, one shared cache.
-6. **Re-sync `claude/quirky-keller-2S10c` to `main`** (or branch fresh from
-   `main`) so future work starts from the unified tip.
+10. **Engine-bridge expansion** — feed the safety engine from review highlights
+    (crowd text → `crowd_safety`), or conditions from advisory/events. Pure.
+11. **Per-destination editorial-confidence signal** — seed-readiness × editorial
+    coverage % → per-destination "data confidence" under admin readiness.
+
+Done in session 5: `resolveTravelDataMany` (#33), `/api/admin/cache` (#34),
+carbon (#35), culinary (#36), essentials (#37), shopping (#38), chains (#39),
+seasonal fruits (#40).
+
+> Branch note: session-4/5 work went to `main` directly via PRs branched off
+> `main`. `claude/quirky-keller-2S10c` is stale — branch fresh from `main`.
 
 ### Optional LOW hygiene backlog (from the audit — non-blocking)
 
