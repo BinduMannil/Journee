@@ -23,6 +23,7 @@ import {
   type ReadinessSources,
   type SourceProvenance,
 } from "./destination-readiness";
+import type { TravelDataCache } from "@/lib/providers/travel-data/cache";
 
 /** A single stop on a trip — what `assembleDestinationReadiness` needs per dest. */
 export interface TripStop {
@@ -142,17 +143,22 @@ export function composeTripReadinessFromSources(
 export interface AssembleTripReadinessInput {
   readonly stops: readonly TripStop[];
   readonly now?: Date;
+  /** Shared cache reused across stops (a single instance maximizes hits). */
+  readonly cache?: TravelDataCache;
 }
 
 /**
  * Walk the registry per stop via `assembleDestinationReadiness`, then compose
  * the trip aggregate. Always resolves (per-stop assembler never throws); an
- * empty stops list returns a zero-confidence empty aggregate.
+ * empty stops list returns a zero-confidence empty aggregate. When `cache` is
+ * provided, every stop's resolution flows through it so repeated stops or
+ * trip-rebuilds reuse prior results within the cache's TTL.
  */
 export async function assembleTripReadiness(
   input: AssembleTripReadinessInput,
 ): Promise<TripReadiness> {
   const now = input.now ?? new Date();
+  const cache = input.cache;
   const resolved = await Promise.all(
     input.stops.map(async (stop) => ({
       destinationId: stop.destinationId,
@@ -160,6 +166,7 @@ export async function assembleTripReadiness(
         destinationId: stop.destinationId,
         primaryPlaceId: stop.primaryPlaceId,
         now,
+        ...(cache ? { cache } : {}),
       }),
     })),
   );

@@ -34,9 +34,13 @@ interface CacheEntry {
 export interface TravelDataCache {
   /** Returns the cached response for a key if still fresh, else undefined. */
   get<TData>(key: string, now: number): TravelDataResponse<TData> | undefined;
+  /** Returns the in-flight promise for a key, if a fetch is already running. */
+  getInflight<TData>(key: string): Promise<TravelDataResponse<TData>> | undefined;
+  /** Registers an in-flight promise; clears it on settle. */
+  setInflight<TData>(key: string, promise: Promise<TravelDataResponse<TData>>): void;
   /** Stores a response under a key with its expiry. */
   set(key: string, entry: CacheEntry): void;
-  /** Removes all entries (test/tooling). */
+  /** Removes all entries and in-flight handles (test/tooling). */
   clear(): void;
   /** Snapshot of current entry count (for tests/ops). */
   size(): number;
@@ -49,6 +53,7 @@ const DEFAULT_TTL_MS = 5 * 60 * 1000;
 /** Build a new cache instance. Useful for tests; production uses the default. */
 export function createTravelDataCache(options: CacheOptions = {}): TravelDataCache {
   const map = new Map<string, CacheEntry>();
+  const inflight = new Map<string, Promise<TravelDataResponse<unknown>>>();
   return {
     defaultTtlMs: options.defaultTtlMs ?? DEFAULT_TTL_MS,
     now: options.now ?? (() => new Date()),
@@ -62,11 +67,25 @@ export function createTravelDataCache(options: CacheOptions = {}): TravelDataCac
       }
       return entry.response as TravelDataResponse<TData>;
     },
+    getInflight<TData>(key: string): Promise<TravelDataResponse<TData>> | undefined {
+      return inflight.get(key) as Promise<TravelDataResponse<TData>> | undefined;
+    },
+    setInflight<TData>(key: string, promise: Promise<TravelDataResponse<TData>>): void {
+      inflight.set(key, promise as Promise<TravelDataResponse<unknown>>);
+      // Clear the in-flight slot once the request settles (success or failure)
+      // so future calls don't reuse a stale handle.
+      promise.finally(() => {
+        if (inflight.get(key) === (promise as unknown as Promise<TravelDataResponse<unknown>>)) {
+          inflight.delete(key);
+        }
+      });
+    },
     set(key: string, entry: CacheEntry): void {
       map.set(key, entry);
     },
     clear(): void {
       map.clear();
+      inflight.clear();
     },
     size(): number {
       return map.size;
@@ -112,12 +131,21 @@ export async function cachedResolveTravelData<TQuery, TData>(
     incrementCounter("travel_data_cache_hit", { kind });
     return hit;
   }
-  incrementCounter("travel_data_cache_miss", { kind });
-  const response = await resolveTravelData<TQuery, TData>(kind, query);
-  if (response.status === "ok") {
-    cache.set(key, { response, expiresAt: entryExpiry(response, cache.defaultTtlMs, nowMs) });
-  } else {
-    incrementCounter("travel_data_cache_bypass", { kind });
+  // Coalesce concurrent identical requests onto a single in-flight promise.
+  const inflight = cache.getInflight<TData>(key);
+  if (inflight) {
+    incrementCounter("travel_data_cache_coalesced", { kind });
+    return inflight;
   }
-  return response;
+  incrementCounter("travel_data_cache_miss", { kind });
+  const promise = resolveTravelData<TQuery, TData>(kind, query).then((response) => {
+    if (response.status === "ok") {
+      cache.set(key, { response, expiresAt: entryExpiry(response, cache.defaultTtlMs, nowMs) });
+    } else {
+      incrementCounter("travel_data_cache_bypass", { kind });
+    }
+    return response;
+  });
+  cache.setInflight<TData>(key, promise);
+  return promise;
 }

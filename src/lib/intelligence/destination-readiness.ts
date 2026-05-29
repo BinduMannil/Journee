@@ -38,6 +38,7 @@ import {
   responseQuality,
 } from "./travel-data-context";
 import { resolveTravelData } from "@/lib/providers/travel-data/registry";
+import { cachedResolveTravelData, type TravelDataCache } from "@/lib/providers/travel-data/cache";
 import type {
   LocalEvent,
   LocalEventsQuery,
@@ -159,29 +160,38 @@ export interface AssembleReadinessInput {
   /** Place whose opening hours feed the destination `open_now` signal. */
   readonly primaryPlaceId?: string;
   readonly now?: Date;
+  /**
+   * When provided, resolve through the in-process TTL cache (the same instance
+   * is reused across calls). Otherwise resolve through the registry directly.
+   */
+  readonly cache?: TravelDataCache;
 }
 
 /**
- * Resolve the relevant travel-data through the registry, then compose the
- * aggregate. Always resolves (never throws): unregistered/unavailable sources
- * simply do not contribute.
+ * Resolve the relevant travel-data through the registry (optionally via the
+ * cache), then compose the aggregate. Always resolves (never throws):
+ * unregistered/unavailable sources simply do not contribute.
  */
 export async function assembleDestinationReadiness(
   input: AssembleReadinessInput,
 ): Promise<DestinationReadiness> {
   const now = input.now ?? new Date();
+  const cache = input.cache;
+  const resolveAdvisory = cache
+    ? cachedResolveTravelData<SafetyAdvisoryQuery, SafetyAdvisory>("safety-advisories", { destinationId: input.destinationId }, cache)
+    : resolveTravelData<SafetyAdvisoryQuery, SafetyAdvisory>("safety-advisories", { destinationId: input.destinationId });
+  const resolveEvents = cache
+    ? cachedResolveTravelData<LocalEventsQuery, readonly LocalEvent[]>("local-events", { destinationId: input.destinationId }, cache)
+    : resolveTravelData<LocalEventsQuery, readonly LocalEvent[]>("local-events", { destinationId: input.destinationId });
+  const resolveHours = input.primaryPlaceId
+    ? (cache
+        ? cachedResolveTravelData<OpeningHoursQuery, OpeningHours>("opening-hours", { placeId: input.primaryPlaceId }, cache)
+        : resolveTravelData<OpeningHoursQuery, OpeningHours>("opening-hours", { placeId: input.primaryPlaceId }))
+    : Promise.resolve(undefined);
   const [advisory, events, openingHours] = await Promise.all([
-    resolveTravelData<SafetyAdvisoryQuery, SafetyAdvisory>("safety-advisories", {
-      destinationId: input.destinationId,
-    }),
-    resolveTravelData<LocalEventsQuery, readonly LocalEvent[]>("local-events", {
-      destinationId: input.destinationId,
-    }),
-    input.primaryPlaceId
-      ? resolveTravelData<OpeningHoursQuery, OpeningHours>("opening-hours", {
-          placeId: input.primaryPlaceId,
-        })
-      : Promise.resolve(undefined),
+    resolveAdvisory,
+    resolveEvents,
+    resolveHours,
   ]);
   return composeDestinationReadiness(
     input.destinationId,
