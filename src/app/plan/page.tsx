@@ -26,10 +26,6 @@ export default async function PlanPage() {
     coordinates: d.coordinates,
   }));
 
-  const fxRates = await getFxRates("USD");
-
-  const fxRates = await getFxRates("USD");
-
   return (
     <main className="mx-auto max-w-5xl px-6 py-20 sm:px-12">
       <Link
@@ -43,28 +39,14 @@ export default async function PlanPage() {
       </h1>
       <p className="mb-12 max-w-2xl text-sand/70">
         Pick destinations and a pace. We pack them into days under a fatigue-aware
-        intensity budget — fewer days when relaxed, denser when packed.
+        intensity budget — fewer days when relaxed, denser when packed. Need a
+        packing checklist or currency conversions?{" "}
+        <Link href="/tools" className="text-gold-bright hover:text-gold">
+          Travel tools
+        </Link>
+        .
       </p>
       <TripBuilder destinations={plannable} />
-
-      <section className="mt-24 border-t border-sand/10 pt-16">
-        <h2 className="mb-3 font-display text-3xl font-semibold text-sand">Pack smart</h2>
-        <p className="mb-10 max-w-2xl text-sand/70">
-          Tell us the climate you expect and what you&rsquo;ll be doing; we&rsquo;ll
-          build a checklist. (When live weather lands, this pre-fills from your
-          destinations and dates.)
-        </p>
-        <PackingPlanner />
-      </section>
-
-      <section className="mt-24 border-t border-sand/10 pt-16">
-        <h2 className="mb-3 font-display text-3xl font-semibold text-sand">Currency</h2>
-        <p className="mb-10 max-w-2xl text-sand/70">
-          Quick conversions for budgeting. Rates are indicative reference values,
-          not live quotes.
-        </p>
-        <CurrencyConverter rates={fxRates} />
-      </section>
     </main>
   );
 }
