@@ -54,7 +54,8 @@ npm test         # 302 unit tests (node:test)
 | --- | --- |
 | `/` | Cinematic landing; mood filter + search over destinations |
 | `/destinations/[id]` | Editorial detail page; live light phase + explainable atmosphere score + "you might also love" (unknown id → 404) |
-| `/plan` | Trip planner — fatigue-aware itinerary, trip carbon estimate, `.ics` export, AI concierge, packing planner, currency converter |
+| `/plan` | Trip planner — fatigue-aware itinerary, trip carbon estimate, `.ics` export, AI concierge |
+| `/tools` | Travel tools — packing planner (pure engine) + currency converter (seed FX provider) |
 | `/discover` | Vibe-based discovery (Pathfinder) + natural-language search ("calm and sunny, not too lively") + "in season this month" |
 | `/saved` | Saved collection (localStorage, no account needed) |
 | `/api/destinations` | Registry-resolved catalog (JSON) |

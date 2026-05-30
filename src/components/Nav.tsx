@@ -7,6 +7,7 @@ import { site } from "@/lib/config/site";
 const LINKS = [
   { href: "/discover", label: "Discover" },
   { href: "/plan", label: "Plan" },
+  { href: "/tools", label: "Tools" },
   { href: "/saved", label: "Saved" },
   { href: "/about", label: "About" },
 ] as const;

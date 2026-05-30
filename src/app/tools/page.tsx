@@ -1,33 +1,16 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { resolve } from "@/lib/providers/registry";
-import "@/lib/providers/register";
-import {
-  featuredDestinations,
-  intensityForMood,
-  type Destination,
-} from "@/content/destinations";
-import { TripBuilder } from "@/components/TripBuilder";
+import { PackingPlanner } from "@/components/PackingPlanner";
+import { CurrencyConverter } from "@/components/CurrencyConverter";
+import { getFxRates } from "@/lib/providers/fx";
 
 export const metadata: Metadata = {
-  title: "Plan a trip",
-  description: "Build a fatigue-aware, paced itinerary across destinations.",
-  alternates: { canonical: "/plan" },
+  title: "Travel tools",
+  description: "Packing planner and currency converter for your trip.",
+  alternates: { canonical: "/tools" },
 };
 
-export default async function PlanPage() {
-  const destinations =
-    (await resolve<readonly Destination[]>("destinations")) ?? featuredDestinations;
-  const plannable = destinations.map((d) => ({
-    id: d.id,
-    name: d.name,
-    mood: d.mood,
-    intensity: intensityForMood(d.mood),
-    coordinates: d.coordinates,
-  }));
-
-  const fxRates = await getFxRates("USD");
-
+export default async function ToolsPage() {
   const fxRates = await getFxRates("USD");
 
   return (
@@ -39,15 +22,17 @@ export default async function PlanPage() {
         &larr; Home
       </Link>
       <h1 className="mb-3 font-display text-4xl font-semibold text-sand sm:text-5xl">
-        Plan a trip
+        Travel tools
       </h1>
-      <p className="mb-12 max-w-2xl text-sand/70">
-        Pick destinations and a pace. We pack them into days under a fatigue-aware
-        intensity budget — fewer days when relaxed, denser when packed.
+      <p className="mb-16 max-w-2xl text-sand/70">
+        Practical helpers for getting ready. Pair them with your{" "}
+        <Link href="/plan" className="text-gold-bright hover:text-gold">
+          trip plan
+        </Link>
+        .
       </p>
-      <TripBuilder destinations={plannable} />
 
-      <section className="mt-24 border-t border-sand/10 pt-16">
+      <section>
         <h2 className="mb-3 font-display text-3xl font-semibold text-sand">Pack smart</h2>
         <p className="mb-10 max-w-2xl text-sand/70">
           Tell us the climate you expect and what you&rsquo;ll be doing; we&rsquo;ll
