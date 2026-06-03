@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { resolve } from "@/lib/providers/registry";
 import "@/lib/providers/register";
@@ -7,11 +6,14 @@ import {
   intensityForMood,
   type Destination,
 } from "@/content/destinations";
+import { planCopy } from "@/content/pages";
+import { commonCopy } from "@/content/common";
 import { TripBuilder } from "@/components/TripBuilder";
+import { ButtonLink, SectionHeading } from "@/components/ui";
 
 export const metadata: Metadata = {
-  title: "Plan a trip",
-  description: "Build a fatigue-aware, paced itinerary across destinations.",
+  title: planCopy.title,
+  description: planCopy.description,
   alternates: { canonical: "/plan" },
 };
 
@@ -28,19 +30,20 @@ export default async function PlanPage() {
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-20 sm:px-12">
-      <Link
+      <ButtonLink
         href="/"
-        className="mb-8 inline-block text-sm uppercase tracking-[0.25em] text-gold-bright hover:text-gold"
+        variant="ghost"
+        size="sm"
+        className="mb-8 border-0 px-0 text-gold-bright hover:text-gold"
       >
-        &larr; Home
-      </Link>
-      <h1 className="mb-3 font-display text-4xl font-semibold text-sand sm:text-5xl">
-        Plan a trip
-      </h1>
-      <p className="mb-12 max-w-2xl text-sand/70">
-        Pick destinations and a pace. We pack them into days under a fatigue-aware
-        intensity budget — fewer days when relaxed, denser when packed.
-      </p>
+        {commonCopy.backToHome}
+      </ButtonLink>
+      <SectionHeading
+        title={planCopy.title}
+        description={planCopy.description}
+        as="h1"
+        className="mb-12"
+      />
       <TripBuilder destinations={plannable} />
     </main>
   );

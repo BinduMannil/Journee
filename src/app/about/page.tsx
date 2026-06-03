@@ -1,11 +1,12 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import { site } from "@/lib/config/site";
 import { platformSystems, type SystemStatus } from "@/content/systems";
+import { aboutCopy } from "@/content/pages";
+import { commonCopy } from "@/content/common";
+import { ButtonLink } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "How Journee thinks about travel — and what's built so far.",
+  description: aboutCopy.metaDescription,
   alternates: { canonical: "/about" },
 };
 
@@ -24,26 +25,27 @@ const STATUS_CLASS: Record<SystemStatus, string> = {
 export default function AboutPage() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-20 sm:px-12">
-      <Link
+      <ButtonLink
         href="/"
-        className="mb-8 inline-block text-sm uppercase tracking-[0.25em] text-gold-bright hover:text-gold"
+        variant="ghost"
+        size="sm"
+        className="mb-8 border-0 px-0 text-gold-bright hover:text-gold"
       >
-        &larr; Home
-      </Link>
+        {commonCopy.backToHome}
+      </ButtonLink>
       <h1 className="mb-6 font-display text-4xl font-semibold text-sand sm:text-5xl">
-        How {site.name} thinks
+        {aboutCopy.title}
       </h1>
-      <p className="mb-4 text-lg leading-relaxed text-sand/80">
-        {site.name} treats a destination not as a listing but as a living state —
-        light, weather, crowds, events, culture, and safety shifting by the hour.
-        We score that context transparently: every number can explain itself, and
-        we show our confidence instead of pretending to certainty.
-      </p>
-      <p className="mb-12 text-lg leading-relaxed text-sand/80">
-        This page is honest about maturity. Below is the real status of each
-        system — what genuinely runs today versus what is scaffolded or still
-        ahead.
-      </p>
+      {aboutCopy.intro.map((paragraph, i) => (
+        <p
+          key={i}
+          className={`text-lg leading-relaxed text-sand/80 ${
+            i === aboutCopy.intro.length - 1 ? "mb-12" : "mb-4"
+          }`}
+        >
+          {paragraph}
+        </p>
+      ))}
 
       <ul className="space-y-3">
         {platformSystems.map((s) => (

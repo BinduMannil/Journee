@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { site } from "@/lib/config/site";
+import { commonCopy } from "@/content/common";
+import { ButtonLink } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Privacy",
@@ -14,12 +16,14 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-20 sm:px-12">
-      <Link
+      <ButtonLink
         href="/"
-        className="mb-8 inline-block text-sm uppercase tracking-[0.25em] text-gold-bright hover:text-gold"
+        variant="ghost"
+        size="sm"
+        className="mb-8 border-0 px-0 text-gold-bright hover:text-gold"
       >
-        &larr; Home
-      </Link>
+        {commonCopy.backToHome}
+      </ButtonLink>
       <h1 className="mb-3 font-display text-4xl font-semibold text-sand sm:text-5xl">
         Privacy
       </h1>

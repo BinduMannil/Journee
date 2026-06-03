@@ -1,13 +1,15 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { resolve } from "@/lib/providers/registry";
 import "@/lib/providers/register";
 import { featuredDestinations, type Destination } from "@/content/destinations";
+import { discoverCopy } from "@/content/pages";
+import { commonCopy } from "@/content/common";
 import { DiscoverClient } from "@/components/DiscoverClient";
+import { ButtonLink, SectionHeading } from "@/components/ui";
 
 export const metadata: Metadata = {
-  title: "Discover",
-  description: "Find destinations by the vibe you're chasing.",
+  title: discoverCopy.title,
+  description: discoverCopy.description,
   alternates: { canonical: "/discover" },
 };
 
@@ -17,20 +19,20 @@ export default async function DiscoverPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-20 sm:px-12">
-      <Link
+      <ButtonLink
         href="/"
-        className="mb-8 inline-block text-sm uppercase tracking-[0.25em] text-gold-bright hover:text-gold"
+        variant="ghost"
+        size="sm"
+        className="mb-8 border-0 px-0 text-gold-bright hover:text-gold"
       >
-        &larr; Home
-      </Link>
-      <h1 className="mb-3 font-display text-4xl font-semibold text-sand sm:text-5xl">
-        Discover by vibe
-      </h1>
-      <p className="mb-12 max-w-2xl text-sand/70">
-        Pick the mood you&rsquo;re chasing and any you&rsquo;d rather avoid.
-        Pathfinder ranks destinations toward the vibe, away from the rest, and
-        tells you why.
-      </p>
+        {commonCopy.backToHome}
+      </ButtonLink>
+      <SectionHeading
+        title={discoverCopy.title}
+        description={discoverCopy.description}
+        as="h1"
+        className="mb-12"
+      />
       <DiscoverClient destinations={destinations} />
     </main>
   );
