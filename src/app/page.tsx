@@ -3,15 +3,12 @@ import type { Metadata } from "next";
 import { QuoteRotator } from "@/components/QuoteRotator";
 import { DestinationExplorer } from "@/components/DestinationExplorer";
 import { AffiliateCta } from "@/components/AffiliateCta";
-import { ButtonLink, SectionHeading } from "@/components/ui";
+import { ButtonLink, Card, SectionHeading } from "@/components/ui";
 import { site } from "@/lib/config/site";
 import { getSiteUrl } from "@/lib/config/env";
 import { siteJsonLd, jsonLdScript } from "@/lib/seo/jsonld";
-import {
-  heroQuotes,
-  homeFeaturedCopy,
-  type Destination,
-} from "@/content/destinations";
+import { heroQuotes, type Destination } from "@/content/destinations";
+import { homeFeaturedCopy, homeHowItWorks } from "@/content/home";
 import { stayAffiliate } from "@/content/common";
 import { resolve } from "@/lib/providers/registry";
 // Importing the registration module wires up all provider adapters.
@@ -78,6 +75,27 @@ export default async function Home() {
               Saved
             </ButtonLink>
           </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 pt-28 sm:px-12">
+        <SectionHeading
+          eyebrow={homeHowItWorks.eyebrow}
+          title={homeHowItWorks.title}
+          align="center"
+          className="mb-14"
+        />
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {homeHowItWorks.pillars.map((pillar) => (
+            <Card key={pillar.title}>
+              <h3 className="font-display text-2xl text-gold-bright">
+                {pillar.title}
+              </h3>
+              <p className="mt-3 leading-relaxed text-sand/70">
+                {pillar.description}
+              </p>
+            </Card>
+          ))}
         </div>
       </section>
 

@@ -104,12 +104,6 @@ export function intensityForMood(mood: string): number {
   return moodIntensity[mood] ?? defaultMoodIntensity;
 }
 
-/** Editorial copy for the home page "Featured" section (no literals in JSX). */
-export const homeFeaturedCopy = {
-  eyebrow: "Featured",
-  title: "Destinations chosen by mood, not by map.",
-} as const;
-
 /** Editorial copy for the /destinations index page. */
 export const destinationsIndexCopy = {
   eyebrow: "Destinations",

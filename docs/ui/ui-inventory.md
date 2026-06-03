@@ -70,7 +70,7 @@ The shell wrapping every route (`src/app/layout.tsx`, `src/components/`).
 - **Affiliate CTA:** "Plan your stay" (hotels) — renders only if a link resolves
 
 ### 🔜 Sections to add
-- [ ] **How Journee works** — 3 pillars (mood-first · real-world conditions · explainable scoring), each with icon + 1-line copy
+- [x] **How Journee works** — 3 pillars (mood-first · real-world conditions · explainable scoring), config-driven from `content/home.ts`
 - [ ] **Discover-by-vibe teaser** — sample mood chips + link → `/discover`
 - [ ] **Plan teaser** — fatigue-aware planner preview + link → `/plan`
 - [ ] **Live-conditions showcase** — sample light-phase / atmosphere score widget
