@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useSaved } from "./useSaved";
+import { ButtonLink, EmptyState } from "@/components/ui";
+import { savedCopy } from "@/content/pages";
 import type { Destination } from "@/content/destinations";
 
 /**
@@ -15,17 +17,22 @@ export function SavedList({ destinations }: { destinations: readonly Destination
 
   if (saved.length === 0) {
     return (
-      <p className="text-sand/60">
-        No saved destinations yet. Open a destination and tap{" "}
-        <span className="text-gold-bright">Save</span>.
-      </p>
+      <EmptyState
+        title={savedCopy.empty.title}
+        description={savedCopy.empty.description}
+        action={
+          <ButtonLink href={savedCopy.empty.ctaHref} variant="primary">
+            {savedCopy.empty.ctaLabel}
+          </ButtonLink>
+        }
+      />
     );
   }
 
   return (
     <div>
       <p className="mb-4 text-xs uppercase tracking-[0.2em] text-stone">
-        {saved.length} saved
+        {saved.length} {savedCopy.countSuffix}
       </p>
       <ul className="grid gap-4 sm:grid-cols-2">
         {saved.map((d) => (
@@ -42,10 +49,10 @@ export function SavedList({ destinations }: { destinations: readonly Destination
             <button
               type="button"
               onClick={() => toggle(d.id)}
-              aria-label={`Remove ${d.name} from saved`}
+              aria-label={`${savedCopy.removeLabel} ${d.name}`}
               className="rounded-full border border-sand/20 px-3 py-1 text-xs uppercase tracking-[0.2em] text-stone transition-colors hover:border-gold/50 hover:text-gold-bright"
             >
-              Remove
+              {savedCopy.removeLabel}
             </button>
           </li>
         ))}

@@ -77,7 +77,7 @@ The shell wrapping every route (`src/app/layout.tsx`, `src/components/`).
 - [ ] **Editorial story / featured quote** block
 - [ ] **Testimonials / social proof** (when available)
 - [ ] **Newsletter / waitlist** block (email capture)
-- [ ] **Final CTA band** — "Start planning" → `/plan`, "Browse destinations" → `/destinations`
+- [x] **Final CTA band** — `homeFinalCta` (Plan a trip → `/plan` · Browse destinations → `/destinations`)
 
 ---
 
@@ -135,7 +135,7 @@ The shell wrapping every route (`src/app/layout.tsx`, `src/components/`).
 - **Links/actions:** each item → `/destinations/[id]` · remove/unsave · ← Home → `/`
 - 🔜 Extensions:
   - [ ] Collections / folders
-  - [ ] Richer empty state with discovery prompts (link → `/discover`)
+  - [x] Richer empty state (`EmptyState` primitive + CTA → `/destinations`)
   - [ ] Sync to account (Auth, §8)
 
 ---

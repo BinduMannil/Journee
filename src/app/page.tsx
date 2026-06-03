@@ -8,7 +8,7 @@ import { site } from "@/lib/config/site";
 import { getSiteUrl } from "@/lib/config/env";
 import { siteJsonLd, jsonLdScript } from "@/lib/seo/jsonld";
 import { heroQuotes, type Destination } from "@/content/destinations";
-import { homeFeaturedCopy, homeHowItWorks } from "@/content/home";
+import { homeFeaturedCopy, homeHowItWorks, homeFinalCta } from "@/content/home";
 import { stayAffiliate } from "@/content/common";
 import { resolve } from "@/lib/providers/registry";
 // Importing the registration module wires up all provider adapters.
@@ -115,6 +115,22 @@ export default async function Home() {
             category={stayAffiliate.category}
             label={stayAffiliate.label}
           />
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 pb-28 sm:px-12">
+        <div className="flex flex-col items-center gap-8 rounded-3xl border border-sand/10 bg-ink-soft/40 px-8 py-16 text-center">
+          <h2 className="font-display text-4xl font-semibold text-sand sm:text-5xl">
+            {homeFinalCta.title}
+          </h2>
+          <div className="flex flex-wrap justify-center gap-4">
+            <ButtonLink href={homeFinalCta.primaryHref} variant="solid">
+              {homeFinalCta.primaryLabel}
+            </ButtonLink>
+            <ButtonLink href={homeFinalCta.secondaryHref} variant="ghost">
+              {homeFinalCta.secondaryLabel}
+            </ButtonLink>
+          </div>
         </div>
       </section>
     </main>

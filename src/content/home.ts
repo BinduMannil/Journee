@@ -11,6 +11,15 @@ export const homeFeaturedCopy = {
   title: "Destinations chosen by mood, not by map.",
 } as const;
 
+/** Closing call-to-action band at the foot of the landing page. */
+export const homeFinalCta = {
+  title: "Ready when you are.",
+  primaryLabel: "Plan a trip",
+  primaryHref: "/plan",
+  secondaryLabel: "Browse destinations",
+  secondaryHref: "/destinations",
+} as const;
+
 /** The three-pillar value proposition shown beneath the hero. */
 export interface HomePillar {
   readonly title: string;

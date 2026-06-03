@@ -22,6 +22,21 @@ export const planCopy = {
     + "packed.",
 } as const;
 
+/** Copy for the /saved collection page and its list/empty states. */
+export const savedCopy = {
+  title: "Saved collection",
+  empty: {
+    title: "Nothing saved yet",
+    description:
+      "Open a destination and tap Save to start a collection. It lives on "
+      + "this device — no account needed.",
+    ctaLabel: "Browse destinations",
+    ctaHref: "/destinations",
+  },
+  countSuffix: "saved",
+  removeLabel: "Remove",
+} as const;
+
 /**
  * Copy for the AI trip-planner panel on /plan. Every status the endpoint can
  * return has an honest message — including the 503 "not enabled here" case, so
