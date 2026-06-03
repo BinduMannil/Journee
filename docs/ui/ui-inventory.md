@@ -24,6 +24,9 @@ Keep this honest: only check a box when the UI actually renders. Copy and
 structural content live in config (`src/lib/config/site.ts`, `src/content/*`)
 per the no-hardcoding policy — point new content there, not into components.
 
+**Wiring reference:** for the code/data/API/components that already exist behind
+each surface, see the companion [`ui-code-map.md`](./ui-code-map.md).
+
 ---
 
 ## 0. Global / shared UI (on every page)
