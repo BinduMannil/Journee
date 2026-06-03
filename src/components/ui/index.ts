@@ -17,5 +17,6 @@ export { Card } from "./Card";
 export { SectionHeading } from "./SectionHeading";
 export { Skeleton } from "./Skeleton";
 export { EmptyState } from "./EmptyState";
+export { ScorePanel } from "./ScorePanel";
 export { Modal } from "./Modal";
 export { ToastProvider, useToast, type ToastTone } from "./Toast";

@@ -165,7 +165,11 @@ No auth UI exists. **Available to build against:** billing/entitlement logic (`@
 
 ## 9. Intelligence surfaces — 🟡 engines ready, feeds roadmap
 
-All engines live in `@/lib/intelligence` and share `IntelligenceScore`. Build **one explainable-score widget** (generalize `AtmosphericScore`) and reuse it everywhere.
+All engines live in `@/lib/intelligence` and share `IntelligenceScore`. ✅ The
+reusable widget exists: **`ScorePanel`** (`@/components/ui`) renders any
+`IntelligenceScore` — number, honest confidence line, and per-signal
+breakdown. `AtmosphericScore` now delegates to it; point every other engine
+surface at the same component.
 
 | UI surface | Engine / fn | Signal keys export | Data feed |
 | --- | --- | --- | --- |
@@ -228,7 +232,7 @@ These have **all data/logic present** — pure UI work:
 2. **Destinations index `/destinations`** — catalog + cards + `DestinationExplorer` exist.
 3. **Pricing page `/pricing`** — `creditPackages` + `FREE_AI_PLANS` ready.
 4. **Home sections** (how-it-works, teasers) — `platformSystems`, `pathfind`, `buildItinerary`, `LightBadge`/`AtmosphericScore` all present.
-5. **Generalized explainable-score widget** — `IntelligenceScore` is uniform; one component serves §9.
+5. ✅ **Generalized explainable-score widget** — `ScorePanel` (`@/components/ui`) renders any `IntelligenceScore`; reuse for every §9 engine.
 6. **AI-planning client UI** — `POST /api/plan/ai` is wired; just needs a form + graceful 503 fallback to `buildItinerary`.
 7. **Admin dashboard** — every `/api/admin/*` + analytics endpoint already returns JSON.
 
