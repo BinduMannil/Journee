@@ -52,10 +52,11 @@ The shell wrapping every route (`src/app/layout.tsx`, `src/components/`).
 ### Other global
 - ✅ Global loading (`app/loading.tsx`), error (`app/error.tsx`), 404 (`app/not-found.tsx`)
 - ✅ Design tokens (`globals.css`)
-- 🔜 **Reusable primitives** (extract repeated patterns):
-  - [ ] Button (pill / primary / ghost) · [ ] Tag/chip · [ ] Card shell
-  - [ ] Section heading (eyebrow + display title) · [ ] Modal · [ ] Toast
-  - [ ] Skeleton loaders · [ ] Empty-state
+- ✅ **Reusable primitives** (`@/components/ui`, barrel-exported; `cn` helper, no new deps):
+  - [x] Button + ButtonLink (pill / primary / ghost / solid) · [x] Tag/chip · [x] Card shell
+  - [x] Section heading (eyebrow + display title) · [x] Modal · [x] Toast (`ToastProvider` wired in root layout, `useToast`)
+  - [x] Skeleton loader · [x] Empty-state
+  - _Adopted in `app/page.tsx` (hero CTAs + featured heading); roll out to remaining pages incrementally._
 - 🔜 Cookie / consent banner (ties to Privacy + analytics)
 
 ---

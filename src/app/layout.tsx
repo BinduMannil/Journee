@@ -7,6 +7,7 @@ import { site } from "@/lib/config/site";
 import { getSiteUrl } from "@/lib/config/env";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { ToastProvider } from "@/components/ui";
 import "./globals.css";
 
 const title = `${site.name} — ${site.tagline}`;
@@ -47,9 +48,11 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <Nav />
-        <div id="content" className="flex-1">{children}</div>
-        <Footer />
+        <ToastProvider>
+          <Nav />
+          <div id="content" className="flex-1">{children}</div>
+          <Footer />
+        </ToastProvider>
       </body>
     </html>
   );

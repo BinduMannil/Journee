@@ -1,9 +1,9 @@
 import Image from "next/image";
-import Link from "next/link";
 import type { Metadata } from "next";
 import { QuoteRotator } from "@/components/QuoteRotator";
 import { DestinationExplorer } from "@/components/DestinationExplorer";
 import { AffiliateCta } from "@/components/AffiliateCta";
+import { ButtonLink, SectionHeading } from "@/components/ui";
 import { site } from "@/lib/config/site";
 import { getSiteUrl } from "@/lib/config/env";
 import { siteJsonLd, jsonLdScript } from "@/lib/seo/jsonld";
@@ -63,37 +63,25 @@ export default async function Home() {
             <QuoteRotator quotes={heroQuotes} />
           </div>
           <div className="journee-fade-up mt-10 flex flex-wrap gap-4">
-            <Link
-              href="/plan"
-              className="inline-block rounded-full border border-gold/50 px-7 py-3 text-sm uppercase tracking-[0.2em] text-gold-bright transition-colors hover:bg-gold/10"
-            >
+            <ButtonLink href="/plan" variant="primary">
               Plan a trip
-            </Link>
-            <Link
-              href="/discover"
-              className="inline-block rounded-full border border-sand/30 px-7 py-3 text-sm uppercase tracking-[0.2em] text-sand/80 transition-colors hover:border-gold/50 hover:text-gold-bright"
-            >
+            </ButtonLink>
+            <ButtonLink href="/discover" variant="ghost">
               Discover by vibe
-            </Link>
-            <Link
-              href="/saved"
-              className="inline-block rounded-full border border-sand/30 px-7 py-3 text-sm uppercase tracking-[0.2em] text-sand/80 transition-colors hover:border-gold/50 hover:text-gold-bright"
-            >
+            </ButtonLink>
+            <ButtonLink href="/saved" variant="ghost">
               Saved
-            </Link>
+            </ButtonLink>
           </div>
         </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-6 py-28 sm:px-12">
-        <div className="mb-14 max-w-2xl">
-          <p className="mb-3 text-sm uppercase tracking-[0.3em] text-gold">
-            Featured
-          </p>
-          <h2 className="font-display text-4xl font-semibold text-sand sm:text-5xl">
-            Destinations chosen by mood, not by map.
-          </h2>
-        </div>
+        <SectionHeading
+          eyebrow="Featured"
+          title="Destinations chosen by mood, not by map."
+          className="mb-14"
+        />
 
         <DestinationExplorer destinations={destinations} />
 
