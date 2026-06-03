@@ -11,6 +11,9 @@ export function Footer() {
           <span className="text-sand/70">/docs</span>.
         </p>
         <nav aria-label="Footer" className="flex gap-5 uppercase tracking-[0.2em]">
+          <Link href="/destinations" className="transition-colors hover:text-gold-bright">
+            Destinations
+          </Link>
           <Link href="/about" className="transition-colors hover:text-gold-bright">
             About
           </Link>

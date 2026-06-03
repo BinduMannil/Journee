@@ -95,11 +95,13 @@ The shell wrapping every route (`src/app/layout.tsx`, `src/components/`).
   - [ ] Share / social-card actions
   - [ ] Weather panel (weather engine) · Safety & visa summary (safety/visa engines)
 
-### 2b. Destinations index / browse  — 🔜 To build
-- **Content:** page title + intro · full catalog grid · filter rail (mood, region, season) · sort + pagination/infinite scroll
-- **Links/actions:** each card → `/destinations/[id]` · ← Home → `/` · optional map-browse toggle
-- [ ] Build `/destinations` listing page
-- [ ] Add to Nav + Footer + home CTAs
+### 2b. Destinations index / browse  — 🟡 Partial (`app/destinations/page.tsx`)
+- **Content:** page title + intro · full catalog grid · mood filter + search (`DestinationExplorer`) · affiliate CTA
+- **Links/actions:** each card → `/destinations/[id]` · ← Home → `/`
+- [x] Build `/destinations` listing page (reuses `DestinationExplorer`)
+- [x] Add to Nav + Footer + sitemap
+- [ ] Region / season filters · sort · pagination/infinite scroll
+- [ ] Map-based browse mode
 
 ---
 
