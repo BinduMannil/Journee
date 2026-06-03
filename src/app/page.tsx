@@ -7,7 +7,12 @@ import { ButtonLink, SectionHeading } from "@/components/ui";
 import { site } from "@/lib/config/site";
 import { getSiteUrl } from "@/lib/config/env";
 import { siteJsonLd, jsonLdScript } from "@/lib/seo/jsonld";
-import { heroQuotes, type Destination } from "@/content/destinations";
+import {
+  heroQuotes,
+  homeFeaturedCopy,
+  type Destination,
+} from "@/content/destinations";
+import { stayAffiliate } from "@/content/common";
 import { resolve } from "@/lib/providers/registry";
 // Importing the registration module wires up all provider adapters.
 import "@/lib/providers/register";
@@ -53,8 +58,8 @@ export default async function Home() {
             {site.tagline}
           </p>
           <h1 className="journee-fade-up font-display text-5xl font-semibold leading-[1.05] text-sand sm:text-7xl">
-            See the world the way it
-            <span className="text-gold"> actually feels.</span>
+            {site.heroHeadlineLead}{" "}
+            <span className="text-gold">{site.heroHeadlineAccent}</span>
           </h1>
           <p className="journee-fade-up mt-6 max-w-2xl text-lg leading-relaxed text-sand/80">
             {site.description}
@@ -78,8 +83,8 @@ export default async function Home() {
 
       <section className="mx-auto max-w-6xl px-6 py-28 sm:px-12">
         <SectionHeading
-          eyebrow="Featured"
-          title="Destinations chosen by mood, not by map."
+          eyebrow={homeFeaturedCopy.eyebrow}
+          title={homeFeaturedCopy.title}
           className="mb-14"
         />
 
@@ -88,7 +93,10 @@ export default async function Home() {
         {/* Renders only when an affiliate catalog is configured and a link
             resolves; otherwise nothing is shown (no fabricated links). */}
         <div className="mt-12 flex justify-center">
-          <AffiliateCta category="hotels" label="Plan your stay" />
+          <AffiliateCta
+            category={stayAffiliate.category}
+            label={stayAffiliate.label}
+          />
         </div>
       </section>
     </main>

@@ -4,13 +4,16 @@ import { AffiliateCta } from "@/components/AffiliateCta";
 import { ButtonLink, SectionHeading } from "@/components/ui";
 import { resolve } from "@/lib/providers/registry";
 import "@/lib/providers/register";
-import { featuredDestinations, type Destination } from "@/content/destinations";
+import {
+  destinationsIndexCopy,
+  featuredDestinations,
+  type Destination,
+} from "@/content/destinations";
+import { commonCopy, stayAffiliate } from "@/content/common";
 
 export const metadata: Metadata = {
-  title: "Destinations",
-  description:
-    "Browse the full Journee catalog — filter by mood, search by name, " +
-    "country, or atmosphere.",
+  title: destinationsIndexCopy.eyebrow,
+  description: destinationsIndexCopy.description,
   alternates: { canonical: "/destinations" },
 };
 
@@ -28,13 +31,13 @@ export default async function DestinationsPage() {
         size="sm"
         className="mb-8 border-0 px-0 text-gold-bright hover:text-gold"
       >
-        &larr; Home
+        {commonCopy.backToHome}
       </ButtonLink>
 
       <SectionHeading
-        eyebrow="Destinations"
-        title="Every place, by the mood it keeps."
-        description="Filter by the atmosphere you're after, or search across names, countries, and moods. The catalog grows; the filters grow with it."
+        eyebrow={destinationsIndexCopy.eyebrow}
+        title={destinationsIndexCopy.title}
+        description={destinationsIndexCopy.description}
         as="h1"
         className="mb-14"
       />
@@ -42,7 +45,10 @@ export default async function DestinationsPage() {
       <DestinationExplorer destinations={destinations} />
 
       <div className="mt-12 flex justify-center">
-        <AffiliateCta category="hotels" label="Plan your stay" />
+        <AffiliateCta
+          category={stayAffiliate.category}
+          label={stayAffiliate.label}
+        />
       </div>
     </main>
   );

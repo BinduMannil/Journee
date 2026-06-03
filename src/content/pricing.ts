@@ -38,3 +38,43 @@ export const creditPackages: readonly CreditPackage[] = [
 export function findPackage(id: string): CreditPackage | undefined {
   return creditPackages.find((p) => p.id === id);
 }
+
+/** What one credit buys, surfaced as the unit label on the pricing page. */
+export const creditUnitLabel = "AI trip plans";
+
+/** Editorial + structural copy for the /pricing page (no literals in JSX). */
+export interface PricingCopy {
+  readonly eyebrow: string;
+  readonly title: string;
+  readonly description: string;
+  readonly freeTierName: string;
+  readonly freeTierCtaLabel: string;
+  readonly freeTierCtaHref: string;
+  readonly packagesHeading: string;
+  /** Suffix after the credit count on each pack, e.g. "AI trip plans". */
+  readonly packageCreditsSuffix: string;
+  /** Pack CTA label. Honest: checkout is not built yet. */
+  readonly packageCtaLabel: string;
+  readonly footnote: string;
+}
+
+export const pricingCopy: PricingCopy = {
+  eyebrow: "Pricing",
+  title: "Plan freely. Pay only when you plan with AI.",
+  description:
+    "Every visitor gets a handful of AI-generated trip plans free. Beyond "
+    + "that, top up with credits — no subscription, and no account required to "
+    + "start.",
+  freeTierName: "Free to start",
+  freeTierCtaLabel: "Start planning",
+  freeTierCtaHref: "/plan",
+  packagesHeading: "Credit packs",
+  packageCreditsSuffix: creditUnitLabel,
+  packageCtaLabel: "Available at launch",
+  footnote: "Prices are illustrative while billing is being finalized.",
+};
+
+/** Free-quota sentence, parameterized by the configured free allowance. */
+export function freeQuotaNote(freePlans: number): string {
+  return `${freePlans} free ${creditUnitLabel} for every new visitor — no card, no account.`;
+}

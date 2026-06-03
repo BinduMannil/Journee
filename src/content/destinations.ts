@@ -104,6 +104,21 @@ export function intensityForMood(mood: string): number {
   return moodIntensity[mood] ?? defaultMoodIntensity;
 }
 
+/** Editorial copy for the home page "Featured" section (no literals in JSX). */
+export const homeFeaturedCopy = {
+  eyebrow: "Featured",
+  title: "Destinations chosen by mood, not by map.",
+} as const;
+
+/** Editorial copy for the /destinations index page. */
+export const destinationsIndexCopy = {
+  eyebrow: "Destinations",
+  title: "Every place, by the mood it keeps.",
+  description:
+    "Filter by the atmosphere you're after, or search across names, "
+    + "countries, and moods. The catalog grows; the filters grow with it.",
+} as const;
+
 /** Rotating atmospheric quotes for the hero (driven by data, not hardcoded JSX). */
 export const heroQuotes: readonly string[] = [
   "Travel is the only thing you buy that makes you richer.",

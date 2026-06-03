@@ -153,9 +153,12 @@ The shell wrapping every route (`src/app/layout.tsx`, `src/components/`).
 - [ ] **Terms of service** (`/terms`)
 - [ ] **Contact / support** (`/contact`) — form or email, response expectations
 - [ ] **FAQ / Help** (`/help`)
-- [ ] **Pricing** (`/pricing`) — content scaffolded in `content/pricing.ts`:
-  - **Content:** free quota line (`FREE_AI_PLANS` = 3 AI plans) · credit packages — **Starter** 10 credits / $5 · **Explorer** 30 / $12 · **Voyager** 100 / $35 (prices are placeholders) · what credits buy (AI trip planning) · FAQ
-  - **Links/actions:** Buy / Get started per package → checkout (depends on billing) · link → `/plan`
+- 🟡 **Pricing** (`app/pricing/page.tsx`) — all copy + data from `content/pricing.ts`; prices via `Intl.NumberFormat` (`@/lib/billing/format`), no hardcoded symbol:
+  - [x] Free-tier card (`FREE_AI_PLANS`) + CTA → `/plan`
+  - [x] Credit-pack grid (`creditPackages`, formatted prices)
+  - [x] Wired into Nav, Footer, sitemap
+  - [ ] Buy / checkout flow per pack (depends on billing — shown as "Available at launch")
+  - [ ] FAQ section
 
 ---
 
