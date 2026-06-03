@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { buildItinerary, type Pacing } from "@/lib/intelligence/itinerary";
 import { itineraryToICS } from "@/lib/intelligence/itinerary-export";
 import { routeDistanceKm } from "@/lib/intelligence/geo";
+import { AiTripPlan } from "./AiTripPlan";
 
 export interface PlannableDestination {
   readonly id: string;
@@ -66,8 +67,9 @@ export function TripBuilder({ destinations }: { destinations: readonly Plannable
   };
 
   return (
-    <div className="grid gap-10 md:grid-cols-2">
-      <div>
+    <div>
+      <div className="grid gap-10 md:grid-cols-2">
+        <div>
         <p className="mb-4 text-sm uppercase tracking-[0.3em] text-gold">Choose places</p>
         <ul className="space-y-2">
           {destinations.map((d) => (
@@ -104,7 +106,7 @@ export function TripBuilder({ destinations }: { destinations: readonly Plannable
             </button>
           ))}
         </div>
-      </div>
+        </div>
 
       <div>
         <div className="mb-4 flex items-baseline justify-between">
@@ -167,6 +169,9 @@ export function TripBuilder({ destinations }: { destinations: readonly Plannable
           </button>
         )}
       </div>
+      </div>
+
+      <AiTripPlan destinations={selectedDestinations} pacing={pacing} />
     </div>
   );
 }

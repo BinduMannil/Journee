@@ -22,6 +22,39 @@ export const planCopy = {
     + "packed.",
 } as const;
 
+/**
+ * Copy for the AI trip-planner panel on /plan. Every status the endpoint can
+ * return has an honest message — including the 503 "not enabled here" case, so
+ * the UI never pretends a capability that is switched off.
+ */
+export const aiPlannerCopy = {
+  heading: "Or let AI compose it",
+  intro:
+    "Hand your selection to an AI planner for a richer, narrative day-by-day "
+    + "itinerary. Falls back to the paced planner above when it's unavailable.",
+  notesLabel: "Anything to tailor it? (optional)",
+  notesPlaceholder: "photography-focused, slow mornings, vegetarian food…",
+  submit: "Plan with AI",
+  loading: "Composing…",
+  needSelection: "Pick at least one destination above first.",
+  unavailable:
+    "AI planning isn't switched on in this environment — the paced planner "
+    + "above still works.",
+  quotaExhausted: "You've used your free AI plans.",
+  quotaCtaLabel: "See pricing",
+  quotaCtaHref: "/pricing",
+  rateLimited:
+    "A lot of free plans are coming from this network right now. Try again "
+    + "shortly.",
+  error: "Something went wrong composing that plan. Please try again.",
+  summaryHeading: "AI itinerary",
+} as const;
+
+/** Remaining-free-plans note, parameterized by the count the API returns. */
+export function remainingFreeNote(remaining: number): string {
+  return `${remaining} free AI ${remaining === 1 ? "plan" : "plans"} left.`;
+}
+
 export const aboutCopy = {
   title: `How ${site.name} thinks`,
   metaDescription: `How ${site.name} thinks about travel — and what's built so far.`,

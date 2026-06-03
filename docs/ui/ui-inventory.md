@@ -119,10 +119,11 @@ The shell wrapping every route (`src/app/layout.tsx`, `src/components/`).
 ## 4. Plan (trip planner)  — 🟡 Partial (`app/plan/page.tsx`, `TripBuilder`, `TravelReadiness`)
 - **Content:** ← Home link · title "Plan a trip" · intro (pick destinations + pace; fatigue-aware day packing) · destination picker · pace control · day-by-day itinerary · travel-readiness panel
 - **Links/actions:** ← Home → `/` · add/remove destinations · adjust pace
+- ✅ AI planning panel (`AiTripPlan`) — posts selection + pacing to `POST /api/plan/ai`; honest fallbacks for 503/402/429 (links to `/pricing` on quota)
+- ✅ Export itinerary `.ics` (`itinerary-export.ts`, in `TripBuilder`)
 - 🔜 Extensions:
   - [ ] Multi-destination / multi-day composition
   - [ ] Drag-to-reorder days/activities
-  - [ ] Export itinerary (logic in `intelligence/itinerary-export.ts`)
   - [ ] Save / name / revisit trips
   - [ ] Shareable itinerary view
   - [ ] Budget summary (uses `content/pricing.ts`)
@@ -196,7 +197,7 @@ feed lands (roadmap in `docs/README.md`). Listed to keep direction visible.
 - [ ] **Safety & risk** indicator
 - [ ] **Visa & entry** requirements
 - [ ] **Local culture / city-energy** module
-- [ ] **AI planning** assistant (conversational; metered via credits)
+- [x] **AI planning** panel (`AiTripPlan` on `/plan`; metered via credits, honest 503/402/429 states) · [ ] conversational/iterative mode
 - [ ] **Memory & reflection** (post-trip) surface
 - [ ] **Social & creator** content surface
 

@@ -233,7 +233,7 @@ These have **all data/logic present** — pure UI work:
 3. **Pricing page `/pricing`** — `creditPackages` + `FREE_AI_PLANS` ready.
 4. **Home sections** (how-it-works, teasers) — `platformSystems`, `pathfind`, `buildItinerary`, `LightBadge`/`AtmosphericScore` all present.
 5. ✅ **Generalized explainable-score widget** — `ScorePanel` (`@/components/ui`) renders any `IntelligenceScore`; reuse for every §9 engine.
-6. **AI-planning client UI** — `POST /api/plan/ai` is wired; just needs a form + graceful 503 fallback to `buildItinerary`.
+6. ✅ **AI-planning client UI** — `AiTripPlan` posts to `POST /api/plan/ai` with honest 503/402/429 handling; reuses the planner's selection + pacing.
 7. **Admin dashboard** — every `/api/admin/*` + analytics endpoint already returns JSON.
 
 ---
