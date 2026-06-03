@@ -1,4 +1,4 @@
-import { getAdminToken } from "@/lib/config/env";
+import { requireAdmin } from "@/lib/auth/admin";
 import { assembleDestinationReadiness } from "@/lib/intelligence/destination-readiness";
 import { assembleTripReadiness } from "@/lib/intelligence/trip-readiness";
 import { defaultTravelDataCache } from "@/lib/providers/travel-data/cache";
@@ -40,13 +40,8 @@ function parseStops(url: URL): ParsedStop[] {
 }
 
 export async function GET(request: Request): Promise<Response> {
-  const token = getAdminToken();
-  if (!token) {
-    return Response.json({ error: "admin_disabled" }, { status: 503 });
-  }
-  if (request.headers.get("x-admin-token") !== token) {
-    return Response.json({ error: "unauthorized" }, { status: 401 });
-  }
+  const denied = requireAdmin(request);
+  if (denied) return denied;
 
   const url = new URL(request.url);
   const stops = parseStops(url);

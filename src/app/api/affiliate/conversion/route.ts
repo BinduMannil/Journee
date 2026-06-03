@@ -1,15 +1,26 @@
 import { conversionEventSchema, buildConversionRow } from "@/lib/affiliate/events";
 import { getSupabaseServiceClient } from "@/lib/providers/supabase/client";
 import { log } from "@/lib/observability/logger";
+import { createRateLimiter } from "@/lib/http/rate-limit";
+import { enforceRateLimit } from "@/lib/http/guard";
 
 /**
  * Affiliate conversion ingestion (server-only write path). Mirrors the click
  * endpoint: validate, then insert via the privileged service-role client.
  * Returns 503 when unconfigured rather than dropping data silently.
+ *
+ * Unauthenticated by design (a browser beacon), so it is rate-limited per client
+ * IP to bound fake-conversion injection. The in-memory limiter is per-instance.
  */
 export const dynamic = "force-dynamic";
 
+// 30 conversions/min per IP — conversions are rarer than clicks, so a tighter cap.
+const limiter = createRateLimiter({ limit: 30, windowMs: 60_000 });
+
 export async function POST(request: Request): Promise<Response> {
+  const limited = enforceRateLimit(limiter, request, "affiliate_conversion");
+  if (limited) return limited;
+
   let body: unknown;
   try {
     body = await request.json();

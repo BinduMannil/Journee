@@ -1,6 +1,8 @@
 import { clickEventSchema, buildClickRow } from "@/lib/affiliate/events";
 import { getSupabaseServiceClient } from "@/lib/providers/supabase/client";
 import { log } from "@/lib/observability/logger";
+import { createRateLimiter } from "@/lib/http/rate-limit";
+import { enforceRateLimit } from "@/lib/http/guard";
 
 /**
  * Affiliate click ingestion (server-only write path).
@@ -8,10 +10,20 @@ import { log } from "@/lib/observability/logger";
  * Validates the body, then inserts via the privileged service-role client.
  * Returns 503 when ingestion is unconfigured rather than silently dropping
  * data — honest about data loss. See docs/architecture/affiliate-routing-architecture.md.
+ *
+ * Unauthenticated by design (a browser beacon), so it is rate-limited per client
+ * IP to bound fake-event injection. The in-memory limiter is per-instance; a
+ * shared store is needed for a global limit under horizontal scaling.
  */
 export const dynamic = "force-dynamic";
 
+// 60 events/min per IP — generous for a real session, a low ceiling for a script.
+const limiter = createRateLimiter({ limit: 60, windowMs: 60_000 });
+
 export async function POST(request: Request): Promise<Response> {
+  const limited = enforceRateLimit(limiter, request, "affiliate_click");
+  if (limited) return limited;
+
   let body: unknown;
   try {
     body = await request.json();

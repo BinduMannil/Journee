@@ -2,6 +2,34 @@
 
 _Date: 2026-06-03 · Scope: full repository (`src/`, `supabase/`, `test/`, config)_
 
+## Remediation status (2026-06-03)
+
+All actionable findings have been fixed and verified (273 tests pass, typecheck
+clean, lint clean, build green, `npm audit` = 0 vulnerabilities):
+
+| # | Finding | Status |
+| --- | --- | --- |
+| 1 | Unauthenticated revenue analytics endpoint | ✅ Fixed — admin-gated |
+| 2 | Public click/conversion endpoints could be flooded | ✅ Fixed — rate-limited per IP |
+| 3 | No rate limiting on public endpoints | ✅ Fixed — limiter on click/conversion/csp-report |
+| 4 | Admin token compared non-constant-time | ✅ Fixed — SHA-256 + `timingSafeEqual` |
+| 5 | `/api/metrics` open | ✅ Fixed — admin-gated |
+| 6 | Client IP spoofable | ➖ No action — documented, used only as an abuse ceiling |
+| 7 | Two moderate `npm audit` vulns (postcss) | ✅ Fixed — pinned via `overrides` |
+| 8 | `next lint` deprecated | 🔜 Deferred — see note below |
+
+**On #8 (deferred deliberately):** the fix is a forward-looking migration to the
+ESLint CLI, but the only published codemod is `@next/codemod@canary`
+(pre-release) and it rewrites lint config. Running an experimental codemod to
+silence a harmless deprecation warning — while the current lint setup is clean
+and Next.js is still on 15.x — trades a working state for churn/risk. It should
+ride along with the planned Next.js major upgrade instead. Tracked here so it
+isn't lost.
+
+The detailed findings below are kept verbatim as the original audit record.
+
+---
+
 ## In one sentence
 
 The codebase is **healthy and well-built** — all tests pass, types are clean, no

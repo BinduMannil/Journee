@@ -3,6 +3,25 @@
 All notable changes to Journee. Dates are UTC. This is a pre-1.0 foundation;
 entries describe what genuinely shipped (roadmap items are labeled as such).
 
+## [Unreleased] — security hardening (branch `claude/magical-fermat-8xmQB`)
+
+### Security
+- Admin-gate the revenue analytics endpoint (`/api/affiliate/analytics`) and the
+  `/api/metrics` snapshot. Both previously returned privileged data without
+  authentication; they now use the same secure-by-default `x-admin-token` guard
+  as `/api/admin/*`. Centralized that guard in `src/lib/auth/admin.ts` with a
+  **constant-time** token comparison (replacing the prior plain `!==`).
+- Rate-limit the unauthenticated public write endpoints (`/api/affiliate/click`,
+  `/api/affiliate/conversion`, `/api/csp-report`) per client IP to bound
+  fake-event and log-flood injection (`src/lib/http/rate-limit.ts` +
+  `guard.ts`); over-limit callers get `429` with `Retry-After`, and a
+  `rate_limited` counter surfaces the pressure on `/api/metrics`.
+- Pin transitive `postcss` to a patched line via `overrides`, clearing the two
+  moderate `npm audit` advisories (`npm audit` now reports 0 vulnerabilities).
+- Added unit tests for the limiter, the request guard, the admin guard, and the
+  newly-gated analytics endpoint (273 tests pass; typecheck, lint, build green).
+- See `docs/CODE_AUDIT.md` for the full audit and remaining follow-ups.
+
 ## [Unreleased] — foundation (branch `claude/quirky-keller-2S10c`, PR #1)
 
 ### Platform

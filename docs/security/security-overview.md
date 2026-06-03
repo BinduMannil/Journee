@@ -34,6 +34,22 @@ it can serve as truthful audit input rather than aspirational marketing.
     check (Next.js injects inline bootstrap scripts/styles) and would require
     nonces — which force dynamic rendering — so it remains the next deliberate
     step once reports confirm a zero-violation allow-list.
+- **Admin-gated introspection.** Every endpoint that exposes privileged data or
+  operational signal is secure-by-default (503 unless `JOURNEE_ADMIN_TOKEN` is
+  set, then a matching `x-admin-token` header is required), via a single shared
+  guard (`src/lib/auth/admin.ts`): `/api/admin/status`, `/api/admin/readiness`,
+  `/api/affiliate/analytics` (revenue data — reads event tables through the
+  service-role client, which bypasses RLS), and `/api/metrics`. The token check
+  is **constant-time** (SHA-256 + `timingSafeEqual`) so it can't be probed by
+  timing.
+- **Rate-limited public writes.** The unauthenticated browser-beacon endpoints
+  (`/api/affiliate/click`, `/api/affiliate/conversion`, `/api/csp-report`) are
+  rate-limited per client IP (`src/lib/http/`) to bound fake-event and
+  log-flood injection. The limiter is in-memory/per-instance today — a shared
+  store (e.g. Redis) is the documented next step for a global limit under
+  horizontal scaling.
+- **Clean dependency audit.** `npm audit` reports zero vulnerabilities; a
+  transitive `postcss` advisory is pinned to a patched line via `overrides`.
 
 ## Recommended next (not yet enforced)
 

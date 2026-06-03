@@ -2,7 +2,7 @@ import { allProviders } from "@/lib/providers/registry";
 import "@/lib/providers/register";
 import "@/lib/providers/travel-data/register";
 import { reportTravelDataReadiness } from "@/lib/providers/travel-data/registry";
-import { getAdminToken } from "@/lib/config/env";
+import { requireAdmin } from "@/lib/auth/admin";
 import { getCounters } from "@/lib/observability/metrics";
 import { KNOWN_FLAGS, isFeatureEnabled } from "@/lib/config/flags";
 
@@ -15,13 +15,8 @@ import { KNOWN_FLAGS, isFeatureEnabled } from "@/lib/config/flags";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request): Promise<Response> {
-  const token = getAdminToken();
-  if (!token) {
-    return Response.json({ error: "admin_disabled" }, { status: 503 });
-  }
-  if (request.headers.get("x-admin-token") !== token) {
-    return Response.json({ error: "unauthorized" }, { status: 401 });
-  }
+  const denied = requireAdmin(request);
+  if (denied) return denied;
 
   const providers = await Promise.all(
     allProviders().map(async (p) => ({

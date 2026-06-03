@@ -1,5 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+
+// Analytics is admin-gated; configure a token so the route-level tests below can
+// reach the downstream validation/config paths by presenting the header.
+process.env.JOURNEE_ADMIN_TOKEN = "analytics-route-token";
+
 import {
   aggregateCampaignMetrics,
   parseTimeWindow,
@@ -7,7 +12,9 @@ import {
 import { GET } from "../src/app/api/affiliate/analytics/route";
 
 function analyticsReq(query = ""): Request {
-  return new Request(`http://localhost/api/affiliate/analytics${query}`);
+  return new Request(`http://localhost/api/affiliate/analytics${query}`, {
+    headers: { "x-admin-token": "analytics-route-token" },
+  });
 }
 
 test("aggregates clicks, conversions, rate, and revenue by currency", () => {
