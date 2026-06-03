@@ -11,7 +11,7 @@ it can serve as truthful audit input rather than aspirational marketing.
 - **No secrets in the repo.** `.gitignore` excludes `.env*`; `.env.example`
   holds placeholders only. Server-only keys (e.g. Supabase service role) are
   documented as server-only.
-- **CI quality gate.** Typecheck, lint, and build run on every PR.
+- **CI quality gate.** Typecheck, lint (ESLint CLI), and build run on every PR.
 - **Strict typing.** Reduces a class of runtime/security bugs.
 - **Provider boundary.** Outbound integrations and credentials are funneled
   through adapters, giving a single place to audit external access.

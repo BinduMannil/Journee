@@ -18,6 +18,10 @@ entries describe what genuinely shipped (roadmap items are labeled as such).
   `rate_limited` counter surfaces the pressure on `/api/metrics`.
 - Pin transitive `postcss` to a patched line via `overrides`, clearing the two
   moderate `npm audit` advisories (`npm audit` now reports 0 vulnerabilities).
+- Migrate linting off the deprecated `next lint` wrapper to the ESLint CLI
+  (`eslint .`) with an explicit build-output `ignores` block and an
+  underscore-ignore convention for unused identifiers; now also lints `test/`
+  and `scripts/`. Lint stays clean and CI (`npm run lint`) is unchanged.
 - Added unit tests for the limiter, the request guard, the admin guard, and the
   newly-gated analytics endpoint (273 tests pass; typecheck, lint, build green).
 - See `docs/CODE_AUDIT.md` for the full audit and remaining follow-ups.

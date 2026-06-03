@@ -16,15 +16,16 @@ clean, lint clean, build green, `npm audit` = 0 vulnerabilities):
 | 5 | `/api/metrics` open | ✅ Fixed — admin-gated |
 | 6 | Client IP spoofable | ➖ No action — documented, used only as an abuse ceiling |
 | 7 | Two moderate `npm audit` vulns (postcss) | ✅ Fixed — pinned via `overrides` |
-| 8 | `next lint` deprecated | 🔜 Deferred — see note below |
+| 8 | `next lint` deprecated | ✅ Fixed — migrated to the ESLint CLI |
 
-**On #8 (deferred deliberately):** the fix is a forward-looking migration to the
-ESLint CLI, but the only published codemod is `@next/codemod@canary`
-(pre-release) and it rewrites lint config. Running an experimental codemod to
-silence a harmless deprecation warning — while the current lint setup is clean
-and Next.js is still on 15.x — trades a working state for churn/risk. It should
-ride along with the planned Next.js major upgrade instead. Tracked here so it
-isn't lost.
+**On #8:** rather than run the pre-release `@next/codemod@canary`, the migration
+was done by hand (lower risk, no surprise config rewrite): the `lint` script now
+calls `eslint .` directly against the existing flat config (`eslint.config.mjs`),
+which gains an explicit `ignores` block for build output (`.next/`, `out/`,
+`build/`, `node_modules/`, `next-env.d.ts`) and a standard underscore-ignore
+convention for intentionally-unused identifiers. The CLI now lints `test/` and
+`scripts/` too (broader than `next lint` did) and is clean. CI (`npm run lint`)
+is unaffected.
 
 The detailed findings below are kept verbatim as the original audit record.
 

@@ -82,7 +82,7 @@ try {
     try {
       const res = await fetch(`${base}${path}`, { redirect: "manual" });
       status = res.status;
-    } catch (e) {
+    } catch {
       status = -1;
     }
     const ok = status === expected;
