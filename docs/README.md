@@ -25,6 +25,11 @@ This is the entry point for engineering documentation. It is deliberately
 - **decisions/** — Architecture Decision Records (ADRs). One file per significant choice.
 - **governance/** — how we develop: branching, PRs, change management.
 - **security/** — security posture and the path toward SOC 2 readiness.
+- **compliance/** — the **SOC 2 readiness program**, written for a beginner:
+  what SOC 2 is, a [criteria→control→evidence matrix](compliance/trust-services-criteria-matrix.md),
+  a full [policy set](compliance/policies), an [evidence guide](compliance/evidence-collection-guide.md),
+  and an honest [gap analysis](compliance/gap-analysis-and-roadmap.md). Start at
+  [`compliance/README.md`](compliance/README.md).
 
 ## Documentation principles
 

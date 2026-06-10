@@ -5,6 +5,13 @@ on:
     branches: [main]
   pull_request:
 
+# Least-privilege token: this workflow only reads the repository, so the
+# automatically-provided GITHUB_TOKEN is scoped to read-only. Any future job
+# that needs to write (e.g. publish, comment) must opt in explicitly. This is
+# the SOC 2 "least privilege" control (CC6.1) applied to CI credentials.
+permissions:
+  contents: read
+
 # Cancel superseded runs on the same ref to save CI minutes.
 concurrency:
   group: ci-${{ github.ref }}

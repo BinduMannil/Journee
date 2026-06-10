@@ -87,3 +87,4 @@ Start at [`docs/README.md`](docs/README.md). Key entry points:
 - Architecture overview → [`docs/architecture/system-architecture.md`](docs/architecture/system-architecture.md)
 - Why the big decisions → [`docs/decisions/`](docs/decisions)
 - How we work (branches, PRs) → [`docs/governance/branch-and-pr-governance.md`](docs/governance/branch-and-pr-governance.md)
+- Security & SOC 2 readiness (beginner-friendly) → [`docs/compliance/README.md`](docs/compliance/README.md)

@@ -9,15 +9,21 @@ published before any public launch.
 
 ## Posture
 
-Journee is **not** SOC 2 certified. Current security posture and the path toward
-readiness are documented honestly in
-[`docs/security/security-overview.md`](docs/security/security-overview.md).
+Journee is **not** SOC 2 certified. Current security posture and the full SOC 2
+**readiness program** are documented honestly in
+[`docs/security/security-overview.md`](docs/security/security-overview.md) and
+[`docs/compliance/`](docs/compliance/README.md) (a beginner-friendly explainer,
+a criteria→control→evidence matrix, a complete policy set, and an honest gap
+analysis).
 
 Highlights:
 
-- No secrets in git (`.gitignore` + `.env.example` placeholders).
-- CI quality gate + dependency audit on every PR; Dependabot enabled.
+- No secrets in git (`.gitignore` + `.env.example` placeholders); secret
+  scanning via gitleaks (`.github/workflows/secret-scan.yml`).
+- CI quality gate (least-privilege token) + dependency audit on every PR;
+  Dependabot enabled; CodeQL SAST (`.github/workflows/codeql.yml`).
 - Supabase anon/service-role keys separated; RLS deny-by-default in migrations.
 - Affiliate event tables are not publicly readable.
+- Baseline security headers + two-tier CSP on every response.
 
 Do not include real credentials in issues, PRs, or commits.

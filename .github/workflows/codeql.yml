@@ -1,0 +1,57 @@
+# CodeQL — Static Application Security Testing (SAST).
+#
+# What this is, in plain terms: GitHub's CodeQL engine reads our JavaScript /
+# TypeScript and looks for known security-bug patterns (injection, unsafe data
+# flow, etc.) the way a reviewer would, but automatically and on every change.
+# Findings appear in the repository's "Security" tab.
+#
+# Why it exists: SOC 2 expects evidence that code is checked for vulnerabilities
+# before it ships (Common Criteria CC7.1 "detect vulnerabilities" and CC8.1
+# "change management"). This workflow is that evidence — it runs on every PR,
+# every push to main, and on a weekly schedule so newly-disclosed patterns are
+# caught even when the code hasn't changed.
+#
+# See docs/compliance/trust-services-criteria-matrix.md (CC7.1) and
+# docs/compliance/policies/secure-sdlc-policy.md.
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly re-scan (Mondays 07:00 UTC) so new CodeQL queries run against
+    # unchanged code. SOC 2 auditors look for *continuous*, not one-off, scanning.
+    - cron: "0 7 * * 1"
+
+# Least privilege: read the code, write only security-scanning results.
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze (javascript-typescript)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          # "security-and-quality" is the broadest official query suite:
+          # security findings plus maintainability issues.
+          queries: security-and-quality
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript-typescript"

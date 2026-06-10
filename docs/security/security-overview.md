@@ -6,12 +6,26 @@ This document states the **current** posture and the **path** toward SOC 2
 readiness. It distinguishes what is in place from what is recommended/planned so
 it can serve as truthful audit input rather than aspirational marketing.
 
+> **The full SOC 2 readiness program now lives in
+> [`../compliance/`](../compliance/README.md):** a beginner-friendly explainer,
+> a [criteria→control→evidence matrix](../compliance/trust-services-criteria-matrix.md),
+> a complete [policy set](../compliance/policies), an
+> [evidence-collection guide](../compliance/evidence-collection-guide.md), and an
+> honest [gap analysis](../compliance/gap-analysis-and-roadmap.md). This page
+> remains the concise security-posture summary; the compliance folder is the
+> detailed program.
+
 ## In place today
 
 - **No secrets in the repo.** `.gitignore` excludes `.env*`; `.env.example`
   holds placeholders only. Server-only keys (e.g. Supabase service role) are
   documented as server-only.
-- **CI quality gate.** Typecheck, lint, and build run on every PR.
+- **CI quality gate.** Typecheck, lint, test, build, and a smoke test run on
+  every PR, with a **least-privilege token** (`permissions: contents: read`).
+- **Automated security scanning.** CodeQL **SAST**
+  (`.github/workflows/codeql.yml`), dependency audit (`npm audit` in CI) +
+  Dependabot, and **secret scanning** via gitleaks
+  (`.github/workflows/secret-scan.yml`) — all on PRs/pushes and weekly schedules.
 - **Strict typing.** Reduces a class of runtime/security bugs.
 - **Provider boundary.** Outbound integrations and credentials are funneled
   through adapters, giving a single place to audit external access.
@@ -39,12 +53,15 @@ it can serve as truthful audit input rather than aspirational marketing.
 
 | Control | Action |
 | --- | --- |
-| Branch protection on `main` | Require PR + passing CI + review; block force-push. |
-| Secret scanning | Enable GitHub secret scanning + push protection. |
-| Dependency scanning | Enable Dependabot / `npm audit` in CI. |
-| MFA | Require MFA for all org members. |
-| Least privilege | Document and apply minimal GitHub + cloud roles. |
-| Environment separation | Distinct local/staging/prod with separate credentials. |
+| Branch protection on `main` | Require PR + passing CI + review; block force-push. (gap P0-1) |
+| Native secret scanning | Enable GitHub secret scanning + **push protection** to complement the gitleaks workflow. (gap P0-3) |
+| MFA | Require MFA for all org members. (gap P0-2) |
+| Least privilege (org/cloud) | Document and apply minimal GitHub + cloud roles. (CI token is already read-only.) |
+| Environment separation | Distinct local/staging/prod with separate credentials. (gap P1-8) |
+
+The "gap" references above point to
+[`../compliance/gap-analysis-and-roadmap.md`](../compliance/gap-analysis-and-roadmap.md),
+where each item has a priority, owner, and exact action.
 
 ## SOC 2 readiness (direction, not a claim)
 
