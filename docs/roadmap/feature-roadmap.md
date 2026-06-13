@@ -159,6 +159,13 @@ mocked-as-done.
 - **Cross-cutting acceptance:** live "Travel Confidence" badge replaces the
   mock preview on cards/detail; provenance UI shows seed vs live vs stale
   (`destination-readiness.ts` already returns provenance).
+- **✅ Already surfaced (seed):** the REAL assembler is now public on the
+  destination page (`TravelConfidence`), the `/plan` trip aggregate
+  (`composeTripReadiness`), `/discover` result annotations, and
+  `GET /api/destinations/[id]/readiness` — all honestly labelled `seed` with
+  coverage-based confidence. Wiring a live feed behind the same contract flips
+  these from seed to live with **no surface change** — that is the remaining
+  Phase 2 work.
 
 ---
 

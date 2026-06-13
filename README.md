@@ -22,6 +22,7 @@ patterns the rest of the platform will build on.
 | Affiliate vertical: catalog → resolver → safe URL → gated CTA | ✅ Built (no hardcoded links) |
 | Affiliate ingestion (click + conversion) + revenue analytics | ✅ Built (server-only writes, time-windowed) |
 | Explainable intelligence scoring core + engines + Travel Confidence | ✅ Core + destination/events/disruption + aggregate (data feeds roadmap) |
+| Real (seed-fed) Travel Confidence surfaced — destination, trip, discover, API | ✅ Built (assembler over seed travel-data; honest `seed` provenance + coverage) |
 | Sustainability/Eco engine + trip carbon estimator | ✅ Built (pure, explainable; surfaced on `/plan`) |
 | Seasonality model + "in season this month" | ✅ Built (structured `bestMonths`; surfaced on `/discover`) |
 | Similar destinations ("you might also love") | ✅ Built (mood/country/season; on detail pages) |
@@ -53,12 +54,13 @@ npm test         # 302 unit tests (node:test)
 | Route | What |
 | --- | --- |
 | `/` | Cinematic landing; mood filter + search over destinations |
-| `/destinations/[id]` | Editorial detail page; live light phase + explainable atmosphere score + "you might also love" (unknown id → 404) |
-| `/plan` | Trip planner — fatigue-aware itinerary, trip carbon estimate, `.ics` export, AI concierge |
+| `/destinations/[id]` | Detail page; live light phase + atmosphere score + real seed-fed Travel Confidence + "you might also love" (unknown id → 404) |
+| `/plan` | Trip planner — fatigue-aware itinerary, real seed-fed Trip Confidence, carbon estimate, `.ics` export, AI concierge |
 | `/tools` | Travel tools — packing planner (pure engine) + currency converter (seed FX provider) |
-| `/discover` | Vibe-based discovery (Pathfinder) + natural-language search ("calm and sunny, not too lively") + "in season this month" |
+| `/discover` | Vibe discovery (Pathfinder) annotated with real Travel Confidence + natural-language search + "in season this month" |
 | `/saved` | Saved collection (localStorage, no account needed) |
 | `/api/destinations` | Registry-resolved catalog (JSON) |
+| `/api/destinations/[id]/readiness` | Public, seed-fed Travel Confidence for one destination (unknown id → 404) |
 | `/api/pathfinder` | Discovery ranking (`?vibe=&avoid=` or natural-language `?q=`) |
 | `/api/plan/ai` | AI narrative planner (503 when no LLM key → client uses deterministic fallback) |
 | `/api/health`, `/api/metrics` | Liveness/config + counter metrics |
