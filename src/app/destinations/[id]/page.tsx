@@ -9,6 +9,9 @@ import { LightBadge } from "@/components/LightBadge";
 import { AtmosphericScore } from "@/components/AtmosphericScore";
 import { SunSchedule } from "@/components/SunSchedule";
 import { TravelReadiness } from "@/components/TravelReadiness";
+import { TravelConfidence } from "@/components/TravelConfidence";
+import { assembleDestinationReadiness } from "@/lib/intelligence/destination-readiness";
+import "@/lib/providers/travel-data/register";
 import { SaveButton } from "@/components/SaveButton";
 import { SimilarDestinations } from "@/components/SimilarDestinations";
 import { similarDestinations } from "@/lib/intelligence/similar";
@@ -71,6 +74,11 @@ export default async function DestinationPage({
     const d = all.find((x) => x.id === m.id)!;
     return { id: d.id, name: d.name, country: d.country, reason: m.reason };
   });
+
+  // Real, seed-fed Travel Confidence (advisories + local events resolved through
+  // the provider registry, scored by the engines). Never throws — zero coverage
+  // simply renders nothing.
+  const readiness = await assembleDestinationReadiness({ destinationId: destination.id });
 
   const jsonLd = destinationJsonLd(
     destination,
@@ -155,6 +163,8 @@ export default async function DestinationPage({
         )}
 
         {destination.coordinates && <SunSchedule lat={destination.coordinates.lat} />}
+
+        <TravelConfidence readiness={readiness} />
 
         {destination.coordinates && isFeatureEnabled("mock-intelligence") && (
           <TravelReadiness
