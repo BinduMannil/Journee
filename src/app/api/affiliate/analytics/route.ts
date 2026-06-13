@@ -8,15 +8,19 @@ import {
   type TimeWindow,
 } from "@/lib/affiliate/analytics";
 import { getSupabaseServiceClient } from "@/lib/providers/supabase/client";
+import { adminGate } from "@/lib/http/admin-auth";
 import { log } from "@/lib/observability/logger";
 
 /**
  * Affiliate revenue analytics (server-only read of event tables).
  *
  * Returns per-campaign metrics aggregated from click/conversion events,
- * optionally bounded by `?since=&until=` (ISO timestamps). 503 when
- * unconfigured. NOTE: reads all rows in the window — pagination is a roadmap
- * concern as volume grows (event tables are append-only).
+ * optionally bounded by `?since=&until=` (ISO timestamps). This is CONFIDENTIAL
+ * business data (revenue), so it is admin-gated exactly like /api/admin/* —
+ * disabled (503) unless JOURNEE_ADMIN_TOKEN is set, then requires a matching
+ * `x-admin-token` header. NOTE: reads all rows in the window — moving the
+ * aggregation into SQL is a roadmap concern as volume grows (event tables are
+ * append-only).
  */
 export const dynamic = "force-dynamic";
 
@@ -34,6 +38,10 @@ function applyWindow<T>(query: T, window: TimeWindow): T {
 }
 
 export async function GET(request: Request): Promise<Response> {
+  // Auth first: revenue data must never be readable without the admin token.
+  const denied = adminGate(request, "affiliate-analytics");
+  if (denied) return denied;
+
   const parsed = parseTimeWindow(new URL(request.url).searchParams);
   if (!parsed.ok) {
     return Response.json({ error: parsed.error }, { status: 400 });

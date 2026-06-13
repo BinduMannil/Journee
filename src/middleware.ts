@@ -43,9 +43,17 @@ const CSP_REPORT_ONLY = [
 export function middleware(req: NextRequest): NextResponse {
   const res = NextResponse.next();
   if (!req.cookies.get("jid")) {
+    // Anonymous visitor id. httpOnly: JavaScript can't read it; secure: only
+    // sent over HTTPS in production (never exposed on a plaintext connection),
+    // while allowing http://localhost in dev; sameSite=lax: not sent on
+    // cross-site POSTs (a CSRF mitigation). It contains no name/contact data,
+    // but is personal data under GDPR (an online identifier), so the privacy
+    // page must stay in sync with every use of it (A/B variant + AI-plan
+    // free-quota metering).
     res.cookies.set("jid", crypto.randomUUID(), {
       httpOnly: true,
       sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
       path: "/",
       maxAge: 60 * 60 * 24 * 365,
     });

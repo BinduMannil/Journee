@@ -18,7 +18,9 @@ const checks = [
   ["/destinations/kyoto", 200],
   ["/destinations/nope", 404],
   ["/api/health", 200],
-  ["/api/metrics", 200],
+  // /api/metrics is admin-gated; 503 is the correct secure-by-default response
+  // when JOURNEE_ADMIN_TOKEN is unset (as in CI).
+  ["/api/metrics", 503],
   ["/api/destinations", 200],
   ["/api/pathfinder?vibe=Electric", 200],
   ["/api/affiliate/link?category=hotels", 200],

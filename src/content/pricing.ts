@@ -2,9 +2,14 @@
  * Monetization config (data-driven, per ADR-004 — no hardcoded prices in code).
  *
  * Costly actions (today: AI trip planning) are metered. New visitors get a small
- * free quota; beyond that they spend credits from a purchased package. Prices
- * here are PLACEHOLDERS — set real values (and confirm currency) before launch.
- * A CMS/billing-config provider can later supply these without code changes.
+ * free quota; beyond that they spend credits from a purchased package. A
+ * CMS/billing-config provider can later supply these without code changes.
+ *
+ * LAUNCH BLOCKER: the prices below are PLACEHOLDERS — set real values and
+ * confirm the currency before enabling purchases. Do NOT sell credit packages
+ * until the durable usage store lands (src/lib/billing/store.ts), or paid
+ * credits will reset on every deploy. See
+ * docs/security/soc2-readiness-review-2026-06-10.md (Findings #8, #9).
  */
 export interface CreditPackage {
   readonly id: string;

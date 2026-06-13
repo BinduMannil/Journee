@@ -6,6 +6,12 @@
  * per-instance — fine for local/dev and as a soft gate, but real enforcement
  * needs a shared, durable store. A Supabase-backed `UsageStore` is the drop-in
  * (see docs/runbooks/hosted-enablement.md); swap it in `getUsageStore()`.
+ *
+ * LAUNCH BLOCKER: swap to the Supabase-backed store before selling credits —
+ * the in-memory store resets on every deploy, so paid balances would vanish and
+ * free quotas barely enforce on serverless. Make consumption atomic at the same
+ * time (a single SQL update) to close the read-then-write double-spend race.
+ * See docs/security/soc2-readiness-review-2026-06-10.md (Findings #8, #9).
  */
 import { EMPTY_USAGE, type UsageState } from "./entitlements";
 

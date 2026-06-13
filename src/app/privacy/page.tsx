@@ -35,11 +35,13 @@ export default function PrivacyPage() {
           </h2>
           <p>
             We set one first-party cookie, <code className="text-gold">jid</code>:
-            a random, anonymous identifier used to keep experiences (such as which
-            variant of a link you see) consistent across your visit and to count
-            your free AI trip plans. It is HTTP-only, contains no personal
-            information, is not linked to your identity, and is never sold or
-            shared with third parties.
+            a random identifier used to keep experiences (such as which variant
+            of a link you see) consistent across your visit and to count your
+            free AI trip plans. It does not include your name or contact details,
+            but because it is a unique identifier that persists across visits, EU
+            law (GDPR) treats it as personal data. It is HTTP-only (not readable
+            by scripts), sent only over a secure connection, and is never sold or
+            shared with advertisers.
           </p>
         </div>
 
@@ -56,12 +58,32 @@ export default function PrivacyPage() {
 
         <div>
           <h2 className="mb-2 font-display text-2xl text-gold-bright">
+            AI trip planning
+          </h2>
+          <p>
+            If you use the optional AI trip planner, the destinations, pacing,
+            and any free-text notes you provide are sent to our AI provider
+            (Anthropic) so it can generate your plan. Please don&rsquo;t include
+            sensitive personal details (such as health information or document
+            numbers) in those notes. We also briefly process your network
+            address (IP) to limit how many free plans can be generated from one
+            network &mdash; this is for abuse prevention only and is never used
+            for advertising.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="mb-2 font-display text-2xl text-gold-bright">
             What we don&rsquo;t do
           </h2>
           <ul className="list-inside list-disc space-y-1">
             <li>No accounts, names, emails, or passwords (there is no sign-in yet).</li>
             <li>No third-party advertising or analytics trackers.</li>
-            <li>No selling or sharing of personal data.</li>
+            <li>
+              No selling of personal data, and no sharing for advertising. (The
+              only third party we send data to is our AI provider, and only to
+              generate a plan you asked for &mdash; see above.)
+            </li>
           </ul>
           <p className="mt-3">
             Operational metrics are anonymous, aggregate counters (e.g. how often

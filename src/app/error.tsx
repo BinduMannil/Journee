@@ -2,6 +2,13 @@
 
 import { useEffect } from "react";
 
+/**
+ * Global client error boundary. Renders a generic, friendly message only — it
+ * never shows the raw error to the user. In production Next.js redacts server
+ * error details to an opaque `digest`, so no internal file paths or stack
+ * traces reach the browser. The error is sent to the console (and would flow to
+ * an error-monitoring service such as Sentry once one is installed).
+ */
 export default function Error({
   error,
   reset,

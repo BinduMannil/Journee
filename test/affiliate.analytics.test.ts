@@ -59,12 +59,18 @@ test("parseTimeWindow validates ISO bounds", () => {
   assert.equal(parseTimeWindow(new URLSearchParams()).ok, true);
 });
 
-test("route returns 400 on an invalid time window (before config check)", async () => {
-  const res = await GET(analyticsReq("?since=garbage"));
-  assert.equal(res.status, 400);
-});
-
-test("route returns 503 when analytics is unconfigured", async () => {
+test("route is admin-gated: 503 when JOURNEE_ADMIN_TOKEN is unset", async () => {
+  // Revenue data is confidential; with no admin token configured the endpoint
+  // is disabled entirely (secure by default).
   const res = await GET(analyticsReq());
   assert.equal(res.status, 503);
+  assert.equal((await res.json()).error, "admin_disabled");
+});
+
+test("auth is enforced before input validation (a bad window still gates)", async () => {
+  // Even a malformed query is rejected by the gate first, not parsed — an
+  // unauthenticated caller learns nothing about the endpoint's internals.
+  const res = await GET(analyticsReq("?since=garbage"));
+  assert.equal(res.status, 503);
+  assert.equal((await res.json()).error, "admin_disabled");
 });

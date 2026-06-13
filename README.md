@@ -42,6 +42,20 @@ npm run lint
 npm test         # 101 unit tests (node:test)
 ```
 
+## Security setup
+
+- **Secrets live in `.env.local`** (git-ignored), never committed. Copy
+  `.env.example` and fill in real values. See the env boundary in
+  `src/lib/config/env.ts`.
+- **Privileged endpoints are off by default.** `/api/admin/*`, `/api/metrics`,
+  and `/api/affiliate/analytics` return `503` until `JOURNEE_ADMIN_TOKEN` is set,
+  then require a matching `x-admin-token` header. Affiliate conversion ingestion
+  is similarly gated by `JOURNEE_CONVERSION_TOKEN`. Generate strong tokens with
+  `openssl rand -hex 32`.
+- **Full posture + roadmap:** `docs/security/security-overview.md`. The latest
+  audit (findings, fixes, and a pre-launch checklist) is in
+  `docs/security/soc2-readiness-review-2026-06-10.md`.
+
 ## Live surface (runtime-verified)
 
 | Route | What |

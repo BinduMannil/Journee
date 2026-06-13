@@ -13,9 +13,11 @@ marked. Honest over aspirational._
 
 ## First 10 minutes
 
-1. **Confirm impact.** Hit `GET /api/health` — `status`, `config.supabaseConfigured`,
-   and which flags are on. Hit `GET /api/metrics` — look for rising
-   `provider_failover` / `provider_capability_exhausted`.
+1. **Confirm impact.** Hit `GET /api/health` (public) — `status`,
+   `config.supabaseConfigured`, and which flags are on. Hit `GET /api/metrics`
+   with the admin token (`-H "x-admin-token: $JOURNEE_ADMIN_TOKEN"`, since the
+   endpoint is admin-gated) — look for rising `provider_failover` /
+   `provider_capability_exhausted`.
 2. **Check the deploy.** Did a recent merge/deploy correlate? If so, roll back
    first, investigate second (see `recovery.md`).
 3. **Localize.** Logs are structured JSON; filter by `msg` (e.g.

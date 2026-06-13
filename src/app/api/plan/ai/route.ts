@@ -9,6 +9,7 @@ import {
   type UsageState,
 } from "@/lib/billing/entitlements";
 import { getClientIp } from "@/lib/billing/identity";
+import { isSameOrigin } from "@/lib/http/origin";
 import { FREE_AI_PLANS, FREE_AI_PLANS_PER_IP } from "@/content/pricing";
 import { log } from "@/lib/observability/logger";
 
@@ -29,6 +30,10 @@ const requestSchema = z.object({
 });
 
 export async function POST(request: Request): Promise<Response> {
+  if (!isSameOrigin(request)) {
+    return Response.json({ error: "forbidden_origin" }, { status: 403 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();

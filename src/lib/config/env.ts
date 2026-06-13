@@ -16,6 +16,9 @@ const envSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.string().url().optional(),
   JOURNEE_ENABLED_FEATURES: z.string().optional(),
   JOURNEE_ADMIN_TOKEN: z.string().min(1).optional(),
+  /** Shared secret for affiliate conversion postbacks. When unset, the
+   * conversion endpoint is disabled (503) — secure by default. */
+  JOURNEE_CONVERSION_TOKEN: z.string().min(1).optional(),
   /** LLM / AI planning provider (server-only). Optional: when unset, AI planning
    * reports unavailable and the deterministic planner is used instead. */
   LLM_API_KEY: z.string().min(1).optional(),
@@ -36,6 +39,7 @@ export function getEnv(): Env {
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
     JOURNEE_ENABLED_FEATURES: process.env.JOURNEE_ENABLED_FEATURES,
     JOURNEE_ADMIN_TOKEN: process.env.JOURNEE_ADMIN_TOKEN,
+    JOURNEE_CONVERSION_TOKEN: process.env.JOURNEE_CONVERSION_TOKEN,
     LLM_API_KEY: process.env.LLM_API_KEY,
     LLM_MODEL: process.env.LLM_MODEL,
   });
@@ -64,6 +68,16 @@ export function getSiteUrl(): string {
  */
 export function getAdminToken(): string | null {
   return getEnv().JOURNEE_ADMIN_TOKEN ?? null;
+}
+
+/**
+ * Affiliate conversion postback secret, or null when unset. When null the
+ * conversion ingestion endpoint is disabled (secure by default) — conversions
+ * record financial outcomes, so only the affiliate network (configured with
+ * this secret) should be able to write them.
+ */
+export function getConversionToken(): string | null {
+  return getEnv().JOURNEE_CONVERSION_TOKEN ?? null;
 }
 
 /** Returns Supabase connection config, or null when not configured. */
