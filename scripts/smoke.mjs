@@ -21,6 +21,8 @@ const checks = [
   ["/api/health", 200],
   ["/api/metrics", 200],
   ["/api/destinations", 200],
+  ["/api/destinations/kyoto/readiness", 200],
+  ["/api/destinations/nope/readiness", 404],
   ["/api/pathfinder?vibe=Electric", 200],
   ["/api/pathfinder?q=calm%20and%20sunny%20not%20lively", 200],
   ["/api/affiliate/link?category=hotels", 200],
