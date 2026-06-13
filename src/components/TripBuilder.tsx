@@ -5,6 +5,8 @@ import { buildItinerary, type Pacing } from "@/lib/intelligence/itinerary";
 import { itineraryToICS } from "@/lib/intelligence/itinerary-export";
 import { routeDistanceKm } from "@/lib/intelligence/geo";
 import { estimateStopsFootprint } from "@/lib/intelligence/carbon";
+import { composeTripReadiness } from "@/lib/intelligence/trip-readiness";
+import type { DestinationReadiness } from "@/lib/intelligence/destination-readiness";
 import { ConciergePlan } from "./ConciergePlan";
 
 export interface PlannableDestination {
@@ -22,7 +24,14 @@ const PACINGS: Pacing[] = ["relaxed", "balanced", "packed"];
  * plan built by the dynamic-itinerary engine (pure `buildItinerary`). Intensity
  * comes from config (mood → intensity), not hardcoded here.
  */
-export function TripBuilder({ destinations }: { destinations: readonly PlannableDestination[] }) {
+export function TripBuilder({
+  destinations,
+  readinessByDestination = {},
+}: {
+  destinations: readonly PlannableDestination[];
+  /** Real, seed-fed per-destination readiness, keyed by id (optional). */
+  readinessByDestination?: Readonly<Record<string, DestinationReadiness>>;
+}) {
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [pacing, setPacing] = useState<Pacing>("balanced");
 
@@ -51,6 +60,18 @@ export function TripBuilder({ destinations }: { destinations: readonly Plannable
   const route = useMemo(() => routeDistanceKm(stopCoords), [stopCoords]);
 
   const footprint = useMemo(() => estimateStopsFootprint(stopCoords), [stopCoords]);
+
+  // Live trip-level Travel Confidence: roll up the real seed-fed per-stop
+  // readiness for the selected stops via the pure composer. Only stops with
+  // contributing readiness are included, so confidence reflects real coverage.
+  const tripReadiness = useMemo(() => {
+    const resolved = selectedDestinations
+      .map((d) => ({ destinationId: d.id, readiness: readinessByDestination[d.id] }))
+      .filter((s): s is { destinationId: string; readiness: DestinationReadiness } =>
+        Boolean(s.readiness) && s.readiness!.parts.length > 0,
+      );
+    return resolved.length > 0 ? composeTripReadiness(resolved) : null;
+  }, [selectedDestinations, readinessByDestination]);
 
   const downloadIcs = () => {
     const now = new Date();
@@ -129,6 +150,32 @@ export function TripBuilder({ destinations }: { destinations: readonly Plannable
             ≈ {footprint.totalKgCO2e.toLocaleString()} kg CO₂e between stops{" "}
             <span className="text-stone/60">(approx, standard factors)</span>
           </p>
+        )}
+        {tripReadiness && (
+          <div className="mb-6 rounded-2xl border border-sand/10 p-5">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-xs uppercase tracking-[0.3em] text-gold">Trip confidence</p>
+              <span className="rounded-full border border-sand/20 px-2 py-0.5 text-[10px] uppercase tracking-[0.2em] text-stone">
+                Seed-fed · {Math.round(tripReadiness.overall.confidence * 100)}% coverage
+              </span>
+            </div>
+            <div className="flex items-baseline gap-3">
+              <span className="font-display text-4xl font-semibold text-gold-bright">
+                {tripReadiness.overall.score}
+              </span>
+              <span className="text-xs uppercase tracking-[0.2em] text-stone">
+                {tripReadiness.overall.weightsVersion}
+              </span>
+            </div>
+            {tripReadiness.bestStop && tripReadiness.worstStop && (
+              <p className="mt-3 text-xs text-sand/60">
+                Strongest: <span className="text-sand/80">{tripReadiness.bestStop.destinationId}</span>{" "}
+                ({tripReadiness.bestStop.score}) · Weakest:{" "}
+                <span className="text-sand/80">{tripReadiness.worstStop.destinationId}</span>{" "}
+                ({tripReadiness.worstStop.score})
+              </p>
+            )}
+          </div>
         )}
         {itinerary.days.length === 0 ? (
           <p className="text-sand/60">Select destinations to build a paced itinerary.</p>

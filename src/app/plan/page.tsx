@@ -8,6 +8,11 @@ import {
   type Destination,
 } from "@/content/destinations";
 import { TripBuilder } from "@/components/TripBuilder";
+import {
+  assembleDestinationReadiness,
+  type DestinationReadiness,
+} from "@/lib/intelligence/destination-readiness";
+import "@/lib/providers/travel-data/register";
 
 export const metadata: Metadata = {
   title: "Plan a trip",
@@ -25,6 +30,19 @@ export default async function PlanPage() {
     intensity: intensityForMood(d.mood),
     coordinates: d.coordinates,
   }));
+
+  // Real, seed-fed per-destination readiness (no network). Passed to the client
+  // so the trip aggregate updates live as stops are selected, via the pure
+  // `composeTripReadiness`. Zero-coverage destinations simply don't contribute.
+  const readinessEntries = await Promise.all(
+    destinations.map(
+      async (d): Promise<[string, DestinationReadiness]> => [
+        d.id,
+        await assembleDestinationReadiness({ destinationId: d.id }),
+      ],
+    ),
+  );
+  const readinessByDestination = Object.fromEntries(readinessEntries);
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-20 sm:px-12">
@@ -46,7 +64,10 @@ export default async function PlanPage() {
         </Link>
         .
       </p>
-      <TripBuilder destinations={plannable} />
+      <TripBuilder
+        destinations={plannable}
+        readinessByDestination={readinessByDestination}
+      />
     </main>
   );
 }
