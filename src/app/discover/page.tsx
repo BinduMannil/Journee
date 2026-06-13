@@ -5,6 +5,8 @@ import "@/lib/providers/register";
 import { featuredDestinations, type Destination } from "@/content/destinations";
 import { DiscoverClient } from "@/components/DiscoverClient";
 import { InSeasonNow } from "@/components/InSeasonNow";
+import { assembleDestinationReadiness } from "@/lib/intelligence/destination-readiness";
+import "@/lib/providers/travel-data/register";
 
 export const metadata: Metadata = {
   title: "Discover",
@@ -15,6 +17,18 @@ export const metadata: Metadata = {
 export default async function DiscoverPage() {
   const destinations =
     (await resolve<readonly Destination[]>("destinations")) ?? featuredDestinations;
+
+  // Real, seed-fed confidence per destination (no network) so discovery results
+  // can be annotated with intelligence, not just vibe. Zero-coverage → omitted.
+  const readinessEntries = await Promise.all(
+    destinations.map(async (d) => {
+      const r = await assembleDestinationReadiness({ destinationId: d.id });
+      return [d.id, { score: r.overall.score, coverage: r.overall.confidence }] as const;
+    }),
+  );
+  const confidenceByDestination = Object.fromEntries(
+    readinessEntries.filter(([, r]) => r.coverage > 0),
+  );
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-20 sm:px-12">
@@ -40,7 +54,10 @@ export default async function DiscoverPage() {
           bestMonths: d.bestMonths,
         }))}
       />
-      <DiscoverClient destinations={destinations} />
+      <DiscoverClient
+        destinations={destinations}
+        confidenceByDestination={confidenceByDestination}
+      />
     </main>
   );
 }

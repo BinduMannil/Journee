@@ -13,7 +13,19 @@ import type { Destination } from "@/content/destinations";
  * both arms of the pure `pathfind` query (vibe + avoid); ranking is computed in
  * render so it is present in the server-rendered markup, not just after hydration.
  */
-export function DiscoverClient({ destinations }: { destinations: readonly Destination[] }) {
+export interface DestinationConfidence {
+  readonly score: number;
+  readonly coverage: number;
+}
+
+export function DiscoverClient({
+  destinations,
+  confidenceByDestination = {},
+}: {
+  destinations: readonly Destination[];
+  /** Real, seed-fed Travel Confidence per destination id (optional). */
+  confidenceByDestination?: Readonly<Record<string, DestinationConfidence>>;
+}) {
   const vibes = useMemo(
     () => Array.from(new Set(destinations.map((d) => d.mood))).sort(),
     [destinations],
@@ -157,7 +169,15 @@ export function DiscoverClient({ destinations }: { destinations: readonly Destin
                     </span>
                   )}
                 </span>
-                <span className="text-sm text-sand/50">{r.reason}</span>
+                <span className="flex flex-col items-end text-right">
+                  <span className="text-sm text-sand/50">{r.reason}</span>
+                  {confidenceByDestination[r.id] && (
+                    <span className="mt-1 text-[10px] uppercase tracking-[0.15em] text-gold/70">
+                      confidence {confidenceByDestination[r.id]!.score} ·{" "}
+                      {Math.round(confidenceByDestination[r.id]!.coverage * 100)}% seed
+                    </span>
+                  )}
+                </span>
               </Link>
             </li>
           );
