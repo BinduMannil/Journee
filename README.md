@@ -80,6 +80,12 @@ docs/                  # Architecture, decisions (ADRs), governance, security
 .github/               # PR template + CI workflow
 ```
 
+## UI Direction
+
+All UI work must follow [`docs/ui/UI_DOS_AND_DONTS.md`](docs/ui/UI_DOS_AND_DONTS.md)
+before pages, components, layouts, styling, animations, or interaction patterns
+are created or changed.
+
 ## Documentation
 
 Start at [`docs/README.md`](docs/README.md). Key entry points:
